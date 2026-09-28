@@ -1,0 +1,36 @@
+.inline {
+  display: inline;
+  white-space: nowrap;
+}
+
+.displayRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-block: var(--space-4);
+}
+
+/*
+ * Display math can overflow on narrow phones. Allow horizontal scrolling of the
+ * expression itself rather than breaking the page layout.
+ */
+.display {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: var(--space-2);
+}
+
+.label {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+
+.fallback {
+  font-family: var(--font-mono);
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-sm);
+  padding-inline: var(--space-2);
+}

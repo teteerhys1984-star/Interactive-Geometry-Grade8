@@ -1,0 +1,68 @@
+# Deployment — GitHub Pages
+
+No Vercel. No backend. No database. No server authentication. The build output
+is a folder of static files.
+
+## Configuration already in place
+
+| Item           | Value                           | Where                      |
+| -------------- | ------------------------------- | -------------------------- |
+| Vite base path | `/Interactive-Geometry-Grade8/` | `vite.config.ts`           |
+| Router         | `HashRouter`                    | `src/main.tsx`             |
+| Jekyll bypass  | `public/.nojekyll`              | copied to `dist/` on build |
+| Workflow       | `.github/workflows/deploy.yml`  | verify → build → deploy    |
+
+### Why `HashRouter`
+
+GitHub Pages serves static files with no rewrite rules. With `BrowserRouter`, a
+deep link such as `/lesson/x/step/2` would request a file that does not exist
+and return 404. Hash routing keeps every route resolvable from `index.html`
+alone, with no `404.html` redirect hack.
+
+Deployed URLs look like:
+
+```
+https://<owner>.github.io/Interactive-Geometry-Grade8/#/unit/unit-01
+```
+
+### Why `.nojekyll`
+
+Pages runs Jekyll by default, which ignores files and folders beginning with an
+underscore. Vite can emit such names. The empty `.nojekyll` file disables Jekyll
+entirely.
+
+## Workflow
+
+`.github/workflows/deploy.yml` runs on push to `main` and on manual dispatch:
+
+1. **verify** — `npm ci`, `typecheck`, `lint`, `test` (incl. source fidelity)
+2. **build** — `npm run build`, then `configure-pages` + `upload-pages-artifact`
+3. **deploy** — `actions/deploy-pages`
+
+Permissions (`pages: write`, `id-token: write`) and a `pages` concurrency group
+are set, so no personal access token is needed.
+
+## ⚠️ Pages is NOT enabled yet — one manual step remains
+
+As requested, GitHub Pages has **not** been enabled via the API. The repository
+currently returns `404` for its Pages configuration.
+
+To go live:
+
+1. Repository → **Settings** → **Pages**
+2. **Build and deployment → Source**: select **GitHub Actions**
+3. Push to `main` (or run the workflow manually via **Actions → Run workflow**)
+
+The site will then publish to
+`https://<owner>.github.io/Interactive-Geometry-Grade8/`.
+
+If the repository is ever renamed, update `base` in `vite.config.ts` to match
+the new name, or assets will 404.
+
+## Local commands
+
+```bash
+npm run dev       # dev server
+npm run verify    # typecheck + lint + test + build
+npm run preview   # serve dist/ exactly as Pages will
+```

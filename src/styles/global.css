@@ -1,0 +1,118 @@
+@import './tokens.css';
+@import './rtl.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-arabic);
+  font-size: var(--font-base);
+  line-height: var(--leading-relaxed);
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: var(--leading-normal);
+  margin-block: 0 var(--space-3);
+  font-weight: 700;
+}
+
+h1 {
+  font-size: var(--font-2xl);
+}
+h2 {
+  font-size: var(--font-xl);
+}
+h3 {
+  font-size: var(--font-lg);
+}
+
+p {
+  margin-block: 0 var(--space-4);
+  max-width: var(--reading-max);
+}
+
+ul,
+ol {
+  /* Logical property: becomes padding-right under RTL automatically. */
+  padding-inline-start: var(--space-5);
+  margin-block: 0 var(--space-4);
+}
+
+li {
+  margin-block-end: var(--space-2);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  inset-block-start: -100%;
+  inset-inline-start: var(--space-4);
+  background: var(--color-primary);
+  color: #fff;
+  padding: var(--space-2) var(--space-4);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  z-index: 100;
+}
+
+.skip-link:focus {
+  inset-block-start: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

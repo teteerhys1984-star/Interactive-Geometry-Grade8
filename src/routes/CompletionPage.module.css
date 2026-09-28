@@ -1,0 +1,104 @@
+.card {
+  text-align: center;
+  padding: var(--space-7) var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-primary-soft) 100%);
+  margin-block-end: var(--space-5);
+}
+
+.badge {
+  display: grid;
+  place-items: center;
+  inline-size: 4rem;
+  block-size: 4rem;
+  margin-inline: auto;
+  margin-block-end: var(--space-4);
+  border-radius: 50%;
+  background: var(--color-success);
+  color: #fff;
+  font-size: 1.9rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-md);
+}
+
+.title {
+  margin: 0 0 var(--space-1);
+  font-size: var(--font-2xl);
+}
+
+.lesson {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-lg);
+}
+
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+  margin-block-start: var(--space-5);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.statValue {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-size: var(--font-2xl);
+  font-weight: 700;
+  color: var(--color-primary);
+  font-variant-numeric: lining-nums;
+}
+
+.statLabel {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+}
+
+.primary,
+.secondary {
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.primary {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: var(--shadow-md);
+}
+.primary:hover {
+  background: var(--color-primary-hover);
+  color: #fff;
+}
+
+.secondary {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.secondary:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.note {
+  margin: var(--space-5) auto 0;
+  text-align: center;
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}

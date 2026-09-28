@@ -1,0 +1,54 @@
+/*
+ * RTL / BIDI FOUNDATION
+ * ---------------------
+ * The document is `dir="rtl"` at the <html> level (see index.html).
+ * Rules here define how LTR islands behave inside that RTL flow.
+ */
+
+/* Any element explicitly marked LTR becomes an isolated bidi run. */
+[dir='ltr'] {
+  unicode-bidi: isolate;
+}
+
+/* Latin / numeric runs inside Arabic prose. */
+.ltr-run {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+}
+
+/* Numbers follow the token — currently unforced pending the textbook. */
+.numeric {
+  font-feature-settings: var(--numeric-font-feature);
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/*
+ * KaTeX output must never inherit RTL. KaTeX emits its own spans with absolute
+ * positioning that break entirely under `direction: rtl`.
+ */
+.katex,
+.katex-display,
+.katex * {
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: left;
+}
+
+.katex-display {
+  margin: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: var(--space-1);
+}
+
+/* Code and identifiers are always LTR. */
+code,
+kbd,
+samp,
+pre {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-family: var(--font-mono);
+}

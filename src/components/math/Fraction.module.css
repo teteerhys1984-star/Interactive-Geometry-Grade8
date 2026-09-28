@@ -1,0 +1,30 @@
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  vertical-align: middle;
+}
+
+.whole {
+  font-variant-numeric: lining-nums;
+}
+
+.fraction {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  line-height: 1.1;
+  font-size: 0.95em;
+}
+
+.numerator,
+.denominator {
+  padding-inline: 0.25em;
+}
+
+.bar {
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid currentColor;
+}

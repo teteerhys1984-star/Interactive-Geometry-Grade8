@@ -1,0 +1,9 @@
+/*
+ * unicode-bidi: isolate is what actually protects the surrounding Arabic text.
+ * `display: inline-block` is deliberately avoided so the run can wrap naturally.
+ */
+.isolate {
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: start;
+}

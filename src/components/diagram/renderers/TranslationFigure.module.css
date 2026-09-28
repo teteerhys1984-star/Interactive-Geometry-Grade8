@@ -1,0 +1,79 @@
+.svg {
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 22rem;
+  /* Stroke widths are expressed in user units via vector-effect. */
+  overflow: visible;
+}
+
+.grid {
+  stroke: var(--color-border);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.55;
+}
+
+.source,
+.sourceFilled {
+  stroke: var(--color-primary);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.sourceFilled {
+  fill: var(--color-primary);
+  fill-opacity: 0.14;
+}
+
+.image,
+.imageFilled {
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+  stroke-dasharray: 6 4;
+  fill: none;
+}
+
+.imageFilled {
+  fill: var(--color-accent);
+  fill-opacity: 0.12;
+}
+
+.vector {
+  stroke: var(--color-text-muted);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.85;
+}
+
+.arrowHead {
+  fill: var(--color-text-muted);
+}
+
+.point {
+  fill: var(--color-primary);
+}
+.pointImage {
+  fill: var(--color-accent);
+}
+
+.label,
+.labelImage {
+  font-size: 0.62px;
+  font-style: italic;
+  font-family: 'KaTeX_Math', 'Times New Roman', serif;
+  text-anchor: middle;
+  /* Labels are Latin notation: always LTR inside the RTL page. */
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.label {
+  fill: var(--color-primary);
+}
+.labelImage {
+  fill: var(--color-accent);
+}
