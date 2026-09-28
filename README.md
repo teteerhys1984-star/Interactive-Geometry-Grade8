@@ -16,7 +16,12 @@ No backend. No database. No server authentication. No Vercel.
 
 ## Quick start
 
+Requires Node **≥ 22.22.2** — the test toolchain (vitest 5, jsdom 30) does not
+support Node 20. [`.nvmrc`](.nvmrc) pins the version CI runs, so `nvm use`
+reproduces the exact verified runtime.
+
 ```bash
+nvm use           # optional: read the pinned version from .nvmrc
 npm ci
 npm run dev       # http://localhost:5173
 npm run verify    # typecheck + lint + test + build
