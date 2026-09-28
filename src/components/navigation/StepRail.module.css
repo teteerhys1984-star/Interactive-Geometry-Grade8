@@ -1,0 +1,39 @@
+.rail {
+  overflow-x: auto;
+  padding-block-end: var(--space-2);
+  margin-block-end: var(--space-4);
+}
+
+.list {
+  display: flex;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item,
+.activeItem {
+  display: grid;
+  place-items: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: var(--font-sm);
+  font-weight: 600;
+}
+
+.item:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.activeItem {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}

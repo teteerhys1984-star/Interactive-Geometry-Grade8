@@ -1,0 +1,40 @@
+.figure {
+  margin: var(--space-5) 0;
+  width: 100%;
+}
+
+.canvas {
+  width: 100%;
+  max-width: 100%;
+  /* Diagrams are drawn LTR regardless of the surrounding Arabic RTL page. */
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  padding: var(--space-3);
+}
+
+.canvas > * {
+  max-width: 100%;
+  height: auto;
+}
+
+.caption {
+  margin-block-start: var(--space-2);
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+  /* Caption is Arabic prose — inherits page RTL. */
+  direction: rtl;
+}
+
+@media (max-width: 600px) {
+  .canvas {
+    padding: var(--space-2);
+  }
+}

@@ -1,0 +1,187 @@
+.meta {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-block-end: var(--space-5);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+
+.chip [dir='ltr'] {
+  font-variant-numeric: lining-nums;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.chipReference {
+  background: var(--color-reference-bg);
+  border-color: var(--color-reference-border);
+  color: var(--color-reference-accent);
+}
+
+.summary {
+  font-size: var(--font-lg);
+  color: var(--color-text-muted);
+}
+
+.vocab {
+  margin-block: 0 var(--space-4);
+}
+
+.vocabRow {
+  display: grid;
+  grid-template-columns: minmax(8rem, 12rem) 1fr;
+  gap: var(--space-3);
+  padding-block: var(--space-2);
+  border-block-end: 1px solid var(--color-border);
+}
+
+.vocabRow dt {
+  font-weight: 600;
+}
+.vocabRow dd {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.stepItem {
+  margin: 0;
+}
+
+.stepLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+.stepLink:hover {
+  border-color: var(--color-primary);
+  transform: translateX(-3px);
+}
+
+.stepNumber,
+.stepNumberDone {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: grid;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: var(--font-sm);
+  flex-shrink: 0;
+  font-variant-numeric: lining-nums;
+}
+
+.stepNumber {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+.stepNumberDone {
+  background: var(--color-success);
+  color: #fff;
+}
+
+.stepBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.stepKicker {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+}
+.stepTitle {
+  font-weight: 600;
+}
+
+.stepPage {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-sm);
+  padding: 1px var(--space-2);
+}
+
+.start {
+  display: inline-block;
+  margin-block-start: var(--space-5);
+  background: var(--color-primary);
+  color: #fff;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+}
+
+.start:hover {
+  background: var(--color-primary-hover);
+  color: #fff;
+}
+
+@media (max-width: 560px) {
+  .vocabRow {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+}
+
+/* Platform-authored steps are badged differently from textbook steps. */
+.stepKickerAuthored {
+  composes: stepKicker;
+  color: var(--color-teaching-accent);
+  font-weight: 700;
+}
+
+/* The final assessment, shown after the last step in the outline. */
+.assessmentLink {
+  composes: stepLink;
+  margin-block-start: var(--space-3);
+  border: 1px dashed var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.assessmentIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  flex-shrink: 0;
+}

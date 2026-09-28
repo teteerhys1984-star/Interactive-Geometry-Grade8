@@ -1,0 +1,103 @@
+/*
+ * Design tokens. Logical properties only — no hard-coded left/right anywhere
+ * in this codebase, so the RTL layout is correct by construction.
+ */
+:root {
+  /* Typography */
+  --font-arabic: 'Noto Naskh Arabic', 'Amiri', 'Segoe UI', 'Tahoma', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+
+  --font-xs: 0.78rem;
+  --font-sm: 0.88rem;
+  --font-base: 1rem;
+  --font-lg: 1.15rem;
+  --font-xl: 1.4rem;
+  --font-2xl: 1.75rem;
+  --font-3xl: 2.25rem;
+
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.9; /* Arabic needs more line height than Latin */
+
+  /*
+   * DIGIT CONVENTION — deliberately NOT forced yet.
+   * Arabic-Indic (١٢٣) vs Latin (123) will follow the actual textbook once the
+   * first real lesson is supplied. Change this single token then.
+   *   --numeric-font-feature: 'anum' 1;  ← Arabic-Indic
+   */
+  --numeric-font-feature: normal;
+
+  /* Colour */
+  --color-bg: #f7f8fa;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f1f3f7;
+  --color-border: #d9dee7;
+  --color-text: #1b2330;
+  --color-text-muted: #5c6880;
+  --color-primary: #1f5fa9;
+  --color-primary-hover: #17497f;
+  --color-primary-soft: #e6eefa;
+  --color-success: #1d7a4c;
+  --color-warning: #9a6508;
+  --color-danger: #b02a2a;
+  --color-focus: #1f5fa9;
+
+  /* Accent used by activity callouts and hero gradients */
+  --color-accent: #7a4fd0;
+  --color-accent-bg: #f1ecfc;
+  --color-hint: #c98a10;
+  --color-hint-bg: #fdf6e6;
+
+  /* Reference-placeholder palette: calm, integrated, NOT a warning */
+  --color-reference-accent: #6b5bb5;
+  --color-reference-border: #cfc7ee;
+  --color-reference-bg: #f4f1fd;
+
+  /* Platform-authored teaching material */
+  --color-teaching-accent: #1f5fa9;
+  --color-teaching-border: #d7e2f2;
+  --color-teaching-bg: #f8fbff;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+
+  /* Radius & elevation */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 2px rgb(16 24 40 / 6%);
+  --shadow-md: 0 4px 14px rgb(16 24 40 / 8%);
+
+  /* Layout */
+  --content-max: 62rem;
+  --reading-max: 44rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #11151c;
+    --color-surface: #182029;
+    --color-surface-alt: #1f2832;
+    --color-border: #2d3947;
+    --color-text: #e8edf4;
+    --color-text-muted: #9aa8bd;
+    --color-primary: #6aa6e8;
+    --color-primary-hover: #8dbcf0;
+    --color-primary-soft: #1d2c3e;
+    --color-accent: #b49bf0;
+    --color-accent-bg: #241d38;
+    --color-hint: #e0ae4a;
+    --color-hint-bg: #2a2313;
+    --color-reference-accent: #a99ae6;
+    --color-reference-border: #3b3559;
+    --color-reference-bg: #1e1b2e;
+    --color-teaching-accent: #6aa6e8;
+    --color-teaching-border: #2b3949;
+    --color-teaching-bg: #161d26;
+  }
+}

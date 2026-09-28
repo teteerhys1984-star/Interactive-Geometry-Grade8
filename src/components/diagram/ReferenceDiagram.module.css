@@ -1,0 +1,91 @@
+.figure {
+  margin: var(--space-5) 0;
+  width: 100%;
+}
+
+/*
+ * Calm and integrated — deliberately NOT styled as an error or warning.
+ * Compare Diagram.module.css `.unavailable`, which IS a defect state.
+ */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-reference-border);
+  background: linear-gradient(135deg, var(--color-reference-bg) 0%, var(--color-surface) 100%);
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 3px;
+  background: linear-gradient(90deg, var(--color-reference-accent), transparent);
+}
+
+.icon {
+  color: var(--color-reference-accent);
+  display: grid;
+  place-items: center;
+  inline-size: 3rem;
+  block-size: 3rem;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-reference-border);
+}
+
+.headline {
+  margin: 0;
+  font-weight: 700;
+  font-size: var(--font-lg);
+  color: var(--color-text);
+}
+
+.page {
+  margin: 0;
+  font-size: var(--font-sm);
+  color: var(--color-reference-accent);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pageNumber {
+  direction: ltr;
+  unicode-bidi: isolate;
+  background: var(--color-surface);
+  border: 1px solid var(--color-reference-border);
+  border-radius: var(--radius-sm);
+  padding: 1px var(--space-2);
+  font-variant-numeric: lining-nums;
+}
+
+.locator {
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.description {
+  margin: var(--space-1) 0 0;
+  max-width: 54ch;
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-relaxed);
+}
+
+.caption {
+  margin-block-start: var(--space-2);
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+}
