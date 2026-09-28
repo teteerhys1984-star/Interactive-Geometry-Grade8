@@ -4,6 +4,9 @@
   "version": "0.1.0",
   "type": "module",
   "description": "Interactive Grade 8 Geometry Course – Arabic. Static React/Vite platform for GitHub Pages.",
+  "engines": {
+    "node": ">=22.22.2"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

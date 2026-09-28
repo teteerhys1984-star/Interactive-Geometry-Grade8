@@ -33,11 +33,21 @@ entirely.
 
 ## Workflow
 
-`.github/workflows/deploy.yml` runs on push to `main` and on manual dispatch:
+`.github/workflows/deploy.yml` runs on push to `main`, on pull requests
+targeting `main`, and on manual dispatch:
 
 1. **verify** — `npm ci`, `typecheck`, `lint`, `test` (incl. source fidelity)
 2. **build** — `npm run build`, then `configure-pages` + `upload-pages-artifact`
+   (pushes and manual dispatches only — pull requests stop at verify)
 3. **deploy** — `actions/deploy-pages`
+
+### Node runtime
+
+CI installs the Node version pinned in [`.nvmrc`](../.nvmrc) (22.22.3).
+Node 20 is **not** supported: vitest 5 requires Node ≥ 22.12 and jsdom 30
+requires Node ≥ 22.22.2, so the test step fails on older runtimes (this is how
+the first run on `main` failed). `package.json` declares the same floor via
+`engines.node`, so local runs on an unsupported Node are warned about by npm.
 
 Permissions (`pages: write`, `id-token: write`) and a `pages` concurrency group
 are set, so no personal access token is needed.
