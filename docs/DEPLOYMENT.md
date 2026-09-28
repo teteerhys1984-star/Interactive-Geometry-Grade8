@@ -36,10 +36,42 @@ entirely.
 `.github/workflows/deploy.yml` runs on push to `main`, on pull requests
 targeting `main`, and on manual dispatch:
 
-1. **verify** — `npm ci`, `typecheck`, `lint`, `test` (incl. source fidelity)
-2. **build** — `npm run build`, then `configure-pages` + `upload-pages-artifact`
-   (pushes and manual dispatches only — pull requests stop at verify)
+1. **verify** — `npm ci --include=dev`, `typecheck`, `lint`, `test` (incl.
+   source fidelity)
+2. **build** — `npm ci --include=dev`, `npm run build`, then `configure-pages` +
+   `upload-pages-artifact` (pushes and manual dispatches only — pull requests
+   stop at verify)
 3. **deploy** — `actions/deploy-pages`
+
+### Why devDependencies are required in CI
+
+Each job runs on a fresh runner with an empty `node_modules`, so **every job
+that runs npm scripts must install dependencies first** — including `build`.
+Omitting the install step there made the post-merge Pages build fail with
+missing type definitions for `@testing-library/jest-dom`, `vitest/globals` and
+`node`.
+
+`npm run build` is `tsc -b && vite build`. The TypeScript project references
+resolve the `types` entries declared in the tsconfig files, and those packages
+are all devDependencies:
+
+| Type package                | Provides                             |
+| --------------------------- | ------------------------------------ |
+| `@types/node`               | `node` types (Vite config, tooling)  |
+| `vitest`                    | `vitest/globals` test globals        |
+| `@testing-library/jest-dom` | custom matcher types for the DOM API |
+
+Because typecheck is part of the build, a production-only install
+(`npm ci --omit=dev`) is not enough — the build fails before Vite ever runs.
+
+Both jobs therefore use `npm ci --include=dev` rather than plain `npm ci`. The
+flag is explicit rather than redundant: npm skips devDependencies when the
+environment looks production-like (`NODE_ENV=production`, `npm_config_production`
+or an inherited `--omit=dev` config). Pinning `--include=dev` makes the install
+deterministic regardless of runner or org-level environment settings.
+
+Nothing devDependency-related ships to Pages: the deployed artifact is only the
+static `dist/` output.
 
 ### Node runtime
 

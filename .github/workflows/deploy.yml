@@ -37,8 +37,13 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
+      # `--include=dev` is explicit: the build and the typecheck both need
+      # devDependencies (`@types/node`, `vitest/globals`,
+      # `@testing-library/jest-dom`), which npm omits when the runner
+      # environment looks production-like (NODE_ENV=production or
+      # npm_config_production=true).
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --include=dev
 
       - name: Typecheck
         run: npm run typecheck
@@ -63,6 +68,13 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+
+      # `npm run build` starts with `tsc -b`, which resolves the `types`
+      # entries in tsconfig (`node`, `vitest/globals`,
+      # `@testing-library/jest-dom`). Without this install step the build job
+      # fails with "Cannot find type definition file for ...".
+      - name: Install dependencies
+        run: npm ci --include=dev
 
       # Vite `base` is '/Interactive-Geometry-Grade8/' (see vite.config.ts),
       # matching the GitHub Pages project-site URL.
