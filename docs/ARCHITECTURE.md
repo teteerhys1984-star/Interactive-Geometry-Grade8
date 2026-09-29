@@ -28,17 +28,18 @@ Home  →  Subject  →  Unit  →  Lesson Outline  →  Step-by-Step Lesson
                               Teacher Area (client-side gate)
 ```
 
-| Route                          | Component           | Purpose                               |
-| ------------------------------ | ------------------- | ------------------------------------- |
-| `/`                            | `HomePage`          | Course entry, empty-course state      |
-| `/subject/:subjectId`          | `SubjectPage`       | List of units                         |
-| `/unit/:unitId`                | `UnitPage`          | List of lessons + unit assessment     |
-| `/lesson/:lessonId`            | `LessonOutlinePage` | Objectives, vocabulary, step map      |
-| `/lesson/:lessonId/step/:step` | `LessonStepPage`    | One step + progress + Prev/Next       |
-| `/lesson/:lessonId/done`       | `CompletionPage`    | Completion + next action              |
-| `/assessment/:scopeId`         | `AssessmentPage`    | Unit or final assessment              |
-| `/teacher`                     | `TeacherPage`       | Teacher area behind a passphrase gate |
-| `*`                            | `NotFoundPage`      | Unknown route                         |
+| Route                          | Component           | Purpose                              |
+| ------------------------------ | ------------------- | ------------------------------------ |
+| `/`                            | `HomePage`          | Course entry, empty-course state     |
+| `/subject/:subjectId`          | `SubjectPage`       | List of units                        |
+| `/unit/:unitId`                | `UnitPage`          | List of lessons + unit assessment    |
+| `/lesson/:lessonId`            | `LessonOutlinePage` | Objectives, vocabulary, step map     |
+| `/lesson/:lessonId/step/:step` | `LessonStepPage`    | One step + progress + Prev/Next      |
+| `/lesson/:lessonId/done`       | `CompletionPage`    | Completion + next action             |
+| `/assessment/:scopeId`         | `AssessmentPage`    | Unit or final assessment             |
+| `/teacher`                     | `TeacherPage`       | Teacher area: lesson picker, gated   |
+| `/teacher/:lessonId`           | `TeacherLessonPage` | One lesson's teacher sections (tabs) |
+| `*`                            | `NotFoundPage`      | Unknown route                        |
 
 Routes are never hand-written in components. `src/lib/routes.ts` owns both the
 URL builders and the route patterns.

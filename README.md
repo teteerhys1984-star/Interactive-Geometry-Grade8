@@ -121,10 +121,13 @@ BIDI-isolated.
 
 ## Teacher Area
 
-`/#/teacher` is gated by a shared client-side passphrase and contains, per
-lesson: source coverage, teacher-derived solutions to the printed questions,
+`/#/teacher` is gated by a shared client-side passphrase. Past the gate it
+shows a lesson picker (one card per lesson, derived from the content
+registry); each lesson's teacher area lives at `/#/teacher/:lessonId` and is
+split into four navigable sections (tabs): textbook-question solutions,
 the assessment answer key with justifications and common wrong reasoning,
-the reference-figure report, and teaching notes.
+the reference-figure report, and teaching notes — plus the lesson's source
+coverage. A newly authored lesson appears in the picker automatically.
 
 > ⚠️ **This is not real security.** The site is static and public; the
 > passphrase ships in the JavaScript bundle and can be read by anyone. It is a

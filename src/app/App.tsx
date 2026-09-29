@@ -9,6 +9,7 @@ import {
   LessonStepPage,
   NotFoundPage,
   SubjectPage,
+  TeacherLessonPage,
   TeacherPage,
   UnitPage,
 } from '@/routes';
@@ -46,6 +47,7 @@ export function App() {
             <Route path={routePatterns.lessonCompletion} element={<CompletionPage />} />
             <Route path={routePatterns.assessment} element={<AssessmentPage />} />
             <Route path={routePatterns.teacher} element={<TeacherPage />} />
+            <Route path={routePatterns.teacherLesson} element={<TeacherLessonPage />} />
             <Route path={routePatterns.notFound} element={<NotFoundPage />} />
           </Routes>
         </ErrorBoundary>
