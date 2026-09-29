@@ -11,11 +11,24 @@ interface PageShellProps {
   children: ReactNode;
   /** Narrow reading column — used for lesson steps. */
   narrow?: boolean;
+  /** Per-lesson colour identity, see src/lib/lessonTheme.ts. */
+  theme?: string;
 }
 
-export function PageShell({ title, lead, crumbs, actions, children, narrow }: PageShellProps) {
+export function PageShell({
+  title,
+  lead,
+  crumbs,
+  actions,
+  children,
+  narrow,
+  theme,
+}: PageShellProps) {
   return (
-    <div className={narrow ? `${styles.page} ${styles.narrow}` : styles.page}>
+    <div
+      className={narrow ? `${styles.page} ${styles.narrow}` : styles.page}
+      data-lesson-theme={theme}
+    >
       {crumbs ? <Breadcrumbs items={crumbs} /> : null}
       <div className={styles.heading}>
         <div>

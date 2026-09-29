@@ -4,6 +4,7 @@ import { PageShell } from '@/components/layout';
 import { getLesson, getLessonNeighbours, lessonDiagrams, subject } from '@/content/registry';
 import { routes } from '@/lib/routes';
 import { markLessonCompleted } from '@/lib/progress';
+import { lessonTheme } from '@/lib/lessonTheme';
 import { NotFoundPage } from './NotFoundPage';
 import styles from './CompletionPage.module.css';
 
@@ -27,6 +28,7 @@ export function CompletionPage() {
   return (
     <PageShell
       narrow
+      theme={lessonTheme(lesson.id)}
       title=""
       crumbs={[
         { label: 'الرئيسية', to: routes.home() },

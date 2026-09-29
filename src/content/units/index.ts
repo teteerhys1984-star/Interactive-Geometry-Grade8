@@ -10,10 +10,10 @@ import { unit01 } from './unit-01-parallelograms-and-translation';
  *  Only content verified against the supplied textbook scans appears here.
  *
  *  Currently authored:
- *    • Unit 1 «متوازيات الأضلاع والانسحاب» — Lesson 1 only, pages 5–7.
+ *    • Unit 1 «متوازيات الأضلاع والانسحاب» — Lesson 1, pages 5–7.
+ *    • Unit 1 «متوازيات الأضلاع والانسحاب» — Lesson 2, pages 8–10.
  *
  *  NOT yet authored (deliberately):
- *    • Unit 1, Lesson 2 «صورة نقطة وفق انسحاب»      pages 8–10
  *    • Unit 1, Lesson 3 «صورة شكل وفق انسحاب»       pages 11–16
  *    • Unit 1, Lesson 4 «تطابق المثلثات»            pages 17–19
  *    • Unit 1 «تمرينات ومسائل»                      pages 20–29

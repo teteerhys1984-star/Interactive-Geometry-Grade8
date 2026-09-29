@@ -111,18 +111,19 @@ describe('course shell', () => {
   });
 });
 
-describe('implementation boundary — Lesson 1 only', () => {
+describe('implementation boundary — Lessons 1 and 2 only', () => {
   it('registers exactly one unit', () => {
     expect(subject.units).toHaveLength(1);
     expect(subject.units[0]?.id).toBe('unit-01-parallelograms-and-translation');
   });
 
-  it('registers exactly one lesson (Lessons 2–4 not yet authored)', () => {
-    expect(allLessons).toHaveLength(1);
+  it('registers exactly two lessons (Lessons 3–4 not yet authored)', () => {
+    expect(allLessons).toHaveLength(2);
     expect(allLessons[0]?.lesson.id).toBe('lesson-01-translation-and-properties');
+    expect(allLessons[1]?.lesson.id).toBe('lesson-02-image-of-a-point');
   });
 
-  it('draws only on textbook pages 5–7', () => {
+  it('draws only on textbook pages 5–10', () => {
     const pages = new Set<string>();
     for (const { lesson } of allLessons) {
       for (const step of lesson.steps) {
@@ -133,11 +134,13 @@ describe('implementation boundary — Lesson 1 only', () => {
       }
     }
     for (const page of pages) {
-      expect(['5', '6', '7', '6–7'], `unexpected source page: ${page}`).toContain(page);
+      expect(['5', '6', '7', '6–7', '8', '9', '10'], `unexpected source page: ${page}`).toContain(
+        page,
+      );
     }
   });
 
-  it('invents no textbook assessment (the source prints none for Lesson 1)', () => {
+  it('invents no textbook assessment (the source prints none for either lesson)', () => {
     expect(subject.finalAssessment).toBeUndefined();
     expect(subject.units[0]?.assessment).toBeUndefined();
 
@@ -150,10 +153,11 @@ describe('implementation boundary — Lesson 1 only', () => {
   });
 
   it('invents no summary, objectives or vocabulary (absent from the source)', () => {
-    const lesson = allLessons[0]?.lesson;
-    expect(lesson?.summary).toBeUndefined();
-    expect(lesson?.objectives).toEqual([]);
-    expect(lesson?.vocabulary).toEqual([]);
+    for (const { lesson } of allLessons) {
+      expect(lesson.summary, `lesson ${lesson.id}`).toBeUndefined();
+      expect(lesson.objectives, `lesson ${lesson.id}`).toEqual([]);
+      expect(lesson.vocabulary, `lesson ${lesson.id}`).toEqual([]);
+    }
   });
 });
 
@@ -372,6 +376,45 @@ const VERBATIM_CORPUS = [
   'استنتج مساحة المنطقة الملونة باللون الأزرق',
 ];
 
+/**
+ * Textbook figures this platform is allowed to REDRAW rather than place behind
+ * a `reference` placeholder. A figure only joins this list when every point it
+ * contains sits on an integer lattice node that was read from the scan AND
+ * verified arithmetically. The verification record lives in
+ * docs/LESSON-02-FIGURES.md; nothing here is eyeballed or approximated.
+ */
+const VERIFIED_TEXTBOOK_FIGURES = ['fig-8-activity-grid', 'fig-10-exercise-3-grid'];
+
+/** The eleven verbatim steps of Lesson 2, in printed order (pages 8–10). */
+const LESSON_2_SOURCE_STEP_IDS = [
+  'step-01-activity-squared-paper',
+  'step-02-activity-blank-paper',
+  'step-03-definition',
+  'step-04-special-case',
+  'step-05-knowledge-example',
+  'step-06-construction-method',
+  'step-07-justification',
+  'step-08-check-understanding',
+  'step-09-practice-1',
+  'step-10-practice-2',
+  'step-11-practice-3',
+];
+
+/** Lesson 2 sentences that must survive verbatim, spanning pages 8, 9 and 10. */
+const LESSON_2_VERBATIM_CORPUS = [
+  'ما صورة النقطة $M$ وفق الانسحاب الذي ينقل النقطة $A$ إلى النقطة $B$؟',
+  'انقل الشكل المرافق إلى ورقة بيضاء.',
+  "القول إنَّ « النقطة $M'$ هي صورة النقطة $M$ التي لا تنتمي إلى المستقيم $(AB)$، وفق الانسحاب الذي ينقل النقطة $A$ إلى النقطة $B$ » يعني أنَّ « الرباعي $ABM'M$ متوازي أضلاع » ويترتب على ذلك أنَّ القطعتين $[AM']$ و $[BM]$ متناصفتان.",
+  "في حالة النقطة $M$ تنتمي إلى المستقيم $(AB)$، تكون النقاط $A$ و $B$ و $M'$ و $M$ على استقامة واحدة، وتكون القطعتان $[AM']$ و $[BM]$ متناصفتين.",
+  'في الإنشاء الهندسي، نستعمل فقط فرجاراً ومسطرةً غير مدرجة.',
+  "لنكمل $HGM$ إلى متوازي أضلاع $HGMM'$.",
+  "فالرباعي $HGMM'$ متوازي أضلاع، ويترتب على ذلك أنَّ $M'$ هي صورة $M$.",
+  'في كلٍ من الحالتين الآتيتين، ارسم الشكل الموافق ثم أكمل العبارتين الآتيتين:',
+  'ارسم مثلثاً $ABC$، ثم ارسم باستعمال الفرجار:',
+  'ارسم متوازي أضلاع $ABCD$ مركزه $M$، ثم انقل العبارات الآتية إلى دفترك وأكملها:',
+  'انسخ الشبكة الآتية على صفحةٍ من دفترك:',
+];
+
 describe('authored material never displaces the source', () => {
   const lesson = allLessons[0]!.lesson;
 
@@ -407,21 +450,81 @@ describe('authored material never displaces the source', () => {
     }
   });
 
-  it('only ever draws constructed figures that this platform authored itself', () => {
+  it('only redraws a textbook figure when its coordinates were verified', () => {
     for (const diagram of allDiagrams()) {
-      if (diagram.kind === 'constructed' || diagram.kind === 'interactive') {
-        expect(diagram.origin, `${diagram.id} reconstructs a textbook figure`).toBe('authored');
-      }
+      if (diagram.kind !== 'constructed' && diagram.kind !== 'interactive') continue;
+      if (diagram.origin === 'authored') continue;
+      expect(
+        VERIFIED_TEXTBOOK_FIGURES,
+        `${diagram.id} redraws a textbook figure without a verification record`,
+      ).toContain(diagram.id);
+      expect(diagram.source, `${diagram.id} must cite the page it reproduces`).toBeDefined();
     }
   });
 
-  it('keeps every textbook figure as a faithful `reference` placeholder', () => {
+  it('keeps every unverified textbook figure as a faithful `reference` placeholder', () => {
     const textbookFigures = allDiagrams().filter((d) => d.origin === 'textbook');
-    // Six distinct figures; the pavement figure is shown in two steps.
-    expect(textbookFigures).toHaveLength(7);
-    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(7);
+    // Lesson 1: 7 (the pavement figure is shown in two steps).
+    // Lesson 2: 5 blank-sheet placeholders + the 2 verified squared-paper grids.
+    expect(textbookFigures).toHaveLength(14);
+    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(14);
     for (const diagram of textbookFigures) {
+      if (VERIFIED_TEXTBOOK_FIGURES.includes(diagram.id)) continue;
       expect(diagram.kind, `${diagram.id} must stay a reference placeholder`).toBe('reference');
+    }
+  });
+});
+
+describe('Lesson 2 — authored material never displaces the source', () => {
+  const lesson = allLessons[1]!.lesson;
+
+  it('keeps all eleven verbatim steps, unchanged and in printed order', () => {
+    const sourceIds = lesson.steps.filter((s) => s.origin === 'source').map((s) => s.id);
+    expect(sourceIds).toEqual(LESSON_2_SOURCE_STEP_IDS);
+  });
+
+  it('interleaves seven authored steps without reordering the source', () => {
+    expect(lesson.steps.filter((s) => s.origin === 'authored')).toHaveLength(7);
+    expect(lesson.steps).toHaveLength(18);
+  });
+
+  it('still contains every checked verbatim sentence, character for character', () => {
+    const haystack = lesson.steps
+      .filter((step) => step.origin === 'source')
+      .flatMap((step) => [
+        step.title,
+        ...(step.kicker ? [step.kicker] : []),
+        ...collectStrings(step.blocks),
+      ]);
+    for (const sentence of LESSON_2_VERBATIM_CORPUS) {
+      expect(haystack, `verbatim sentence lost: ${sentence}`).toContain(sentence);
+    }
+  });
+
+  it('labels every authored teaching step', () => {
+    for (const step of lesson.steps) {
+      if (step.origin !== 'authored') continue;
+      expect(step.kicker, `authored step ${step.id} must be badged`).toBe('شرح المنصّة');
+    }
+  });
+
+  it('reproduces the two squared-paper figures on integer lattice nodes', () => {
+    const grids = lesson.steps
+      .flatMap((step) => collectDiagrams(step.blocks))
+      .filter((diagram) => VERIFIED_TEXTBOOK_FIGURES.includes(diagram.id));
+    expect(grids).toHaveLength(2);
+    for (const grid of grids) {
+      expect(grid.kind).toBe('interactive');
+      if (grid.kind !== 'interactive') continue;
+      const points = grid.params.points as { x: number; y: number }[];
+      expect(points.length).toBeGreaterThan(0);
+      for (const point of points) {
+        expect(Number.isInteger(point.x), `${grid.id} has a non-lattice x`).toBe(true);
+        expect(Number.isInteger(point.y), `${grid.id} has a non-lattice y`).toBe(true);
+      }
+      // A faithful reproduction of a printed exercise must not hand the answers
+      // to the student: no reveal controls on textbook figures.
+      expect(grid.params.reveals, `${grid.id} must not reveal answers`).toEqual([]);
     }
   });
 });
@@ -450,26 +553,39 @@ describe('final assessment', () => {
     }
   });
 
+  it('gives Lesson 2 a final assessment of twelve questions', () => {
+    const lesson02 = allLessons[1]!.lesson.assessment;
+    expect(lesson02).toBeDefined();
+    expect(lesson02!.questions).toHaveLength(12);
+  });
+
+  it('gives every lesson assessment a unique id', () => {
+    const ids = allLessons.map(({ lesson }) => lesson.assessment?.id).filter(Boolean);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
   it('mixes question types rather than using a single format', () => {
-    const types = new Set(assessment!.questions.map((q) => q.type));
-    expect(types.size).toBeGreaterThanOrEqual(3);
+    for (const { lesson } of allLessons) {
+      const types = new Set(lesson.assessment!.questions.map((q) => q.type));
+      expect(types.size, `lesson ${lesson.id}`).toBeGreaterThanOrEqual(3);
+    }
   });
 
   it('tags every question with the skill it assesses', () => {
-    for (const question of assessment!.questions) {
+    for (const question of allQuestions()) {
       expect(question.skill, `question ${question.id} has no skill tag`).toBeTruthy();
     }
   });
 
   it('carries a teacher-only explanation for every question', () => {
-    for (const question of assessment!.questions) {
+    for (const question of allQuestions()) {
       expect(question.explanation, `question ${question.id} has no answer key`).toBeDefined();
       expect(question.explanation!.length).toBeGreaterThan(0);
     }
   });
 
   it('isolates all notation in the questions students read', () => {
-    for (const question of assessment!.questions) {
+    for (const question of allQuestions()) {
       for (const text of collectStrings(question.prompt)) {
         expect(hasUnisolatedNotation(text), `unisolated notation: ${text}`).toBe(false);
       }
@@ -478,38 +594,55 @@ describe('final assessment', () => {
 });
 
 describe('teacher resources', () => {
-  const resources = allLessons[0]!.lesson.teacherResources;
+  const lesson01Resources = allLessons[0]!.lesson.teacherResources;
+  const lesson02Resources = allLessons[1]!.lesson.teacherResources;
 
-  it('exists and solves every printed question of the lesson', () => {
-    expect(resources).toBeDefined();
+  it('solves every printed question of Lesson 1', () => {
+    expect(lesson01Resources).toBeDefined();
     // 4 + 2 + 6 + 1 + 1 + 2 = 16 printed prompts across pages 5–7.
-    expect(resources!.textbookSolutions.length).toBe(16);
+    expect(lesson01Resources!.textbookSolutions.length).toBe(16);
+  });
+
+  it('solves every printed question of Lesson 2', () => {
+    expect(lesson02Resources).toBeDefined();
+    // 3 + 2 + 2 + 3 + 3 + 4 = 17 printed prompts across pages 8–10.
+    expect(lesson02Resources!.textbookSolutions.length).toBe(17);
   });
 
   it('reproduces each printed question verbatim inside its solution', () => {
-    const printed = new Set<string>();
-    for (const step of allLessons[0]!.lesson.steps) {
-      if (step.origin !== 'source') continue;
-      for (const block of step.blocks) {
-        if (block.type === 'questionGroup') {
-          for (const item of block.items) printed.add(item.text);
+    for (const { lesson } of allLessons) {
+      const printed = new Set<string>();
+      for (const step of lesson.steps) {
+        if (step.origin !== 'source') continue;
+        for (const block of step.blocks) {
+          if (block.type === 'questionGroup') {
+            for (const item of block.items) printed.add(item.text);
+          }
         }
       }
-    }
-    const solved = new Set(resources!.textbookSolutions.map((s) => s.question));
-    for (const question of printed) {
-      expect(solved, `no teacher solution for: ${question}`).toContain(question);
+      const solved = new Set(lesson.teacherResources!.textbookSolutions.map((s) => s.question));
+      for (const question of printed) {
+        expect(solved, `no teacher solution for: ${question}`).toContain(question);
+      }
     }
   });
 
-  it('flags every solution that leans on an unreadable figure', () => {
-    const flagged = resources!.textbookSolutions.filter((s) => s.limitation);
-    // Every solution in this lesson touches a `reference` figure in some way.
-    expect(flagged.length).toBe(resources!.textbookSolutions.length);
+  it('flags every Lesson 1 solution, all of which lean on an unreadable figure', () => {
+    const flagged = lesson01Resources!.textbookSolutions.filter((s) => s.limitation);
+    expect(flagged.length).toBe(lesson01Resources!.textbookSolutions.length);
+  });
+
+  it('flags exactly the Lesson 2 solutions that lean on an unreadable figure', () => {
+    // Lesson 2's grids were reproduced from verified coordinates, so only the
+    // two blank-sheet activity questions still depend on a `reference` figure.
+    const flagged = lesson02Resources!.textbookSolutions.filter((s) => s.limitation);
+    expect(flagged.map((s) => s.id)).toEqual(['sol-p8-a2-q1', 'sol-p8-a2-q2']);
   });
 
   it('never presents the derived solutions as printed textbook answers', () => {
-    const notes = collectStrings(resources!.notes).join(' ');
-    expect(notes).toContain('لا تتضمّن أي إجابات مطبوعة');
+    for (const { lesson } of allLessons) {
+      const notes = collectStrings(lesson.teacherResources!.notes).join(' ');
+      expect(notes, `lesson ${lesson.id}`).toContain('لا تتضمّن أي إجابات مطبوعة');
+    }
   });
 });

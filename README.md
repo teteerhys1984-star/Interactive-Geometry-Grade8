@@ -3,8 +3,10 @@
 منصة تعليمية تفاعلية لمقرر الهندسة للصف الثامن — Arabic-first, right-to-left,
 static, and deployed to GitHub Pages.
 
-> **Status: Unit 1 · Lesson 1 implemented (expanded: teaching steps, final assessment, teacher resources)** — «الانسحاب وخواصه», textbook pages 5–7.
-> All content is reproduced verbatim from the supplied scans. Lessons 2–4 and
+> **Status: Unit 1 · Lessons 1–2 implemented** (teaching steps, final
+> assessment and teacher resources for each) — «الانسحاب وخواصه» (pages 5–7)
+> and «صورة نقطة وفق انسحاب» (pages 8–10).
+> All content is reproduced verbatim from the supplied scans. Lessons 3–4 and
 > Units 2–5 are not yet authored. No content is invented.
 
 ## Stack
@@ -86,6 +88,29 @@ worked `explanation` renders **exclusively** in the Teacher Area.
 teacher-derived solutions to the printed questions (labelled «حلول المعلم»,
 never as the book's answers, each flagging any dependency on an unreadable
 figure) plus the full assessment answer key.
+
+## Lesson 2 content model
+
+Lesson 2 («صورة نقطة وفق انسحاب», pages 8–10) has **18 steps**: 11 verbatim
+textbook steps and 7 platform-written teaching steps, interleaved and badged
+«شرح المنصّة» exactly as in Lesson 1. It ends with a **12-question** final
+assessment and ships 17 teacher-derived solutions to the printed questions.
+
+Its figures split into two regimes, recorded in
+[`docs/LESSON-02-FIGURES.md`](docs/LESSON-02-FIGURES.md):
+
+- the two **squared-paper** figures (pages 8 and 10) are reproduced exactly,
+  because every point sits on an integer lattice node that was read from the
+  scan and then verified arithmetically (collinearity, shared rows/columns, and
+  every constructed image landing on a node);
+- the five **blank-sheet** figures stay faithful `reference` placeholders, with
+  mathematically exact platform-authored analogues offered alongside them.
+
+Lesson 2 also introduces three interactive renderers — a squared-paper figure,
+a step-by-step compass construction, and a draggable point whose image is
+computed live — plus a per-lesson colour identity
+(`src/lib/lessonTheme.ts` + `data-lesson-theme` in `src/styles/tokens.css`).
+Lesson 1 keeps the default palette and is untouched.
 
 ## Source fidelity
 

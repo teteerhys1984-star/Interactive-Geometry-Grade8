@@ -16,6 +16,11 @@ function renderAt(route: string) {
 
 const lesson = allLessons[0]!.lesson;
 const unit = allLessons[0]!.unit;
+const lastLesson = allLessons[allLessons.length - 1]!.lesson;
+/** Every teacher solution across the authored lessons — the teacher page lists them all. */
+const allSolutions = allLessons.flatMap(
+  ({ lesson: item }) => item.teacherResources?.textbookSolutions ?? [],
+);
 
 describe('routing', () => {
   it('renders the home page with the course title', () => {
@@ -62,8 +67,8 @@ describe('routing', () => {
     expect(screen.getByText('لم نعثر على هذه الصفحة')).toBeInTheDocument();
   });
 
-  it('shows not-found for a lesson that has not been authored (Lesson 2)', () => {
-    renderAt('/lesson/lesson-02-image-of-a-point');
+  it('shows not-found for a lesson that has not been authored (Lesson 3)', () => {
+    renderAt('/lesson/lesson-03-image-of-a-shape');
     expect(screen.getByText('لم نعثر على هذه الصفحة')).toBeInTheDocument();
   });
 
@@ -137,7 +142,7 @@ describe('progress and completion', () => {
   });
 
   it('tells the learner this is the last available lesson', () => {
-    renderAt(`/lesson/${lesson.id}/done`);
+    renderAt(`/lesson/${lastLesson.id}/done`);
     expect(screen.getByText(/هذا آخر درس متاح حالياً/, { exact: false })).toBeInTheDocument();
   });
 });
@@ -309,7 +314,7 @@ describe('final assessment', () => {
   });
 });
 
-describe('teacher area — Lesson 1 resources', () => {
+describe('teacher area — lesson resources', () => {
   async function unlock() {
     const user = userEvent.setup();
     const view = renderAt('/teacher');
@@ -327,27 +332,29 @@ describe('teacher area — Lesson 1 resources', () => {
     expect(container.textContent).not.toContain('حلول المعلم لأسئلة الكتاب');
   });
 
-  it('accepts somer173 and renders the Lesson 1 dashboard', async () => {
+  it('accepts somer173 and renders a dashboard for every authored lesson', async () => {
     await unlock();
-    expect(screen.getByText(`موارد المعلّم — ${lesson.title}`)).toBeInTheDocument();
-    expect(screen.getByText('تغطية المصدر')).toBeInTheDocument();
-    expect(screen.getByText('حلول المعلم لأسئلة الكتاب')).toBeInTheDocument();
-    expect(screen.getByText('مفتاح إجابات الاختبار النهائي')).toBeInTheDocument();
-    expect(screen.getByText('الأشكال التي تتطلّب الرجوع إلى الكتاب')).toBeInTheDocument();
-    expect(screen.getByText('ملاحظات تربوية')).toBeInTheDocument();
+    for (const { lesson: item } of allLessons) {
+      expect(screen.getByText(`موارد المعلّم — ${item.title}`)).toBeInTheDocument();
+    }
+    expect(screen.getAllByText('تغطية المصدر').length).toBe(allLessons.length);
+    expect(screen.getAllByText('حلول المعلم لأسئلة الكتاب').length).toBe(allLessons.length);
+    expect(screen.getAllByText('مفتاح إجابات الاختبار النهائي').length).toBe(allLessons.length);
+    expect(screen.getAllByText('الأشكال التي تتطلّب الرجوع إلى الكتاب').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('ملاحظات تربوية').length).toBe(allLessons.length);
   });
 
   it('labels the solutions as teacher-derived, never as printed answers', async () => {
     const { container } = await unlock();
     expect(screen.getAllByText('حلول المعلم (مستنتجة من المنصّة)').length).toBe(
-      lesson.teacherResources!.textbookSolutions.length,
+      allSolutions.length,
     );
     expect(container.textContent).toContain('لا تتضمّن إجابات مطبوعة');
   });
 
   it('flags every solution that depends on an unreadable figure', async () => {
     await unlock();
-    const flagged = lesson.teacherResources!.textbookSolutions.filter((s) => s.limitation);
+    const flagged = allSolutions.filter((s) => s.limitation);
     expect(screen.getAllByText('حدود هذا الحل').length).toBe(flagged.length);
   });
 
