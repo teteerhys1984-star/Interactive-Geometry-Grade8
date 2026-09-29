@@ -1,0 +1,231 @@
+.toolbar {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.backLink {
+  display: inline-block;
+  text-decoration: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+}
+
+.backLink:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.secondary {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.secondary:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.muted {
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+}
+
+/* ------------------------------------------------------- source coverage --- */
+.coverage {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-4) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+}
+
+.coverage li {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: var(--space-1) var(--space-3);
+  margin: 0;
+}
+
+.coverage strong {
+  color: var(--color-text);
+  font-variant-numeric: lining-nums;
+}
+
+/* ------------------------------------------------------------------ tabs --- */
+.tablist {
+  display: flex;
+  gap: var(--space-1);
+  margin-block-start: var(--space-5);
+  border-block-end: 2px solid var(--color-border);
+  /* Narrow screens scroll the strip sideways instead of wrapping awkwardly. */
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.tab {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  border-block-end: 3px solid transparent;
+  /* Pulls the active underline over the tablist's own border. */
+  margin-block-end: -2px;
+}
+
+.tab:hover {
+  color: var(--color-primary);
+  background: var(--color-surface-alt);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}
+
+.tabActive {
+  color: var(--color-primary);
+  border-block-end-color: var(--color-primary);
+}
+
+.panel {
+  padding-block: var(--space-5);
+}
+
+/* ------------------------------------------------- figure report entries --- */
+.referenceList {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-3) 0 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.referenceItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-reference-border);
+  background: var(--color-reference-bg);
+  margin: 0;
+}
+
+.referencePage {
+  direction: ltr;
+  unicode-bidi: isolate;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  min-inline-size: 2.2rem;
+  block-size: 1.8rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-reference-border);
+  color: var(--color-reference-accent);
+  font-weight: 700;
+  font-size: var(--font-sm);
+  font-variant-numeric: lining-nums;
+}
+
+/* ------------------------------------------ solutions & answer key lists --- */
+.solutionList {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-4) 0 0;
+  display: grid;
+  gap: var(--space-2);
+  counter-reset: solution;
+}
+
+.solution {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.solution[open] {
+  border-color: var(--color-primary);
+}
+
+.solutionSummary {
+  cursor: pointer;
+  padding: var(--space-3) var(--space-4);
+  display: grid;
+  gap: 2px;
+}
+
+.solutionSummary:hover {
+  background: var(--color-surface-alt);
+}
+
+.solutionRef {
+  display: block;
+  font-size: var(--font-xs);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.solutionQuestion {
+  font-size: var(--font-sm);
+  color: var(--color-text);
+}
+.solutionQuestion p {
+  margin-block-end: 0;
+}
+
+.solutionBody {
+  padding: var(--space-4);
+  border-block-start: 1px solid var(--color-border);
+  background: var(--color-teaching-bg);
+}
+
+.solutionBadge {
+  display: inline-block;
+  margin: 0 0 var(--space-3);
+  padding: 2px var(--space-3);
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: var(--font-xs);
+  font-weight: 700;
+}
+
+.answerLine {
+  background: var(--color-surface);
+  border-inline-start: 4px solid var(--color-success);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+}
+
+.keyChoices {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+.keyChoices p {
+  margin-block-end: 0;
+}
+
+.keyChoiceCorrect {
+  color: var(--color-text);
+  font-weight: 700;
+}

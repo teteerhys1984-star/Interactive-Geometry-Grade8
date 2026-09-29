@@ -6,4 +6,5 @@ export { LessonStepPage } from './LessonStepPage';
 export { CompletionPage } from './CompletionPage';
 export { AssessmentPage } from './AssessmentPage';
 export { TeacherPage } from './TeacherPage';
+export { TeacherLessonPage } from './TeacherLessonPage';
 export { NotFoundPage } from './NotFoundPage';

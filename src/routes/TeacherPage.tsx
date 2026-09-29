@@ -1,95 +1,37 @@
-import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { PageShell } from '@/components/layout';
 import { Callout, EmptyState } from '@/components/ui';
-import { Blocks } from '@/components/content';
-import { RichText } from '@/components/math';
-import { allLessons, isCourseEmpty, referenceFigures, subject } from '@/content/registry';
+import { TeacherGate } from '@/components/teacher';
+import { isCourseEmpty, referenceFigures, subject } from '@/content/registry';
 import type { Lesson } from '@/content/schema';
 import { routes } from '@/lib/routes';
-import { isTeacherUnlocked, lockTeacherArea, unlockTeacherArea } from '@/lib/teacherAccess';
 import { loadProgress, resetProgress } from '@/lib/progress';
 import styles from './TeacherPage.module.css';
 
 /**
- * Teacher Area.
+ * ============================================================================
+ *  TEACHER AREA — landing dashboard (lesson picker).
+ * ============================================================================
  *
- * Gated by a shared client-side passphrase. See `src/lib/teacherAccess.ts` —
- * this is a convenience speed bump, NOT security. A static GitHub Pages site
- * cannot keep secrets.
+ *  Past the passphrase gate the teacher no longer gets one giant page mixing
+ *  every lesson's material. They pick a LESSON here; that lesson's teacher
+ *  material (solutions, answer key, figure report, notes) lives one level
+ *  down at /teacher/:lessonId (see TeacherLessonPage).
+ *
+ *  Every card below is derived from the content registry — authoring a new
+ *  lesson in src/content/units adds its card automatically, with no edits
+ *  here. Nothing teacher-only renders before the gate unlocks.
+ * ============================================================================
  */
 export function TeacherPage() {
-  const [unlocked, setUnlocked] = useState(isTeacherUnlocked);
-
   return (
     <PageShell
       title="منطقة المعلّم"
       crumbs={[{ label: 'الرئيسية', to: routes.home() }, { label: 'منطقة المعلّم' }]}
-      lead="لوحة عمل للمعلّم: بنية المقرر، تغطية المصدر، حلول أسئلة الكتاب، مفتاح إجابات الاختبار، وتقرير الأشكال."
+      lead="لوحة عمل للمعلّم: اختر الدرس للوصول إلى حلول أسئلة الكتاب، مفتاح الاختبار النهائي، تقرير الأشكال، والملاحظات التربوية."
     >
-      {unlocked ? (
-        <TeacherDashboard
-          onLock={() => {
-            lockTeacherArea();
-            setUnlocked(false);
-          }}
-        />
-      ) : (
-        <PassphraseGate onUnlock={() => setUnlocked(true)} />
-      )}
+      <TeacherGate>{({ lock }) => <TeacherDashboard onLock={lock} />}</TeacherGate>
     </PageShell>
-  );
-}
-
-function PassphraseGate({ onUnlock }: { onUnlock: () => void }) {
-  const [value, setValue] = useState('');
-  const [error, setError] = useState(false);
-
-  function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    if (unlockTeacherArea(value)) {
-      setError(false);
-      onUnlock();
-    } else {
-      setError(true);
-    }
-  }
-
-  return (
-    <div className={styles.gate}>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <label htmlFor="teacher-pass" className={styles.label}>
-          كلمة المرور المشتركة
-        </label>
-        <input
-          id="teacher-pass"
-          type="password"
-          dir="ltr"
-          autoComplete="off"
-          className={styles.input}
-          value={value}
-          onChange={(event) => setValue(event.target.value)}
-        />
-        {error ? (
-          <p role="alert" className={styles.error}>
-            كلمة المرور غير صحيحة.
-          </p>
-        ) : null}
-        <button type="submit" className={styles.submit}>
-          دخول
-        </button>
-      </form>
-
-      <Callout variant="warning" title="تنبيه أمني مهم">
-        <p>
-          هذا الموقع ثابت (Static) ويُستضاف على GitHub Pages، ولا يوجد فيه خادم أو قاعدة بيانات أو
-          نظام مصادقة. كلمة المرور موجودة داخل ملفات الموقع ويمكن لأي شخص قراءتها.
-        </p>
-        <p>
-          الغرض منها منع الدخول العرضي للطلاب فقط، وليست حماية حقيقية. لا تضع خلفها أي بيانات سرّية
-          أو درجات أو معلومات شخصية.
-        </p>
-      </Callout>
-    </div>
   );
 }
 
@@ -116,95 +58,45 @@ function TeacherDashboard({ onLock }: { onLock: () => void }) {
         </button>
       </div>
 
-      <section>
-        <h2>ملخّص المقرر</h2>
-        <ul>
-          <li>
-            عدد الوحدات:{' '}
-            <span className="numeric" dir="ltr">
-              {subject.units.length}
-            </span>
-          </li>
-          <li>
-            عدد الدروس:{' '}
-            <span className="numeric" dir="ltr">
-              {lessonCount}
-            </span>
-          </li>
-          <li>
-            الدروس المكتملة على هذا الجهاز:{' '}
-            <span className="numeric" dir="ltr">
-              {completedCount}
-            </span>
-          </li>
-        </ul>
-      </section>
+      <ul className={styles.stats} aria-label="ملخّص المقرر">
+        <li>
+          الوحدات:{' '}
+          <strong className="numeric" dir="ltr">
+            {subject.units.length}
+          </strong>
+        </li>
+        <li>
+          الدروس:{' '}
+          <strong className="numeric" dir="ltr">
+            {lessonCount}
+          </strong>
+        </li>
+        <li>
+          الدروس المكتملة على هذا الجهاز:{' '}
+          <strong className="numeric" dir="ltr">
+            {completedCount}
+          </strong>
+        </li>
+      </ul>
 
-      <section>
-        <h2>بنية المقرر</h2>
-        {isCourseEmpty ? (
-          <EmptyState
-            title="لا توجد وحدات بعد"
-            description="ستظهر بنية الوحدات والدروس هنا فور إضافة محتوى الكتاب المدرسي."
-          />
-        ) : (
-          <ol>
-            {subject.units.map((unit) => (
-              <li key={unit.id}>
-                {unit.title}
-                <ol>
-                  {unit.lessons.map((lesson) => (
-                    <li key={lesson.id}>
-                      {lesson.title}{' '}
-                      <span className={styles.source}>
-                        (المصدر: {lesson.source.book} — ص{' '}
-                        <span className="numeric" dir="ltr">
-                          {String(lesson.source.page)}
-                        </span>
-                        )
-                      </span>
-                    </li>
-                  ))}
-                </ol>
-              </li>
-            ))}
-          </ol>
-        )}
-      </section>
-
-      <section>
-        <h2>الأشكال التي تتطلّب الرجوع إلى الكتاب</h2>
-        {referenceFigures.length === 0 ? (
-          <p>لا توجد أشكال من هذا النوع.</p>
-        ) : (
-          <>
-            <p className={styles.source}>
-              هذه الأشكال لم يكن من الممكن إعادة إنتاجها بأمانة، فعُرضت كإحالة إلى الكتاب. هذا خيار
-              تحريري مقصود وليس عملاً ناقصاً.
-            </p>
-            <ul className={styles.referenceList}>
-              {referenceFigures.map(({ lesson, diagram }) => (
-                <li key={diagram.id} className={styles.referenceItem}>
-                  <span className={styles.referencePage} dir="ltr">
-                    {String(diagram.source.page)}
-                  </span>
-                  <span>
-                    <strong>{lesson.title}</strong>
-                    {diagram.source.locator ? ` — ${diagram.source.locator}` : null}
-                    {diagram.reason ? (
-                      <span className={styles.source}> · {diagram.reason}</span>
-                    ) : null}
-                  </span>
-                </li>
+      <h2 className={styles.pickerTitle}>اختر الدرس</h2>
+      {isCourseEmpty ? (
+        <EmptyState
+          title="لا توجد وحدات بعد"
+          description="ستظهر بطاقات الدروس هنا فور إضافة محتوى الكتاب المدرسي."
+        />
+      ) : (
+        subject.units.map((unit) => (
+          <section key={unit.id} className={styles.unitGroup} aria-label={unit.title}>
+            <h3 className={styles.unitTitle}>{unit.title}</h3>
+            <ul className={styles.lessonGrid}>
+              {unit.lessons.map((lesson) => (
+                <LessonCard key={lesson.id} lesson={lesson} />
               ))}
             </ul>
-          </>
-        )}
-      </section>
-
-      {allLessons.map(({ lesson }) => (
-        <LessonTeacherResources key={lesson.id} lesson={lesson} />
-      ))}
+          </section>
+        ))
+      )}
 
       <Callout variant="note" title="ملاحظة">
         <p>
@@ -217,191 +109,53 @@ function TeacherDashboard({ onLock }: { onLock: () => void }) {
 }
 
 /**
- * ============================================================================
- *  LESSON TEACHER RESOURCES
- * ============================================================================
- *
- *  Rendered ONLY inside the unlocked Teacher Area.
- *
- *  Two distinct bodies of material, deliberately kept apart:
- *    A. «حلول المعلم» — solutions DERIVED by this platform from the printed
- *       questions. The textbook prints no answers, so these are never labelled
- *       as the book's answers, and each one carries its `limitation` note when
- *       it depends on a part of a figure that could not be read.
- *    B. The answer key for the platform's own 10-question assessment, with the
- *       correct answer, the justification, and the common wrong reasoning.
- *
- *  Students never reach this component: it renders behind the passphrase gate.
- * ============================================================================
+ * One lesson in the picker. The counts are read straight from the lesson's
+ * registry entry, so they can never drift out of sync with the content.
  */
-function LessonTeacherResources({ lesson }: { lesson: Lesson }) {
-  const resources = lesson.teacherResources;
-  const assessment = lesson.assessment;
-  if (!resources && !assessment) return null;
-
-  const sourceSteps = lesson.steps.filter((step) => step.origin === 'source');
-  const authoredSteps = lesson.steps.filter((step) => step.origin === 'authored');
-  const printedQuestionCount = sourceSteps.reduce(
-    (total, step) =>
-      total +
-      step.blocks.reduce(
-        (inner, block) => inner + (block.type === 'questionGroup' ? block.items.length : 0),
-        0,
-      ),
-    0,
-  );
+function LessonCard({ lesson }: { lesson: Lesson }) {
+  const solutionsCount = lesson.teacherResources?.textbookSolutions.length ?? 0;
+  const assessmentCount = lesson.assessment?.questions.length ?? 0;
+  const figuresCount = referenceFigures.filter((entry) => entry.lesson.id === lesson.id).length;
+  const notesCount = lesson.teacherResources?.notes.length ?? 0;
 
   return (
-    <section className={styles.resources}>
-      <h2>موارد المعلّم — {lesson.title}</h2>
-
-      {/* ------------------------------------------------- source coverage --- */}
-      <h3>تغطية المصدر</h3>
-      <ul className={styles.coverage}>
+    <li className={styles.card}>
+      <h4 className={styles.cardTitle}>{lesson.title}</h4>
+      <p className={styles.cardSource}>
+        المصدر: {lesson.source.book ? `${lesson.source.book} — ` : ''}ص{' '}
+        <span className="numeric" dir="ltr">
+          {String(lesson.source.page)}
+        </span>
+      </p>
+      <ul className={styles.cardStats}>
         <li>
-          صفحات الكتاب المُغطّاة:{' '}
-          <strong className="numeric" dir="ltr">
-            {String(lesson.source.page)}
-          </strong>
+          حلول الكتاب:{' '}
+          <span className="numeric" dir="ltr">
+            {solutionsCount}
+          </span>
         </li>
         <li>
-          خطوات منقولة حرفياً من الكتاب:{' '}
-          <strong className="numeric" dir="ltr">
-            {sourceSteps.length}
-          </strong>
+          أسئلة الاختبار:{' '}
+          <span className="numeric" dir="ltr">
+            {assessmentCount}
+          </span>
         </li>
         <li>
-          خطوات شرح من إعداد المنصّة:{' '}
-          <strong className="numeric" dir="ltr">
-            {authoredSteps.length}
-          </strong>
+          أشكال مرجعية:{' '}
+          <span className="numeric" dir="ltr">
+            {figuresCount}
+          </span>
         </li>
         <li>
-          أسئلة الكتاب المطبوعة:{' '}
-          <strong className="numeric" dir="ltr">
-            {printedQuestionCount}
-          </strong>
-        </li>
-        <li>
-          أسئلة الاختبار من إعداد المنصّة:{' '}
-          <strong className="numeric" dir="ltr">
-            {assessment ? assessment.questions.length : 0}
-          </strong>
+          ملاحظات تربوية:{' '}
+          <span className="numeric" dir="ltr">
+            {notesCount}
+          </span>
         </li>
       </ul>
-
-      {/* ------------------------------------------------ teacher solutions --- */}
-      {resources && resources.textbookSolutions.length > 0 ? (
-        <>
-          <h3>حلول المعلم لأسئلة الكتاب</h3>
-          <Callout variant="warning" title="حلول المعلم — ليست إجابات الكتاب">
-            <p>
-              الصفحات المعنيّة من الكتاب لا تتضمّن إجابات مطبوعة. الحلول التالية مستنتجة من قِبل
-              المنصّة اعتماداً على نصّ السؤال وعلى خواص الانسحاب، وهي للاسترشاد فقط.
-            </p>
-          </Callout>
-
-          <ol className={styles.solutionList}>
-            {resources.textbookSolutions.map((solution) => (
-              <li key={solution.id}>
-                <details className={styles.solution}>
-                  <summary className={styles.solutionSummary}>
-                    <span className={styles.solutionRef}>{solution.reference}</span>
-                    <span className={styles.solutionQuestion}>
-                      <RichText text={solution.question} />
-                    </span>
-                  </summary>
-                  <div className={styles.solutionBody}>
-                    <p className={styles.solutionBadge}>حلول المعلم (مستنتجة من المنصّة)</p>
-                    <Blocks blocks={solution.blocks} />
-                    {solution.limitation ? (
-                      <Callout variant="warning" title="حدود هذا الحل">
-                        <p>
-                          <RichText text={solution.limitation} />
-                        </p>
-                      </Callout>
-                    ) : null}
-                  </div>
-                </details>
-              </li>
-            ))}
-          </ol>
-        </>
-      ) : null}
-
-      {/* ----------------------------------------------------- answer key --- */}
-      {assessment ? (
-        <>
-          <h3>مفتاح إجابات الاختبار النهائي</h3>
-          <Callout variant="warning" title="لا تُعرض هذه الإجابات للتلاميذ">
-            <p>
-              مفتاح الإجابات التالي خاص بالمعلّم. شاشة نتيجة التلميذ تعرض الدرجة وعلامة صح أو خطأ
-              لكل سؤال فقط، ولا تعرض أي تعليل.
-            </p>
-          </Callout>
-
-          <ol className={styles.solutionList}>
-            {assessment.questions.map((question, index) => (
-              <li key={question.id}>
-                <details className={styles.solution}>
-                  <summary className={styles.solutionSummary}>
-                    <span className={styles.solutionRef}>
-                      السؤال <span dir="ltr">{index + 1}</span>
-                      {question.skill ? ` — ${question.skill}` : ''}
-                    </span>
-                    <span className={styles.solutionQuestion}>
-                      <Blocks blocks={question.prompt} />
-                    </span>
-                  </summary>
-                  <div className={styles.solutionBody}>
-                    <p className={styles.answerLine}>
-                      الإجابة الصحيحة:{' '}
-                      <strong>
-                        {question.type === 'true-false'
-                          ? question.answer
-                            ? 'صح'
-                            : 'خطأ'
-                          : question.type === 'numeric'
-                            ? `${question.answer}${question.unit ? ` ${question.unit}` : ''}`
-                            : `الخيار رقم ${
-                                question.choices.findIndex(
-                                  (choice) => choice.id === question.correctChoiceId,
-                                ) + 1
-                              }`}
-                      </strong>
-                    </p>
-                    {question.type === 'multiple-choice' ? (
-                      <ol className={styles.keyChoices}>
-                        {question.choices.map((choice) => (
-                          <li
-                            key={choice.id}
-                            className={
-                              choice.id === question.correctChoiceId
-                                ? styles.keyChoiceCorrect
-                                : undefined
-                            }
-                          >
-                            <Blocks blocks={choice.blocks} />
-                          </li>
-                        ))}
-                      </ol>
-                    ) : null}
-                    {question.explanation ? <Blocks blocks={question.explanation} /> : null}
-                  </div>
-                </details>
-              </li>
-            ))}
-          </ol>
-        </>
-      ) : null}
-
-      {/* -------------------------------------------------- teacher notes --- */}
-      {resources && resources.notes.length > 0 ? (
-        <>
-          <h3>ملاحظات تربوية</h3>
-          <Blocks blocks={resources.notes} />
-        </>
-      ) : null}
-    </section>
+      <Link to={routes.teacherLesson(lesson.id)} className={styles.openButton}>
+        فتح منطقة المعلم
+      </Link>
+    </li>
   );
 }

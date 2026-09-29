@@ -15,6 +15,8 @@ export const routes = {
   lessonCompletion: (lessonId: string) => `/lesson/${lessonId}/done`,
   assessment: (scopeId: string) => `/assessment/${scopeId}`,
   teacher: () => '/teacher',
+  /** Per-lesson Teacher Area — solutions, answer key, figure report, notes. */
+  teacherLesson: (lessonId: string) => `/teacher/${lessonId}`,
 } as const;
 
 /** Route path patterns used by the router definition. */
@@ -27,5 +29,6 @@ export const routePatterns = {
   lessonCompletion: '/lesson/:lessonId/done',
   assessment: '/assessment/:scopeId',
   teacher: '/teacher',
+  teacherLesson: '/teacher/:lessonId',
   notFound: '*',
 } as const;
