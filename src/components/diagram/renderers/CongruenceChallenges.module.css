@@ -1,0 +1,246 @@
+.wrap {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-4);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.card {
+  overflow: hidden;
+  margin: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-teaching-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.header {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-4);
+}
+
+.number {
+  display: grid;
+  flex: none;
+  inline-size: 2rem;
+  block-size: 2rem;
+  place-items: center;
+  color: #fff;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  border-radius: 50%;
+  unicode-bidi: isolate;
+}
+
+.title {
+  margin: 0 0 var(--space-1);
+}
+
+.prompt {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.diagram {
+  padding: var(--space-2) var(--space-4);
+  background: linear-gradient(180deg, var(--color-surface-alt), var(--color-surface));
+  border-block: 1px solid var(--color-border);
+}
+
+.diagram svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 13rem;
+}
+
+.plainTriangle {
+  fill: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  stroke: var(--color-text-muted);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.pairTriangle {
+  fill: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  stroke: var(--color-text-muted);
+  stroke-width: 1.6;
+  stroke-dasharray: 5 3;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.markedSide {
+  stroke: var(--color-primary);
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.markedSideAlt {
+  stroke: var(--color-accent);
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.angleGood {
+  fill: color-mix(in srgb, var(--color-success) 35%, transparent);
+  stroke: var(--color-success);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.angleWrong {
+  fill: color-mix(in srgb, var(--color-danger) 30%, transparent);
+  stroke: var(--color-danger);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.question {
+  font-family: 'KaTeX_Math', 'Times New Roman', serif;
+  font-size: 0.7px;
+  font-weight: 700;
+  fill: var(--color-danger);
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.options {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  margin: 0;
+  border: 0;
+}
+
+.option,
+.optionChecked {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  min-block-size: 2.75rem;
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition:
+    transform 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease;
+}
+
+.option {
+  background: var(--color-surface);
+}
+
+.optionChecked {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.option input,
+.optionChecked input {
+  accent-color: var(--color-primary);
+}
+
+.feedbackCorrect,
+.feedbackWrong {
+  padding: var(--space-3) var(--space-4);
+  border-block-start: 1px solid var(--color-border);
+}
+
+.feedbackCorrect {
+  color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 8%, var(--color-surface));
+}
+
+.feedbackWrong {
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 7%, var(--color-surface));
+}
+
+.submitRow,
+.result {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  background: var(--color-teaching-bg);
+  border: 1px solid var(--color-teaching-border);
+  border-radius: var(--radius-lg);
+}
+
+.result p {
+  margin: 0;
+  font-size: var(--font-lg);
+  font-weight: 800;
+}
+
+.submit,
+.secondary {
+  min-block-size: 2.75rem;
+  padding: var(--space-2) var(--space-5);
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.submit {
+  color: #fff;
+  background: var(--color-primary);
+  border: 1px solid var(--color-primary);
+}
+
+.secondary {
+  color: var(--color-primary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary);
+}
+
+.submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+@media (max-width: 560px) {
+  .header {
+    padding: var(--space-3);
+  }
+
+  .options {
+    padding: var(--space-3);
+  }
+
+  .submitRow,
+  .result {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .submit,
+  .secondary {
+    inline-size: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .option,
+  .optionChecked {
+    transition: none;
+  }
+}

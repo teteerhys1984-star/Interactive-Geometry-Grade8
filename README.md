@@ -3,11 +3,12 @@
 منصة تعليمية تفاعلية لمقرر الهندسة للصف الثامن — Arabic-first, right-to-left,
 static, and deployed to GitHub Pages.
 
-> **Status: Unit 1 · Lessons 1–3 implemented** (teaching steps, final
+> **Status: Unit 1 · Lessons 1–4 implemented** (teaching steps, final
 > assessment and teacher resources for each) — «الانسحاب وخواصه» (pages 5–7),
-> «صورة نقطة وفق انسحاب» (pages 8–10), and «صورة شكل وفق انسحاب» (pages 11–16).
-> All source content is preserved from the supplied scans. Lesson 4 and Units
-> 2–5 are not yet authored. No textbook content is invented.
+> «صورة نقطة وفق انسحاب» (pages 8–10), «صورة شكل وفق انسحاب» (pages 11–16),
+> and «تطابق المثلثات» (pages 17–19). All source content is preserved from the
+> supplied scans. The unit's exercise section (pages 20–29) and Units 2–5 are
+> not yet authored. No textbook content is invented.
 
 ## Stack
 

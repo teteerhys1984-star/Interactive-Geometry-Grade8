@@ -111,20 +111,21 @@ describe('course shell', () => {
   });
 });
 
-describe('implementation boundary — Lessons 1, 2 and 3 only', () => {
+describe('implementation boundary — Lessons 1, 2, 3 and 4 only', () => {
   it('registers exactly one unit', () => {
     expect(subject.units).toHaveLength(1);
     expect(subject.units[0]?.id).toBe('unit-01-parallelograms-and-translation');
   });
 
-  it('registers exactly three lessons (Lesson 4 not yet authored)', () => {
-    expect(allLessons).toHaveLength(3);
+  it('registers exactly four lessons (unit exercises and Units 2–5 not yet authored)', () => {
+    expect(allLessons).toHaveLength(4);
     expect(allLessons[0]?.lesson.id).toBe('lesson-01-translation-and-properties');
     expect(allLessons[1]?.lesson.id).toBe('lesson-02-image-of-a-point');
     expect(allLessons[2]?.lesson.id).toBe('lesson-03-image-of-a-shape');
+    expect(allLessons[3]?.lesson.id).toBe('lesson-04-triangle-congruence');
   });
 
-  it('draws only on textbook pages 5–16', () => {
+  it('draws only on textbook pages 5–19', () => {
     const pages = new Set<string>();
     for (const { lesson } of allLessons) {
       for (const step of lesson.steps) {
@@ -136,7 +137,25 @@ describe('implementation boundary — Lessons 1, 2 and 3 only', () => {
     }
     for (const page of pages) {
       expect(
-        ['5', '6', '7', '6–7', '8', '9', '10', '11', '12', '13', '14', '15', '16'],
+        [
+          '5',
+          '6',
+          '7',
+          '6–7',
+          '8',
+          '9',
+          '10',
+          '11',
+          '12',
+          '13',
+          '14',
+          '15',
+          '16',
+          '17',
+          '18',
+          '19',
+          '17–18',
+        ],
         `unexpected source page: ${page}`,
       ).toContain(page);
     }
@@ -455,6 +474,43 @@ const LESSON_3_VERBATIM_CORPUS = [
   'أي الأشكال الثلاثة هو رسمه؟',
 ];
 
+/** The ten source steps of Lesson 4, in printed order (pages 17–19). */
+const LESSON_4_SOURCE_STEP_IDS = [
+  'step-01-activity-congruence-from-translation',
+  'step-02-definition',
+  'step-03-case-one-two-sides-included-angle',
+  'step-04-case-two-side-adjacent-angles',
+  'step-05-case-three-three-sides',
+  'step-06-check-understanding',
+  'step-07-practice-one-paper-kite',
+  'step-08-practice-two-justify-congruence',
+  'step-09-practice-three-isosceles',
+  'step-10-right-triangles-congruence',
+];
+
+/** Sentences spanning all three supplied pages; any omission or rewrite fails. */
+const LESSON_4_VERBATIM_CORPUS = [
+  'وفق الانسحاب، أي شكل وصورته قابلان للانطباق، فصورة مثلث هي مثلث يطابقه.',
+  'انقل الأشكال ① و ② و ③ إلى صفحة بيضاء. وفي كل حالة، ارسم صورة الشكل وفق الانسحاب الذي ينقل النقطة $N$ إلى النقطة $M$.',
+  'إذن هل يمكنك ذكر الحالات التي يمكن من خلالها أن تحصل على مثلث يطابق مثلثاً معلوماً؟',
+  'يتطابق مثلثان إذا تساوت عناصر أحدهما مع العناصر المقابلة لها في المثلث الآخر.',
+  'عناصر المثلث هي أضلاعه وزواياه.',
+  '① يتطابق مثلثان في حال تساوي طولي ضلعين وقياس الزاوية المحصورة بينهما من المثلث الأول مع مقابلاتها في المثلث الآخر.',
+  'نلاحظ أن $\\widehat{EMF} = \\widehat{AMB}$ للتقابل بالرأس',
+  '② يتطابق مثلثان في حال تساوي طول ضلع وقياسي الزاويتين المجاورتين لها من المثلث الأول مع مقابلاتها في المثلث الآخر.',
+  '$FD = BE$ لأن كلاً منهما هو طول ضلع متوازي أضلاع مطروحاً منه طول ضلع مستطيل وهاتان الضلعان متقابلتان.',
+  '③ يتطابق مثلثان في حال تساوي أطوال أضلاع أحدهما مع مقابلاتها في المثلث الآخر.',
+  '$[AC]$ ضلع مشتركة للمثلثين $ACD , ACB$.',
+  'في الشكل المجاور: باستعمال كلّ من حالات التطابق السابقة، برهن أن المثلثين طبوقان.',
+  'لاحظ الطائرة الورقية، هل يمكنك تحديد أزواج المثلثات الطبوقة في هذا الشكل.',
+  'في كلّ حالة، علل تطابق المثلثين',
+  'تأمّل الشكل المرسوم جانباً. فيه $\\widehat{B} = \\widehat{C}$ و $BM = MC$',
+  'استنتج صحة الخاصة "إذا تساوى قياسا زاويتين في مثلث كان المثلث متساوي الساقين".',
+  'سوف تتعلم في الوحدة الثالثة خواص يتمتع بها الارتفاع المتعلق بالقاعدة في المثلث المتساوي الساقين.',
+  'إذا تساوى وتر وضلع قائمة من أحدهما مع وتر وضلع قائمة من الآخر.',
+  'إذا تساوى وتر وزاوية حادة من أحدهما مع وتر وزاوية حادة من الآخر.',
+];
+
 describe('authored material never displaces the source', () => {
   const lesson = allLessons[0]!.lesson;
 
@@ -506,9 +562,10 @@ describe('authored material never displaces the source', () => {
     const textbookFigures = allDiagrams().filter((d) => d.origin === 'textbook');
     // Lessons 1–2 contribute 14 figures; Lesson 3 contributes 14 deliberately
     // reference-only figures because its blank-sheet and fine-grid geometry is
-    // not safe to reconstruct from the supplied scans.
-    expect(textbookFigures).toHaveLength(28);
-    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(28);
+    // not safe to reconstruct from the supplied scans; Lesson 4 contributes 10
+    // more (sketches without complete measurements plus one photograph).
+    expect(textbookFigures).toHaveLength(38);
+    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(38);
     for (const diagram of textbookFigures) {
       if (VERIFIED_TEXTBOOK_FIGURES.includes(diagram.id)) continue;
       expect(diagram.kind, `${diagram.id} must stay a reference placeholder`).toBe('reference');
@@ -617,6 +674,64 @@ describe('Lesson 3 — authored material never displaces the source', () => {
   });
 });
 
+describe('Lesson 4 — authored material never displaces the source', () => {
+  const lesson = allLessons[3]!.lesson;
+
+  it('keeps all ten source steps unchanged and in printed order', () => {
+    const sourceIds = lesson.steps
+      .filter((step) => step.origin === 'source')
+      .map((step) => step.id);
+    expect(sourceIds).toEqual(LESSON_4_SOURCE_STEP_IDS);
+  });
+
+  it('interleaves six authored steps without reordering the source', () => {
+    expect(lesson.steps.filter((step) => step.origin === 'authored')).toHaveLength(6);
+    expect(lesson.steps).toHaveLength(16);
+  });
+
+  it('still contains every checked sentence from pages 17–19 character for character', () => {
+    const haystack = lesson.steps
+      .filter((step) => step.origin === 'source')
+      .flatMap((step) => [
+        step.title,
+        ...(step.kicker ? [step.kicker] : []),
+        ...collectStrings(step.blocks),
+      ]);
+    for (const sentence of LESSON_4_VERBATIM_CORPUS) {
+      expect(haystack, `Lesson 4 source sentence lost: ${sentence}`).toContain(sentence);
+    }
+  });
+
+  it('labels every platform-written step and every platform-made figure', () => {
+    for (const step of lesson.steps) {
+      if (step.origin !== 'authored') continue;
+      expect(step.kicker).toBe('شرح المنصّة');
+      for (const diagram of collectDiagrams(step.blocks)) {
+        expect(diagram.origin, diagram.id).toBe('authored');
+      }
+    }
+  });
+
+  it('keeps every Lesson 4 textbook figure as a reference, never an approximation', () => {
+    const figures = lesson.steps
+      .flatMap((step) => collectDiagrams(step.blocks))
+      .filter((diagram) => diagram.origin === 'textbook');
+    expect(figures).toHaveLength(10);
+    for (const figure of figures) expect(figure.kind, figure.id).toBe('reference');
+  });
+
+  it('preserves the printed measurements inside the figure descriptions', () => {
+    const alts = lesson.steps
+      .flatMap((step) => collectDiagrams(step.blocks))
+      .map((diagram) => diagram.alt)
+      .join(' ');
+    // Kite: 14.4² = 12² + 8² and 10² = 6² + 8² — the printed data is coherent.
+    for (const value of ['$14.4$', '$12$', '$10$', '$8$', '$6$', '$35^\\circ$', '$85^\\circ$']) {
+      expect(alts, `printed measurement missing from Lesson 4 alts: ${value}`).toContain(value);
+    }
+  });
+});
+
 describe('final assessment', () => {
   const assessment = allLessons[0]!.lesson.assessment;
 
@@ -641,13 +756,16 @@ describe('final assessment', () => {
     }
   });
 
-  it('gives Lessons 2 and 3 final assessments of twelve questions each', () => {
+  it('gives Lessons 2, 3 and 4 final assessments of twelve questions each', () => {
     const lesson02 = allLessons[1]!.lesson.assessment;
     const lesson03 = allLessons[2]!.lesson.assessment;
+    const lesson04 = allLessons[3]!.lesson.assessment;
     expect(lesson02).toBeDefined();
     expect(lesson03).toBeDefined();
+    expect(lesson04).toBeDefined();
     expect(lesson02!.questions).toHaveLength(12);
     expect(lesson03!.questions).toHaveLength(12);
+    expect(lesson04!.questions).toHaveLength(12);
   });
 
   it('gives every lesson assessment a unique id', () => {
@@ -688,6 +806,7 @@ describe('teacher resources', () => {
   const lesson01Resources = allLessons[0]!.lesson.teacherResources;
   const lesson02Resources = allLessons[1]!.lesson.teacherResources;
   const lesson03Resources = allLessons[2]!.lesson.teacherResources;
+  const lesson04Resources = allLessons[3]!.lesson.teacherResources;
 
   it('solves every printed question of Lesson 1', () => {
     expect(lesson01Resources).toBeDefined();
@@ -705,6 +824,13 @@ describe('teacher resources', () => {
     expect(lesson03Resources).toBeDefined();
     // 2 + 5 + 1 + 3 + 4 + 5 + 1 + 2 = 23 prompts across pages 11–16.
     expect(lesson03Resources!.textbookSolutions.length).toBe(23);
+  });
+
+  it('solves every printed question of Lesson 4', () => {
+    expect(lesson04Resources).toBeDefined();
+    // 4 (activity) + 1 (check) + 1 (kite) + 1 (justify) + 4 (exercise ③) = 11
+    // printed prompts across pages 17–19.
+    expect(lesson04Resources!.textbookSolutions.length).toBe(11);
   });
 
   it('reproduces each printed question verbatim inside its solution', () => {
@@ -735,6 +861,21 @@ describe('teacher resources', () => {
     // two blank-sheet activity questions still depend on a `reference` figure.
     const flagged = lesson02Resources!.textbookSolutions.filter((s) => s.limitation);
     expect(flagged.map((s) => s.id)).toEqual(['sol-p8-a2-q1', 'sol-p8-a2-q2']);
+  });
+
+  it('flags exactly the Lesson 4 solutions that lean on a printed figure', () => {
+    // Lesson 4's givens live largely in figure markings (ticks, right-angle
+    // squares, arrows) or in the kite photograph; only the purely textual
+    // prompts carry no figure dependency.
+    const flagged = lesson04Resources!.textbookSolutions.filter((s) => s.limitation);
+    expect(flagged.map((s) => s.id)).toEqual([
+      'l4-sol-p17-activity-1',
+      'l4-sol-p17-activity-2',
+      'l4-sol-p19-check-understanding',
+      'l4-sol-p19-kite',
+      'l4-sol-p19-ex3-1',
+      'l4-sol-p19-ex3-2',
+    ]);
   });
 
   it('never presents the derived solutions as printed textbook answers', () => {

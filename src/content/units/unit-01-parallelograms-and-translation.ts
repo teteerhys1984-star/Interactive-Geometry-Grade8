@@ -12,6 +12,7 @@ import { lesson01Assessment } from './lesson-01-assessment';
 import { lesson01TeacherResources } from './lesson-01-teacher';
 import { lesson02 } from './lesson-02-image-of-a-point';
 import { lesson03 } from './lesson-03-image-of-a-shape';
+import { lesson04 } from './lesson-04-triangle-congruence';
 
 /**
  * ============================================================================
@@ -20,6 +21,8 @@ import { lesson03 } from './lesson-03-image-of-a-shape';
  *  Lesson 2: «صورة نقطة وفق انسحاب» (textbook pages 8–10).
  *  Lesson 3: «صورة شكل وفق انسحاب» (textbook pages 11–16) — see its split
  *            data, teaching, assessment and teacher-resource modules.
+ *  Lesson 4: «تطابق المثلثات» (textbook pages 17–19) — see its split data,
+ *            teaching, assessment and teacher-resource modules.
  * ============================================================================
  *
  *  SOURCE FIDELITY
@@ -34,7 +37,8 @@ import { lesson03 } from './lesson-03-image-of-a-shape';
  *
  *  Numeric/unit formatting is preserved as printed, not normalised.
  *
- *  Lesson 4 of this unit (pages 17–19) is deliberately NOT implemented.
+ *  The unit's «تمرينات ومسائل» section (pages 20–29) is deliberately NOT
+ *  implemented yet.
  *
  *  AUTHORED TEACHING MATERIAL
  *  -------------------------
@@ -434,5 +438,11 @@ export const unit01: UnitInput = {
      *  Registry-driven routes, progress and Teacher Area discover it here.
      * ==================================================================== */
     lesson03,
+
+    /* ======================================================================
+     *  الدرس الرابع — «تطابق المثلثات» (صفحات 17–19)
+     *  Registry-driven routes, progress and Teacher Area discover it here.
+     * ==================================================================== */
+    lesson04,
   ],
 };

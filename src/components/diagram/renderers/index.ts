@@ -5,6 +5,8 @@ import { ConstructionFigure } from './ConstructionFigure';
 import { TranslationPlayground } from './TranslationPlayground';
 import { ShapeTranslationLab } from './ShapeTranslationLab';
 import { TranslationChallenges } from './TranslationChallenges';
+import { CongruenceCasesLab } from './CongruenceCasesLab';
+import { CongruenceChallenges } from './CongruenceChallenges';
 
 /**
  * ============================================================================
@@ -31,6 +33,8 @@ registerInteractiveRenderer('construction-figure', ConstructionFigure);
 registerInteractiveRenderer('translation-playground', TranslationPlayground);
 registerInteractiveRenderer('shape-translation-lab', ShapeTranslationLab);
 registerInteractiveRenderer('translation-challenges', TranslationChallenges);
+registerInteractiveRenderer('congruence-cases-lab', CongruenceCasesLab);
+registerInteractiveRenderer('congruence-challenges', CongruenceChallenges);
 
 export {
   TranslationFigure,
@@ -39,4 +43,6 @@ export {
   TranslationPlayground,
   ShapeTranslationLab,
   TranslationChallenges,
+  CongruenceCasesLab,
+  CongruenceChallenges,
 };

@@ -79,8 +79,8 @@ describe('routing', () => {
     expect(screen.getByText('لم نعثر على هذه الصفحة')).toBeInTheDocument();
   });
 
-  it('shows not-found for a lesson that has not been authored (Lesson 4)', () => {
-    renderAt('/lesson/lesson-04-triangle-congruence');
+  it('shows not-found for a lesson that has not been authored (unit exercises)', () => {
+    renderAt('/lesson/unit-01-exercises-and-problems');
     expect(screen.getByText('لم نعثر على هذه الصفحة')).toBeInTheDocument();
   });
 

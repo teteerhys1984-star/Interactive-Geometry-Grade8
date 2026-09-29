@@ -1,0 +1,197 @@
+.wrap {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.casePicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.caseButton,
+.caseActive {
+  min-block-size: 2.5rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-teaching-border);
+  border-radius: 999px;
+  font: inherit;
+  font-size: var(--font-sm);
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    color 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease;
+}
+
+.caseButton {
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.caseActive {
+  color: #fff;
+  background: var(--color-teaching-accent);
+  border-color: var(--color-teaching-accent);
+  box-shadow: var(--shadow-sm);
+}
+
+.caseButton:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.caseDescription {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.sliderLabel {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-2);
+  align-items: center;
+  padding: var(--space-3);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  font-weight: 700;
+}
+
+.sliderLabel input {
+  grid-column: 1 / -1;
+  inline-size: 100%;
+  accent-color: var(--color-teaching-accent);
+}
+
+.value {
+  min-inline-size: 2.6rem;
+  padding-inline: var(--space-2);
+  color: var(--color-primary);
+  text-align: center;
+  background: var(--color-primary-soft);
+  border-radius: 999px;
+  unicode-bidi: isolate;
+}
+
+.canvas {
+  overflow: hidden;
+  padding: var(--space-2);
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      color-mix(in srgb, var(--color-primary) 10%, transparent),
+      transparent 34%
+    ),
+    var(--color-surface);
+  border: 1px solid var(--color-teaching-border);
+  border-radius: var(--radius-lg);
+}
+
+.svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 24rem;
+}
+
+.firstTriangle {
+  fill: color-mix(in srgb, var(--color-primary) 16%, transparent);
+  stroke: var(--color-primary);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.secondTriangle {
+  fill: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  stroke: var(--color-accent);
+  stroke-width: 2.5;
+  stroke-dasharray: 7 4;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.firstPoint {
+  fill: var(--color-primary);
+}
+
+.secondPoint {
+  fill: var(--color-accent);
+}
+
+.firstLabel,
+.secondLabel {
+  font-family: 'KaTeX_Math', 'Times New Roman', serif;
+  font-size: 0.42px;
+  font-style: italic;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.firstLabel {
+  fill: var(--color-primary);
+}
+
+.secondLabel {
+  fill: var(--color-accent);
+}
+
+.readout {
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text);
+  background: var(--color-teaching-bg);
+  border-inline-start: 4px solid var(--color-teaching-accent);
+  border-radius: var(--radius-sm);
+}
+
+.readoutTitle {
+  margin: 0 0 var(--space-2);
+  font-weight: 800;
+}
+
+.metrics {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-2);
+  padding-inline-start: var(--space-5);
+}
+
+.note {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+}
+
+@media (max-width: 640px) {
+  .controls {
+    grid-template-columns: 1fr;
+  }
+
+  .casePicker {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .caseButton,
+  .caseActive {
+    border-radius: var(--radius-md);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caseButton,
+  .caseActive {
+    transition: none;
+  }
+}

@@ -116,6 +116,20 @@
   --color-reference-bg: #faf7ff;
 }
 
+[data-lesson-theme='rose'] {
+  --color-primary: #be123c;
+  --color-primary-hover: #9f1239;
+  --color-primary-soft: #fdeaef;
+  --color-accent: #0e7490;
+  --color-accent-bg: #e9f7fb;
+  --color-teaching-accent: #be123c;
+  --color-teaching-border: #f3d3dc;
+  --color-teaching-bg: #fdf7f9;
+  --color-reference-accent: #a21caf;
+  --color-reference-border: #eed4f3;
+  --color-reference-bg: #fcf5fe;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --color-bg: #11151c;
