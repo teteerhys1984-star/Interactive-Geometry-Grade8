@@ -102,6 +102,20 @@
   --color-reference-bg: #f1fafd;
 }
 
+[data-lesson-theme='indigo'] {
+  --color-primary: #4338ca;
+  --color-primary-hover: #3730a3;
+  --color-primary-soft: #ecebff;
+  --color-accent: #c2410c;
+  --color-accent-bg: #fff2e8;
+  --color-teaching-accent: #4338ca;
+  --color-teaching-border: #d8d5f5;
+  --color-teaching-bg: #f8f7ff;
+  --color-reference-accent: #7c3aed;
+  --color-reference-border: #ddd2f4;
+  --color-reference-bg: #faf7ff;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --color-bg: #11151c;

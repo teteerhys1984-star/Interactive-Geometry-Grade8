@@ -11,14 +11,15 @@ import {
 import { lesson01Assessment } from './lesson-01-assessment';
 import { lesson01TeacherResources } from './lesson-01-teacher';
 import { lesson02 } from './lesson-02-image-of-a-point';
+import { lesson03 } from './lesson-03-image-of-a-shape';
 
 /**
  * ============================================================================
  *  الوحدة الأولى — متوازيات الأضلاع والانسحاب
  *  Lesson 1: «الانسحاب وخواصه» (textbook pages 5–7).
- *  Lesson 2: «صورة نقطة وفق انسحاب» (textbook pages 8–10) — see
- *            ./lesson-02-image-of-a-point.ts; nothing of Lesson 1 changed
- *            when it was added, only this import and the lessons array.
+ *  Lesson 2: «صورة نقطة وفق انسحاب» (textbook pages 8–10).
+ *  Lesson 3: «صورة شكل وفق انسحاب» (textbook pages 11–16) — see its split
+ *            data, teaching, assessment and teacher-resource modules.
  * ============================================================================
  *
  *  SOURCE FIDELITY
@@ -33,7 +34,7 @@ import { lesson02 } from './lesson-02-image-of-a-point';
  *
  *  Numeric/unit formatting is preserved as printed, not normalised.
  *
- *  Lessons 3–4 of this unit (pages 11–19) are deliberately NOT implemented.
+ *  Lesson 4 of this unit (pages 17–19) is deliberately NOT implemented.
  *
  *  AUTHORED TEACHING MATERIAL
  *  -------------------------
@@ -427,5 +428,11 @@ export const unit01: UnitInput = {
      *  الدرس الثاني — «صورة نقطة وفق انسحاب» (صفحات 8–10)
      * ==================================================================== */
     lesson02,
+
+    /* ======================================================================
+     *  الدرس الثالث — «صورة شكل وفق انسحاب» (صفحات 11–16)
+     *  Registry-driven routes, progress and Teacher Area discover it here.
+     * ==================================================================== */
+    lesson03,
   ],
 };

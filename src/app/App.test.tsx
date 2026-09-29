@@ -79,8 +79,8 @@ describe('routing', () => {
     expect(screen.getByText('لم نعثر على هذه الصفحة')).toBeInTheDocument();
   });
 
-  it('shows not-found for a lesson that has not been authored (Lesson 3)', () => {
-    renderAt('/lesson/lesson-03-image-of-a-shape');
+  it('shows not-found for a lesson that has not been authored (Lesson 4)', () => {
+    renderAt('/lesson/lesson-04-triangle-congruence');
     expect(screen.getByText('لم نعثر على هذه الصفحة')).toBeInTheDocument();
   });
 
@@ -457,7 +457,7 @@ describe('teacher area — per-lesson sections', () => {
       }
       unmount();
     }
-  });
+  }, 15_000);
 
   it('flags every solution that depends on an unreadable figure', async () => {
     for (const { lesson: item } of allLessons) {
@@ -482,9 +482,9 @@ describe('teacher area — per-lesson sections', () => {
       // One disclosure per question, and the key is present.
       // (Explanations themselves may open with «الإجابة الصحيحة:» too, so the
       // sentence count is a lower bound, not an exact count.)
-      expect(
-        container.querySelectorAll('#teacher-panel-assessment details'),
-      ).toHaveLength(assessment.questions.length);
+      expect(container.querySelectorAll('#teacher-panel-assessment details')).toHaveLength(
+        assessment.questions.length,
+      );
       expect(screen.getAllByText(/الإجابة الصحيحة:/).length).toBeGreaterThanOrEqual(
         assessment.questions.length,
       );

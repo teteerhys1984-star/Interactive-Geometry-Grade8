@@ -26,7 +26,7 @@ import styles from './TeacherLessonPage.module.css';
  *    4. «الملاحظات التربوية»      — pedagogical notes
  *
  *  Everything is read from the content registry via the :lessonId route param,
- *  so a future Lesson 3 works here with zero changes to this file.
+ *  so newly registered lessons work here with zero lesson-specific changes.
  *
  *  STUDENTS NEVER REACH THIS CONTENT: every panel renders only inside
  *  <TeacherGate>, behind the shared passphrase.
