@@ -3,11 +3,11 @@
 منصة تعليمية تفاعلية لمقرر الهندسة للصف الثامن — Arabic-first, right-to-left,
 static, and deployed to GitHub Pages.
 
-> **Status: Unit 1 · Lessons 1–2 implemented** (teaching steps, final
-> assessment and teacher resources for each) — «الانسحاب وخواصه» (pages 5–7)
-> and «صورة نقطة وفق انسحاب» (pages 8–10).
-> All content is reproduced verbatim from the supplied scans. Lessons 3–4 and
-> Units 2–5 are not yet authored. No content is invented.
+> **Status: Unit 1 · Lessons 1–3 implemented** (teaching steps, final
+> assessment and teacher resources for each) — «الانسحاب وخواصه» (pages 5–7),
+> «صورة نقطة وفق انسحاب» (pages 8–10), and «صورة شكل وفق انسحاب» (pages 11–16).
+> All source content is preserved from the supplied scans. Lesson 4 and Units
+> 2–5 are not yet authored. No textbook content is invented.
 
 ## Stack
 
@@ -111,6 +111,21 @@ a step-by-step compass construction, and a draggable point whose image is
 computed live — plus a per-lesson colour identity
 (`src/lib/lessonTheme.ts` + `data-lesson-theme` in `src/styles/tokens.css`).
 Lesson 1 keeps the default palette and is untouched.
+
+## Lesson 3 content model
+
+Lesson 3 («صورة شكل وفق انسحاب», pages 11–16) has **22 steps**: 16 source
+steps in printed order and 6 badged platform-teaching steps. It ends with a
+new **12-question** final assessment and includes 23 teacher-derived solutions
+to every printed prompt.
+
+Its 14 textbook figures remain faithful `reference` diagrams because their
+blank-sheet geometry (and the fine grids on page 15) cannot be reconstructed
+without guessing. The decision record is
+[`docs/LESSON-03-FIGURES.md`](docs/LESSON-03-FIGURES.md). Exact platform-made
+analogues add a shape/vector laboratory, a progressive four-vertex
+construction, and three grouped challenges whose feedback appears only after
+one combined submission.
 
 ## Source fidelity
 

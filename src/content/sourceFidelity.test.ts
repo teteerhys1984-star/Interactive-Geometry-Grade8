@@ -111,19 +111,20 @@ describe('course shell', () => {
   });
 });
 
-describe('implementation boundary — Lessons 1 and 2 only', () => {
+describe('implementation boundary — Lessons 1, 2 and 3 only', () => {
   it('registers exactly one unit', () => {
     expect(subject.units).toHaveLength(1);
     expect(subject.units[0]?.id).toBe('unit-01-parallelograms-and-translation');
   });
 
-  it('registers exactly two lessons (Lessons 3–4 not yet authored)', () => {
-    expect(allLessons).toHaveLength(2);
+  it('registers exactly three lessons (Lesson 4 not yet authored)', () => {
+    expect(allLessons).toHaveLength(3);
     expect(allLessons[0]?.lesson.id).toBe('lesson-01-translation-and-properties');
     expect(allLessons[1]?.lesson.id).toBe('lesson-02-image-of-a-point');
+    expect(allLessons[2]?.lesson.id).toBe('lesson-03-image-of-a-shape');
   });
 
-  it('draws only on textbook pages 5–10', () => {
+  it('draws only on textbook pages 5–16', () => {
     const pages = new Set<string>();
     for (const { lesson } of allLessons) {
       for (const step of lesson.steps) {
@@ -134,13 +135,14 @@ describe('implementation boundary — Lessons 1 and 2 only', () => {
       }
     }
     for (const page of pages) {
-      expect(['5', '6', '7', '6–7', '8', '9', '10'], `unexpected source page: ${page}`).toContain(
-        page,
-      );
+      expect(
+        ['5', '6', '7', '6–7', '8', '9', '10', '11', '12', '13', '14', '15', '16'],
+        `unexpected source page: ${page}`,
+      ).toContain(page);
     }
   });
 
-  it('invents no textbook assessment (the source prints none for either lesson)', () => {
+  it('invents no textbook assessment (the source prints none for these lessons)', () => {
     expect(subject.finalAssessment).toBeUndefined();
     expect(subject.units[0]?.assessment).toBeUndefined();
 
@@ -415,6 +417,44 @@ const LESSON_2_VERBATIM_CORPUS = [
   'انسخ الشبكة الآتية على صفحةٍ من دفترك:',
 ];
 
+/** The sixteen source steps of Lesson 3, in printed order (pages 11–16). */
+const LESSON_3_SOURCE_STEP_IDS = [
+  'step-01-line-image-conjecture',
+  'step-02-line-image-proof',
+  'step-03-segment-ray-circle-activity',
+  'step-04-image-of-a-line-rule',
+  'step-05-construct-line-image-nonparallel',
+  'step-06-construct-line-image-parallel',
+  'step-07-parallel-perpendicular-images',
+  'step-08-image-of-a-segment',
+  'step-09-image-of-ray-and-circle',
+  'step-10-how-to-draw-line-image',
+  'step-11-square-application',
+  'step-12-check-understanding',
+  'step-13-practice-one',
+  'step-14-practice-two',
+  'step-15-practice-three',
+  'step-16-practice-four',
+];
+
+/** Sentences spanning all six supplied pages; any omission or rewrite fails. */
+const LESSON_3_VERBATIM_CORPUS = [
+  'وفق الانسحاب، أي شكل وصورته قابلان للانطباق، فصورة مستقيم هي مستقيم.',
+  "ما وضع المستقيمين $(d)$ و $(d')$ في كل حالة؟",
+  "لماذا الرباعي $CC'E'E$ هو متوازي أضلاع؟",
+  'في الرياضيات، وبشكل خاص في الهندسة، لا يجوز استنتاج الإجابة من الشكل، بل يجب أن تتم الإجابة بالبرهان عبر سلسلة من الاستنتاجات.',
+  "صورة المستقيم $(d)$ وفق أي انسحاب هي مستقيم $(d')$ يوازي $(d)$.",
+  "في هذه الحالة، ينطبق المستقيم $(d)$ على المستقيم $(d')$.",
+  'صورة مستقيمين متوازيين، هما مستقيمان متوازيان.',
+  'صورة مستقيمين متعامدين، هما مستقيمان متعامدان.',
+  'لرسم صورة مستقيم وفق انسحاب، نرسم صورتي نقطتين منه (باستعمال الفرجار)، ثم نرسم المستقيم المار بهاتين النقطتين.',
+  '$ABCD$ مربع طول ضلعه $3\\,cm$. ارسم هذا المربع على صفحة بيضاء، ثم ارسم صورته وفق الانسحاب الذي ينقل $D$ إلى $C$. تحقق مما أنشأت.',
+  'صورة مستقيمين متوازيين وفق أي انسحاب هما ...............',
+  "ما يمكنك قوله بما يتعلق بالمستقيمين $(d')$ و $(d'')$؟",
+  "ما طول القطعة $[E'B']$؟ اشرح إجابتك.",
+  'أي الأشكال الثلاثة هو رسمه؟',
+];
+
 describe('authored material never displaces the source', () => {
   const lesson = allLessons[0]!.lesson;
 
@@ -464,10 +504,11 @@ describe('authored material never displaces the source', () => {
 
   it('keeps every unverified textbook figure as a faithful `reference` placeholder', () => {
     const textbookFigures = allDiagrams().filter((d) => d.origin === 'textbook');
-    // Lesson 1: 7 (the pavement figure is shown in two steps).
-    // Lesson 2: 5 blank-sheet placeholders + the 2 verified squared-paper grids.
-    expect(textbookFigures).toHaveLength(14);
-    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(14);
+    // Lessons 1–2 contribute 14 figures; Lesson 3 contributes 14 deliberately
+    // reference-only figures because its blank-sheet and fine-grid geometry is
+    // not safe to reconstruct from the supplied scans.
+    expect(textbookFigures).toHaveLength(28);
+    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(28);
     for (const diagram of textbookFigures) {
       if (VERIFIED_TEXTBOOK_FIGURES.includes(diagram.id)) continue;
       expect(diagram.kind, `${diagram.id} must stay a reference placeholder`).toBe('reference');
@@ -529,6 +570,53 @@ describe('Lesson 2 — authored material never displaces the source', () => {
   });
 });
 
+describe('Lesson 3 — authored material never displaces the source', () => {
+  const lesson = allLessons[2]!.lesson;
+
+  it('keeps all sixteen source steps unchanged and in printed order', () => {
+    const sourceIds = lesson.steps
+      .filter((step) => step.origin === 'source')
+      .map((step) => step.id);
+    expect(sourceIds).toEqual(LESSON_3_SOURCE_STEP_IDS);
+  });
+
+  it('interleaves six authored steps without reordering the source', () => {
+    expect(lesson.steps.filter((step) => step.origin === 'authored')).toHaveLength(6);
+    expect(lesson.steps).toHaveLength(22);
+  });
+
+  it('still contains every checked sentence from pages 11–16 character for character', () => {
+    const haystack = lesson.steps
+      .filter((step) => step.origin === 'source')
+      .flatMap((step) => [
+        step.title,
+        ...(step.kicker ? [step.kicker] : []),
+        ...collectStrings(step.blocks),
+      ]);
+    for (const sentence of LESSON_3_VERBATIM_CORPUS) {
+      expect(haystack, `Lesson 3 source sentence lost: ${sentence}`).toContain(sentence);
+    }
+  });
+
+  it('labels every platform-written step and every platform-made figure', () => {
+    for (const step of lesson.steps) {
+      if (step.origin !== 'authored') continue;
+      expect(step.kicker).toBe('شرح المنصّة');
+      for (const diagram of collectDiagrams(step.blocks)) {
+        expect(diagram.origin, diagram.id).toBe('authored');
+      }
+    }
+  });
+
+  it('keeps every Lesson 3 textbook figure as a reference, never an approximation', () => {
+    const figures = lesson.steps
+      .flatMap((step) => collectDiagrams(step.blocks))
+      .filter((diagram) => diagram.origin === 'textbook');
+    expect(figures).toHaveLength(14);
+    for (const figure of figures) expect(figure.kind, figure.id).toBe('reference');
+  });
+});
+
 describe('final assessment', () => {
   const assessment = allLessons[0]!.lesson.assessment;
 
@@ -553,10 +641,13 @@ describe('final assessment', () => {
     }
   });
 
-  it('gives Lesson 2 a final assessment of twelve questions', () => {
+  it('gives Lessons 2 and 3 final assessments of twelve questions each', () => {
     const lesson02 = allLessons[1]!.lesson.assessment;
+    const lesson03 = allLessons[2]!.lesson.assessment;
     expect(lesson02).toBeDefined();
+    expect(lesson03).toBeDefined();
     expect(lesson02!.questions).toHaveLength(12);
+    expect(lesson03!.questions).toHaveLength(12);
   });
 
   it('gives every lesson assessment a unique id', () => {
@@ -596,6 +687,7 @@ describe('final assessment', () => {
 describe('teacher resources', () => {
   const lesson01Resources = allLessons[0]!.lesson.teacherResources;
   const lesson02Resources = allLessons[1]!.lesson.teacherResources;
+  const lesson03Resources = allLessons[2]!.lesson.teacherResources;
 
   it('solves every printed question of Lesson 1', () => {
     expect(lesson01Resources).toBeDefined();
@@ -607,6 +699,12 @@ describe('teacher resources', () => {
     expect(lesson02Resources).toBeDefined();
     // 3 + 2 + 2 + 3 + 3 + 4 = 17 printed prompts across pages 8–10.
     expect(lesson02Resources!.textbookSolutions.length).toBe(17);
+  });
+
+  it('solves every printed question of Lesson 3', () => {
+    expect(lesson03Resources).toBeDefined();
+    // 2 + 5 + 1 + 3 + 4 + 5 + 1 + 2 = 23 prompts across pages 11–16.
+    expect(lesson03Resources!.textbookSolutions.length).toBe(23);
   });
 
   it('reproduces each printed question verbatim inside its solution', () => {
