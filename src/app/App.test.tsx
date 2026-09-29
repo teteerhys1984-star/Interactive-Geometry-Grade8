@@ -3,7 +3,7 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { App } from './App';
-import { allLessons, referenceFigures, subject } from '@/content/registry';
+import { allLessons, lessonDiagrams, referenceFigures, subject } from '@/content/registry';
 import { loadProgress } from '@/lib/progress';
 
 function renderAt(route: string) {
@@ -183,7 +183,8 @@ describe('reference figures in the rendered lesson', () => {
       const { user, container, unmount } = await renderUnlocked(`/teacher/${lessonId}`);
       await user.click(screen.getByRole('tab', { name: 'تقرير الأشكال' }));
       const panel = container.querySelector('#teacher-panel-figures') as HTMLElement;
-      const expected = referenceFigures.filter((figure) => figure.lesson.id === lessonId).length;
+      const target = allLessons.find(({ lesson: item }) => item.id === lessonId)!.lesson;
+      const expected = lessonDiagrams(target).length;
       expect(within(panel).getAllByRole('listitem')).toHaveLength(expected);
       unmount();
     }
@@ -472,7 +473,8 @@ describe('teacher area — per-lesson sections', () => {
 
   it('exposes the full answer key with explanations under its own tab', async () => {
     for (const { lesson: item } of allLessons) {
-      const assessment = item.assessment!;
+      if (!item.assessment) continue;
+      const assessment = item.assessment;
       const { user, container, unmount } = await renderUnlocked(`/teacher/${item.id}`);
       const panel = container.querySelector('#teacher-panel-assessment');
       expect(panel).toHaveAttribute('hidden');

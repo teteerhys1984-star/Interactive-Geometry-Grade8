@@ -102,6 +102,20 @@
   --color-reference-bg: #f1fafd;
 }
 
+[data-lesson-theme='emerald'] {
+  --color-primary: #047857;
+  --color-primary-hover: #065f46;
+  --color-primary-soft: #e8f7f0;
+  --color-accent: #a16207;
+  --color-accent-bg: #fef9e8;
+  --color-teaching-accent: #047857;
+  --color-teaching-border: #bfe3d4;
+  --color-teaching-bg: #f3fbf7;
+  --color-reference-accent: #0e7490;
+  --color-reference-border: #c4e3ec;
+  --color-reference-bg: #f1fafd;
+}
+
 [data-lesson-theme='indigo'] {
   --color-primary: #4338ca;
   --color-primary-hover: #3730a3;

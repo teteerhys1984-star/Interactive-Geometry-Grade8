@@ -5,9 +5,9 @@ import { Callout, EmptyState } from '@/components/ui';
 import { Blocks } from '@/components/content';
 import { RichText } from '@/components/math';
 import { TeacherGate } from '@/components/teacher';
-import { getLesson, referenceFigures } from '@/content/registry';
+import { getLesson, lessonDiagrams } from '@/content/registry';
 import type { FlatLesson } from '@/content/registry';
-import type { Lesson } from '@/content/schema';
+import type { DiagramSpec, Lesson } from '@/content/schema';
 import { routes } from '@/lib/routes';
 import { NotFoundPage } from './NotFoundPage';
 import styles from './TeacherLessonPage.module.css';
@@ -79,7 +79,7 @@ function LessonTeacherArea({ entry, onLock }: { entry: FlatLesson; onLock: () =>
       ),
     0,
   );
-  const figures = referenceFigures.filter((item) => item.lesson.id === lesson.id);
+  const figures = lessonDiagrams(lesson);
 
   return (
     <div>
@@ -329,37 +329,48 @@ function AnswerKeyPanel({ lesson }: { lesson: Lesson }) {
  * work: they stayed «راجع الكتاب» because they could not be reproduced
  * faithfully.
  */
-function FigureReportPanel({
-  lesson,
-  figures,
-}: {
-  lesson: Lesson;
-  figures: typeof referenceFigures;
-}) {
+function FigureReportPanel({ lesson, figures }: { lesson: Lesson; figures: DiagramSpec[] }) {
   if (figures.length === 0) {
     return (
       <EmptyState
-        title="لا توجد أشكال مرجعية في هذا الدرس"
-        description="كل أشكال هذا الدرس معاد إنتاجها داخل المنصّة، ولا شيء منها يحيل إلى الكتاب."
+        title="لا توجد أشكال في هذا الدرس"
+        description="لا يتضمن هذا الدرس رسوماً مسجلة."
       />
     );
   }
 
+  const kindLabel = (figure: DiagramSpec) => {
+    if (figure.kind === 'reference') return 'reference — مرجعي';
+    if (figure.origin === 'authored') return 'authored — من إعداد المنصّة';
+    return 'reconstructed — معاد البناء';
+  };
+
   return (
     <>
       <p className={styles.muted}>
-        هذه الأشكال لم يكن من الممكن إعادة إنتاجها بأمانة، فعُرضت للتلميذ كإحالة إلى الكتاب. هذا
-        خيار تحريري مقصود وليس عملاً ناقصاً.
+        يعرض التقرير جميع أشكال الدرس، ويميّز الشكل المرجعي من المعاد بنائه ومن الشكل التعليمي الذي
+        أعدّته المنصّة.
       </p>
-      <ul className={styles.referenceList} aria-label={`الأشكال المرجعية في ${lesson.title}`}>
-        {figures.map(({ diagram }) => (
+      <ul className={styles.referenceList} aria-label={`تقرير الأشكال في ${lesson.title}`}>
+        {figures.map((diagram) => (
           <li key={diagram.id} className={styles.referenceItem}>
             <span className={styles.referencePage} dir="ltr">
-              {String(diagram.source.page)}
+              {kindLabel(diagram)}
             </span>
             <span>
-              {diagram.source.locator ? <strong>{diagram.source.locator}</strong> : null}
-              {diagram.reason ? <span className={styles.muted}> · {diagram.reason}</span> : null}
+              <strong>{diagram.caption ?? diagram.alt}</strong>
+              {diagram.source ? (
+                <span className={styles.muted}>
+                  {' '}
+                  · المصدر: {String(diagram.source.page)}
+                  {diagram.source.locator ? ` — ${diagram.source.locator}` : ''}
+                </span>
+              ) : (
+                <span className={styles.muted}> · لا يدّعي مصدراً كتابياً</span>
+              )}
+              {diagram.kind === 'reference' && diagram.reason ? (
+                <span className={styles.muted}> · {diagram.reason}</span>
+              ) : null}
             </span>
           </li>
         ))}
