@@ -111,20 +111,21 @@ describe('course shell', () => {
   });
 });
 
-describe('implementation boundary — Lessons 1, 2 and 3 only', () => {
+describe('implementation boundary — Lessons 1–4 only', () => {
   it('registers exactly one unit', () => {
     expect(subject.units).toHaveLength(1);
     expect(subject.units[0]?.id).toBe('unit-01-parallelograms-and-translation');
   });
 
-  it('registers exactly three lessons (Lesson 4 not yet authored)', () => {
-    expect(allLessons).toHaveLength(3);
+  it('registers exactly four lessons', () => {
+    expect(allLessons).toHaveLength(4);
     expect(allLessons[0]?.lesson.id).toBe('lesson-01-translation-and-properties');
     expect(allLessons[1]?.lesson.id).toBe('lesson-02-image-of-a-point');
     expect(allLessons[2]?.lesson.id).toBe('lesson-03-image-of-a-shape');
+    expect(allLessons[3]?.lesson.id).toBe('lesson-04-triangle-congruence');
   });
 
-  it('draws only on textbook pages 5–16', () => {
+  it('draws only on textbook pages 5–19', () => {
     const pages = new Set<string>();
     for (const { lesson } of allLessons) {
       for (const step of lesson.steps) {
@@ -136,7 +137,24 @@ describe('implementation boundary — Lessons 1, 2 and 3 only', () => {
     }
     for (const page of pages) {
       expect(
-        ['5', '6', '7', '6–7', '8', '9', '10', '11', '12', '13', '14', '15', '16'],
+        [
+          '5',
+          '6',
+          '7',
+          '6–7',
+          '8',
+          '9',
+          '10',
+          '11',
+          '12',
+          '13',
+          '14',
+          '15',
+          '16',
+          '17',
+          '18',
+          '19',
+        ],
         `unexpected source page: ${page}`,
       ).toContain(page);
     }
@@ -507,8 +525,8 @@ describe('authored material never displaces the source', () => {
     // Lessons 1–2 contribute 14 figures; Lesson 3 contributes 14 deliberately
     // reference-only figures because its blank-sheet and fine-grid geometry is
     // not safe to reconstruct from the supplied scans.
-    expect(textbookFigures).toHaveLength(28);
-    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(28);
+    expect(textbookFigures).toHaveLength(38);
+    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(38);
     for (const diagram of textbookFigures) {
       if (VERIFIED_TEXTBOOK_FIGURES.includes(diagram.id)) continue;
       expect(diagram.kind, `${diagram.id} must stay a reference placeholder`).toBe('reference');

@@ -12,6 +12,7 @@ import { lesson01Assessment } from './lesson-01-assessment';
 import { lesson01TeacherResources } from './lesson-01-teacher';
 import { lesson02 } from './lesson-02-image-of-a-point';
 import { lesson03 } from './lesson-03-image-of-a-shape';
+import { lesson04 } from './lesson-04-triangle-congruence';
 
 /**
  * ============================================================================
@@ -33,8 +34,6 @@ import { lesson03 } from './lesson-03-image-of-a-shape';
  *  The source uses the arc/hat over letters for angles and never the ∠ glyph.
  *
  *  Numeric/unit formatting is preserved as printed, not normalised.
- *
- *  Lesson 4 of this unit (pages 17–19) is deliberately NOT implemented.
  *
  *  AUTHORED TEACHING MATERIAL
  *  -------------------------
@@ -434,5 +433,10 @@ export const unit01: UnitInput = {
      *  Registry-driven routes, progress and Teacher Area discover it here.
      * ==================================================================== */
     lesson03,
+
+    /* ======================================================================
+     *  الدرس الرابع — «تطابق المثلثات» (صفحات 17–19)
+     * ==================================================================== */
+    lesson04,
   ],
 };

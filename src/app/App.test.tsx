@@ -79,9 +79,9 @@ describe('routing', () => {
     expect(screen.getByText('لم نعثر على هذه الصفحة')).toBeInTheDocument();
   });
 
-  it('shows not-found for a lesson that has not been authored (Lesson 4)', () => {
+  it('renders the authored Lesson 4 outline', () => {
     renderAt('/lesson/lesson-04-triangle-congruence');
-    expect(screen.getByText('لم نعثر على هذه الصفحة')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'تطابق المثلثات', level: 1 })).toBeInTheDocument();
   });
 
   it('shows not-found for a step beyond the end of the lesson', () => {
