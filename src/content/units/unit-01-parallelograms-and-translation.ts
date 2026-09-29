@@ -13,6 +13,7 @@ import { lesson01TeacherResources } from './lesson-01-teacher';
 import { lesson02 } from './lesson-02-image-of-a-point';
 import { lesson03 } from './lesson-03-image-of-a-shape';
 import { lesson04 } from './lesson-04-triangle-congruence';
+import { lesson05 } from './lesson-05-unit-exercises';
 
 /**
  * ============================================================================
@@ -438,5 +439,8 @@ export const unit01: UnitInput = {
      *  الدرس الرابع — «تطابق المثلثات» (صفحات 17–19)
      * ==================================================================== */
     lesson04,
+
+    /* الدرس الخامس — تمرينات الوحدة الأولى؛ الدفعة الأولى: السؤالان 1 و2 فقط. */
+    lesson05,
   ],
 };

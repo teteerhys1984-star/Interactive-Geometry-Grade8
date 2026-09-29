@@ -111,21 +111,22 @@ describe('course shell', () => {
   });
 });
 
-describe('implementation boundary — Lessons 1–4 only', () => {
+describe('implementation boundary — Lessons 1–5 (Lesson 5 batch one only)', () => {
   it('registers exactly one unit', () => {
     expect(subject.units).toHaveLength(1);
     expect(subject.units[0]?.id).toBe('unit-01-parallelograms-and-translation');
   });
 
-  it('registers exactly four lessons', () => {
-    expect(allLessons).toHaveLength(4);
+  it('registers exactly five lessons', () => {
+    expect(allLessons).toHaveLength(5);
     expect(allLessons[0]?.lesson.id).toBe('lesson-01-translation-and-properties');
     expect(allLessons[1]?.lesson.id).toBe('lesson-02-image-of-a-point');
     expect(allLessons[2]?.lesson.id).toBe('lesson-03-image-of-a-shape');
     expect(allLessons[3]?.lesson.id).toBe('lesson-04-triangle-congruence');
+    expect(allLessons[4]?.lesson.id).toBe('lesson-05-unit-one-exercises');
   });
 
-  it('draws only on textbook pages 5–19', () => {
+  it('draws only on verified lesson pages or the five supplied exercise images', () => {
     const pages = new Set<string>();
     for (const { lesson } of allLessons) {
       for (const step of lesson.steps) {
@@ -154,6 +155,11 @@ describe('implementation boundary — Lessons 1–4 only', () => {
           '17',
           '18',
           '19',
+          'صورة المصدر 1',
+          'صورة المصدر 2',
+          'صورة المصدر 3',
+          'صورة المصدر 4',
+          'صورة المصدر 5',
         ],
         `unexpected source page: ${page}`,
       ).toContain(page);
@@ -403,7 +409,17 @@ const VERBATIM_CORPUS = [
  * verified arithmetically. The verification record lives in
  * docs/LESSON-02-FIGURES.md; nothing here is eyeballed or approximated.
  */
-const VERIFIED_TEXTBOOK_FIGURES = ['fig-8-activity-grid', 'fig-10-exercise-3-grid'];
+const VERIFIED_TEXTBOOK_FIGURES = [
+  'fig-8-activity-grid',
+  'fig-10-exercise-3-grid',
+  // Lesson 5 reproductions use only incidence, orientation, equality marks and
+  // integer grid counts that are unambiguous in the five supplied images.
+  'fig-ex5-q1-1',
+  'fig-ex5-q1-8',
+  'fig-ex5-q1-9',
+  'fig-ex5-q2-1',
+  'fig-ex5-q2-3',
+];
 
 /** The eleven verbatim steps of Lesson 2, in printed order (pages 8–10). */
 const LESSON_2_SOURCE_STEP_IDS = [
@@ -525,8 +541,8 @@ describe('authored material never displaces the source', () => {
     // Lessons 1–2 contribute 14 figures; Lesson 3 contributes 14 deliberately
     // reference-only figures because its blank-sheet and fine-grid geometry is
     // not safe to reconstruct from the supplied scans.
-    expect(textbookFigures).toHaveLength(38);
-    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(38);
+    expect(textbookFigures).toHaveLength(43);
+    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(43);
     for (const diagram of textbookFigures) {
       if (VERIFIED_TEXTBOOK_FIGURES.includes(diagram.id)) continue;
       expect(diagram.kind, `${diagram.id} must stay a reference placeholder`).toBe('reference');
@@ -675,7 +691,8 @@ describe('final assessment', () => {
 
   it('mixes question types rather than using a single format', () => {
     for (const { lesson } of allLessons) {
-      const types = new Set(lesson.assessment!.questions.map((q) => q.type));
+      if (!lesson.assessment) continue;
+      const types = new Set(lesson.assessment.questions.map((q) => q.type));
       expect(types.size, `lesson ${lesson.id}`).toBeGreaterThanOrEqual(3);
     }
   });
