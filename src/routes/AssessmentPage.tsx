@@ -7,6 +7,7 @@ import { getAssessment, subject } from '@/content/registry';
 import { routes } from '@/lib/routes';
 import { recordAssessmentScore } from '@/lib/progress';
 import { gradeAssessment, isAnswered } from '@/lib/grading';
+import { lessonTheme } from '@/lib/lessonTheme';
 import type { AnswerMap } from '@/lib/grading';
 import { NotFoundPage } from './NotFoundPage';
 import styles from './AssessmentPage.module.css';
@@ -37,6 +38,8 @@ export function AssessmentPage() {
   const result = gradeAssessment(assessment, answers);
   const answeredCount = result.outcomes.filter((outcome) => outcome.answered).length;
 
+  const theme = lessonTheme(lesson?.id);
+
   const crumbs = [
     { label: 'الرئيسية', to: routes.home() },
     { label: subject.title, to: routes.subject(subject.id) },
@@ -52,7 +55,7 @@ export function AssessmentPage() {
   /* ----------------------------------------------------------- intro --- */
   if (!started) {
     return (
-      <PageShell narrow title={assessment.title} crumbs={crumbs}>
+      <PageShell narrow theme={theme} title={assessment.title} crumbs={crumbs}>
         <div className={styles.intro}>
           {assessment.instructions ? (
             <p className={styles.instructions}>{assessment.instructions}</p>
@@ -78,7 +81,7 @@ export function AssessmentPage() {
   /* ---------------------------------------------------------- result --- */
   if (submitted) {
     return (
-      <PageShell narrow title="نتيجة الاختبار" crumbs={crumbs}>
+      <PageShell narrow theme={theme} title="نتيجة الاختبار" crumbs={crumbs}>
         <div className={result.passed ? styles.resultPass : styles.resultFail}>
           <p className={styles.resultScore} dir="ltr">
             {result.score}%
@@ -142,7 +145,7 @@ export function AssessmentPage() {
   const isLast = index === total - 1;
 
   return (
-    <PageShell narrow title={assessment.title} crumbs={crumbs}>
+    <PageShell narrow theme={theme} title={assessment.title} crumbs={crumbs}>
       <ProgressBar current={index + 1} total={total} label="أسئلة الاختبار" />
 
       <p className={styles.answeredHint}>

@@ -1,0 +1,168 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.svg {
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 24rem;
+  overflow: visible;
+}
+
+.printedSheet {
+  fill: var(--color-surface);
+  stroke: none;
+}
+
+.gridDashed {
+  stroke: #5b5ea6;
+  stroke-width: 1;
+  stroke-dasharray: 7 5;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.75;
+}
+
+.gridSolid {
+  stroke: #2f6fb5;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.8;
+}
+
+.line {
+  stroke: var(--color-text);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+}
+
+.lineImage {
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  stroke-dasharray: 6 4;
+}
+
+.vector {
+  stroke: var(--color-accent);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.9;
+}
+
+.arrowHead {
+  fill: var(--color-accent);
+}
+
+.pointInk {
+  fill: #12161f;
+}
+
+.pointMark {
+  fill: #c62828;
+}
+
+.pointImage {
+  fill: var(--color-accent);
+  stroke: var(--color-surface);
+  stroke-width: 0.03;
+}
+
+.labelInk,
+.labelMark,
+.labelImage {
+  font-size: 0.62px;
+  font-style: italic;
+  font-family: 'KaTeX_Math', 'Times New Roman', serif;
+  text-anchor: middle;
+  /* Latin point names: always LTR, isolated from the RTL page. */
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.labelInk {
+  fill: #12161f;
+}
+
+.labelMark {
+  fill: #c62828;
+}
+
+.labelImage {
+  fill: var(--color-accent);
+  font-weight: 600;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px dashed var(--color-teaching-border);
+  border-radius: var(--radius-md);
+  background: var(--color-teaching-bg);
+}
+
+.controlsTitle {
+  margin: 0;
+  font-size: var(--font-xs);
+  font-weight: 700;
+  color: var(--color-teaching-accent);
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.button {
+  padding: var(--space-1) var(--space-3);
+  font: inherit;
+  font-size: var(--font-sm);
+  color: var(--color-teaching-accent);
+  background: var(--color-surface);
+  border: 1px solid var(--color-teaching-border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease,
+    border-color 140ms ease;
+}
+
+.button:hover {
+  border-color: var(--color-teaching-accent);
+}
+
+.button[aria-pressed='true'] {
+  color: var(--color-surface);
+  background: var(--color-teaching-accent);
+  border-color: var(--color-teaching-accent);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.note,
+.extendNote {
+  margin: 0;
+  font-size: var(--font-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-muted);
+}
+
+.extendNote {
+  font-size: var(--font-xs);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+}

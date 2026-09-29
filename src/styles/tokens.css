@@ -78,6 +78,30 @@
   --reading-max: 44rem;
 }
 
+/*
+ * PER-LESSON PALETTES
+ * -------------------
+ * Applied through `data-lesson-theme` (see src/lib/lessonTheme.ts). A theme
+ * re-points colour tokens only: every size, spacing and contrast decision is
+ * shared, so lessons stay consistent while remaining distinguishable.
+ *
+ * Contrast of the themed text colours against --color-surface (#ffffff) stays
+ * above the WCAG AA threshold for body text.
+ */
+[data-lesson-theme='teal'] {
+  --color-primary: #0f766e;
+  --color-primary-hover: #0b5a54;
+  --color-primary-soft: #e2f4f1;
+  --color-accent: #b45309;
+  --color-accent-bg: #fdf3e7;
+  --color-teaching-accent: #0f766e;
+  --color-teaching-border: #cbe6e2;
+  --color-teaching-bg: #f4fbfa;
+  --color-reference-accent: #0e7490;
+  --color-reference-border: #c4e3ec;
+  --color-reference-bg: #f1fafd;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --color-bg: #11151c;

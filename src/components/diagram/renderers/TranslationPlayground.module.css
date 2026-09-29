@@ -1,0 +1,149 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.svg {
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 26rem;
+  touch-action: none; /* dragging must not scroll the page on a phone */
+  overflow: visible;
+}
+
+.grid {
+  stroke: var(--color-border);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.7;
+}
+
+.node {
+  fill: var(--color-border);
+}
+
+.axis {
+  stroke: var(--color-text-muted);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 7 5;
+  opacity: 0.8;
+}
+
+.parallelogram {
+  fill: var(--color-primary);
+  fill-opacity: 0.12;
+  stroke: var(--color-primary);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+}
+
+.degenerate {
+  fill: none;
+  stroke: var(--color-hint);
+  stroke-width: 2.4;
+  vector-effect: non-scaling-stroke;
+}
+
+.diagonal {
+  stroke: var(--color-accent);
+  stroke-width: 1.2;
+  stroke-dasharray: 4 4;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.8;
+}
+
+.midpoint {
+  fill: var(--color-accent);
+}
+
+.vector {
+  stroke: var(--color-success);
+  stroke-width: 1.6;
+  vector-effect: non-scaling-stroke;
+}
+
+.arrowHead {
+  fill: var(--color-success);
+}
+
+.pointInk {
+  fill: var(--color-text);
+}
+.pointMark {
+  fill: #c62828;
+}
+.pointImage {
+  fill: var(--color-accent);
+}
+
+.labelInk,
+.labelMark,
+.labelImage {
+  font-size: 0.6px;
+  font-style: italic;
+  font-family: 'KaTeX_Math', 'Times New Roman', serif;
+  text-anchor: middle;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.labelInk {
+  fill: var(--color-text);
+}
+.labelMark {
+  fill: #c62828;
+}
+.labelImage {
+  fill: var(--color-accent);
+}
+
+.handle {
+  cursor: grab;
+}
+
+.handle:active {
+  cursor: grabbing;
+}
+
+.handleHalo {
+  fill: #c62828;
+  fill-opacity: 0.14;
+}
+
+.handle:focus-visible {
+  outline: none;
+}
+
+.handle:focus-visible .handleHalo {
+  fill-opacity: 0.3;
+  stroke: var(--color-focus);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.readout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border: 1px solid var(--color-teaching-border);
+  border-radius: var(--radius-md);
+  background: var(--color-teaching-bg);
+}
+
+.state {
+  margin: 0;
+  font-size: var(--font-sm);
+  font-weight: 600;
+  line-height: var(--leading-relaxed);
+  color: var(--color-text);
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+}

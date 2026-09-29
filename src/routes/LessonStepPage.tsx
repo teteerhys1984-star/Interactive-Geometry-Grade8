@@ -6,6 +6,7 @@ import { Blocks } from '@/components/content';
 import { getLesson, subject } from '@/content/registry';
 import { routes } from '@/lib/routes';
 import { loadProgress, markStepViewed } from '@/lib/progress';
+import { lessonTheme } from '@/lib/lessonTheme';
 import { NotFoundPage } from './NotFoundPage';
 import styles from './LessonStepPage.module.css';
 
@@ -63,7 +64,7 @@ export function LessonStepPage() {
       };
 
   return (
-    <div className={styles.layout}>
+    <div className={styles.layout} data-lesson-theme={lessonTheme(lesson.id)}>
       <aside className={styles.aside}>
         <LessonSidebar
           lessonId={lesson.id}

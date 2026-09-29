@@ -13,11 +13,27 @@ them now would mean inventing requirements.
 
 `DiagramSpec` (`src/content/schema.ts`) is a discriminated union on `kind`:
 
-| `kind`        | Purpose                                | Status          |
-| ------------- | -------------------------------------- | --------------- |
-| `image`       | Scanned / exported textbook figures    | **Implemented** |
-| `interactive` | Future draggable, manipulable figures  | Contract only   |
-| `constructed` | Future declarative vector/SVG geometry | Contract only   |
+| `kind`        | Purpose                                   | Status          |
+| ------------- | ----------------------------------------- | --------------- |
+| `image`       | Scanned / exported textbook figures       | **Implemented** |
+| `interactive` | Draggable / step-through figures          | **Implemented** |
+| `constructed` | Declarative vector geometry, drawn as SVG | **Implemented** |
+| `reference`   | Faithful «راجع الكتاب» placeholder        | **Implemented** |
+
+### Registered renderers
+
+| Key                      | Kind          | Used for                                                           |
+| ------------------------ | ------------- | ------------------------------------------------------------------ |
+| `translation-figure`     | `constructed` | A shape and its image under a translation (Lessons 1–2, authored). |
+| `grid-figure`            | `interactive` | Squared-paper figures: exact lattice points, optional reveals.     |
+| `construction-figure`    | `interactive` | Step-by-step ruler-and-compass constructions.                      |
+| `translation-playground` | `interactive` | Draggable point with a live, exactly computed image.               |
+
+A renderer may draw a **textbook** figure only when every coordinate was read
+from the scan and then verified arithmetically; that verification is written
+down per figure (see `docs/LESSON-02-FIGURES.md`) and a fidelity test refuses
+any redrawn textbook figure that is not on the verified list. Everything else
+stays `reference`.
 
 Shared fields on every variant:
 

@@ -4,6 +4,7 @@ import { getLesson, lessonDiagrams, subject } from '@/content/registry';
 import { routes } from '@/lib/routes';
 import { RichText } from '@/components/math';
 import { loadProgress } from '@/lib/progress';
+import { lessonTheme } from '@/lib/lessonTheme';
 import { NotFoundPage } from './NotFoundPage';
 import styles from './LessonOutlinePage.module.css';
 
@@ -29,6 +30,7 @@ export function LessonOutlinePage() {
   return (
     <PageShell
       narrow
+      theme={lessonTheme(lesson.id)}
       title={lesson.title}
       crumbs={[
         { label: 'الرئيسية', to: routes.home() },
