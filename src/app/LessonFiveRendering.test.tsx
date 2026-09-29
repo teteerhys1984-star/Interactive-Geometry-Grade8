@@ -42,6 +42,27 @@ describe('Lesson 5 batch one — exact scope and flow', () => {
     expect(document.body.textContent).toContain('الإجابة الصحيحة هي ③:');
   });
 
+  it('keeps the two corrected source figures faithful to image 4', async () => {
+    const user = userEvent.setup();
+
+    const shapeIndex = lesson.steps.findIndex((s) => s.id === 'exercise-q2-1');
+    const shapeView = renderAt(`/lesson/${lesson.id}/step/${shapeIndex + 1}`);
+    const shapeSvg = shapeView.container.querySelector('article svg')!;
+    // A is the lower-left blue vertex in the source, not the lower-right one.
+    expect(shapeSvg.querySelector('circle[cx="24"][cy="38"]')).not.toBeNull();
+    await user.click(screen.getByRole('button', { name: 'حاول أولاً، ثم اكشف التحليل والحل' }));
+    expect(document.body.textContent).toContain('غير موافق؛ العبارة خاطئة.');
+    shapeView.unmount();
+
+    const linesIndex = lesson.steps.findIndex((s) => s.id === 'exercise-q2-3');
+    const linesView = renderAt(`/lesson/${lesson.id}/step/${linesIndex + 1}`);
+    const linesSvg = linesView.container.querySelector('article svg')!;
+    // The source has one arrow on each line and no invented diagonal movement arrow.
+    expect(linesSvg.querySelectorAll('polyline')).toHaveLength(2);
+    expect(linesSvg.querySelectorAll('line')).toHaveLength(2);
+    linesView.unmount();
+  });
+
   it('gives no immediate feedback in the batch interaction', async () => {
     const user = userEvent.setup();
     const index = lesson.steps.findIndex((s) => s.id === 'exercise-q1-decision-lab');

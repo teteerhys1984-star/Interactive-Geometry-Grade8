@@ -30,11 +30,12 @@ export function UnitExerciseFigure({ spec }: { spec: InteractiveDiagram }) {
       <svg viewBox="0 0 120 48" role="img" aria-label={spec.alt.replace(/\$([^$]+)\$/g, '$1')}>
         {scenario === 'translation-candidates' ? (
           <>
+            {/* Preserve the source's visual RTL order: ③, ②, ① from left to right. */}
             <g transform="translate(3 8)">
-              <Chevron x={3} y={8} />
-              <Chevron x={25} y={8} flip />
-              <text x="17" y="38">
-                ①
+              <Chevron x={1} y={14} />
+              <Chevron x={20} y={5} scale={1.6} />
+              <text x="16" y="38">
+                ③
               </text>
             </g>
             <g transform="translate(42 8)">
@@ -45,18 +46,19 @@ export function UnitExerciseFigure({ spec }: { spec: InteractiveDiagram }) {
               </text>
             </g>
             <g transform="translate(82 8)">
-              <Chevron x={1} y={14} />
-              <Chevron x={20} y={5} scale={1.6} />
-              <text x="16" y="38">
-                ③
+              <Chevron x={3} y={8} />
+              <Chevron x={25} y={8} flip />
+              <text x="17" y="38">
+                ①
               </text>
             </g>
           </>
         ) : null}
         {scenario === 'segment-candidates' ? (
           <>
-            {[0, 1, 2].map((n) => (
-              <g key={n} transform={`translate(${3 + n * 40} 4)`}>
+            {/* Preserve the source's visual RTL order: ③, ②, ① from left to right. */}
+            {[2, 1, 0].map((n, visualIndex) => (
+              <g key={n} transform={`translate(${3 + visualIndex * 40} 4)`}>
                 <rect x="0" y="0" width="35" height="32" className={styles.paper} />
                 {[7, 14, 21, 28].map((v) => (
                   <g key={v}>
@@ -131,8 +133,8 @@ export function UnitExerciseFigure({ spec }: { spec: InteractiveDiagram }) {
             <text x="27" y="25">
               F
             </text>
-            <circle cx="50" cy="38" r="1.2" />
-            <text x="51" y="44">
+            <circle cx="24" cy="38" r="1.2" />
+            <text x="19" y="44">
               A
             </text>
             <polygon points="70,8 96,8 82,38 56,38" className={styles.redShape} />
@@ -163,8 +165,9 @@ export function UnitExerciseFigure({ spec }: { spec: InteractiveDiagram }) {
             <text x="8" y="44">
               (d′)
             </text>
-            <line x1="73" y1="28" x2="43" y2="17" className={styles.motion} />
-            <polygon points="42,17 48,17 45,21" className={styles.motionFill} />
+            {/* The printed arrows lie on the two lines; they are not a translation arrow. */}
+            <polyline points="59,6 54,10 60,11" className={styles.lineArrow} />
+            <polyline points="70,28 65,32 71,33" className={styles.lineArrow} />
           </>
         ) : null}
       </svg>
