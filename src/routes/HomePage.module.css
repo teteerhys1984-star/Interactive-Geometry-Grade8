@@ -312,3 +312,66 @@
     padding-inline-end: var(--space-3);
   }
 }
+
+.hero {
+  color: #f6f8ff;
+  border-color: rgb(104 145 219 / 30%);
+  background:
+    radial-gradient(circle at 78% 28%, rgb(34 205 213 / 22%), transparent 14rem),
+    radial-gradient(circle at 12% 100%, rgb(119 76 225 / 30%), transparent 25rem),
+    linear-gradient(130deg, #09142b, #142650 55%, #25366e);
+  box-shadow: 0 35px 90px rgb(12 25 52 / 28%);
+}
+.heroGlow {
+  background: radial-gradient(circle, rgb(106 75 220 / 26%), transparent 68%);
+}
+.eyebrow {
+  color: #91e7ef;
+  border-color: rgb(121 224 235 / 30%);
+  background: rgb(37 182 196 / 10%);
+}
+.heroLead,
+.statLabel {
+  color: #b8c6dc;
+}
+.statValue {
+  color: #7de0e9;
+}
+.stat {
+  border-inline-end-color: rgb(189 211 246 / 20%);
+}
+.ctaPrimary {
+  color: #0c1930;
+  background: linear-gradient(110deg, #8ce5eb, #b8c5ff);
+  box-shadow: 0 14px 35px rgb(42 194 207 / 22%);
+}
+.ctaPrimary:hover {
+  color: #081329;
+  background: linear-gradient(110deg, #a4f0f4, #ced6ff);
+}
+.ctaSecondary {
+  color: #edf4ff;
+  border-color: rgb(184 206 244 / 28%);
+  background: rgb(255 255 255 / 8%);
+  backdrop-filter: blur(8px);
+}
+.ctaSecondary:hover {
+  color: #fff;
+  border-color: #71d9e5;
+  background: rgb(255 255 255 / 12%);
+}
+.mark {
+  inline-size: 18rem;
+  color: #7de0e9;
+  filter: drop-shadow(0 18px 35px rgb(50 204 215 / 20%));
+}
+.markSource {
+  fill: rgb(73 205 214 / 12%);
+  stroke: #8ee8ef;
+}
+.markImage {
+  stroke: #b6a3ff;
+}
+.markVector {
+  stroke: #d5e2f7;
+}

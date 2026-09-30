@@ -87,3 +87,33 @@
 .activeLink {
   transition: all var(--transition-fast);
 }
+
+.header {
+  color: #edf4ff;
+  background: color-mix(in srgb, #0d1730 94%, transparent);
+  border-block-end-color: rgb(136 165 220 / 20%);
+  box-shadow: 0 10px 35px rgb(7 15 33 / 18%);
+}
+.brand {
+  color: #f6f8ff;
+}
+.brand:hover {
+  color: #fff;
+}
+.brandMark {
+  color: #72d6e5;
+  border-color: rgb(125 159 222 / 30%);
+  background: linear-gradient(145deg, rgb(74 94 180 / 38%), rgb(20 38 73 / 70%));
+}
+.link {
+  color: #aebbd2;
+}
+.link:hover {
+  color: #fff;
+  background: rgb(255 255 255 / 8%);
+}
+.activeLink {
+  color: #dffaff;
+  background: rgb(48 168 190 / 16%);
+  box-shadow: inset 0 0 0 1px rgb(82 204 224 / 22%);
+}

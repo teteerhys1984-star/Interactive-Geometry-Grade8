@@ -185,3 +185,80 @@
   color: #fff;
   flex-shrink: 0;
 }
+
+.summary,
+section[aria-labelledby='objectives'],
+section[aria-labelledby='vocabulary'],
+section[aria-labelledby='steps'] {
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-surface) 96%, transparent);
+  box-shadow: var(--shadow-sm);
+}
+.summary {
+  max-width: none;
+  border-inline-start: 4px solid var(--color-accent);
+  color: var(--color-text);
+}
+section[aria-labelledby='objectives'],
+section[aria-labelledby='vocabulary'],
+section[aria-labelledby='steps'] {
+  margin-block: var(--space-5);
+}
+.steps {
+  position: relative;
+  gap: var(--space-3);
+}
+.steps::before {
+  content: '';
+  position: absolute;
+  inset-block: 2rem;
+  inset-inline-start: 1.05rem;
+  inline-size: 2px;
+  background: linear-gradient(var(--color-primary), var(--color-accent));
+  opacity: 0.28;
+}
+.stepLink {
+  position: relative;
+  min-block-size: 4.75rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+.stepLink:hover {
+  transform: translateX(-5px);
+  box-shadow: var(--shadow-md);
+}
+.stepNumber,
+.stepNumberDone {
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 0 0 5px var(--color-surface);
+}
+.start {
+  display: flex;
+  justify-content: center;
+  min-block-size: 3.5rem;
+  align-items: center;
+  border-radius: 999px;
+  background: linear-gradient(
+    110deg,
+    var(--color-primary),
+    color-mix(in srgb, var(--color-accent) 70%, var(--color-primary))
+  );
+  transition: all var(--transition-fast);
+}
+.start:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+@media (max-width: 560px) {
+  .summary,
+  section[aria-labelledby='objectives'],
+  section[aria-labelledby='vocabulary'],
+  section[aria-labelledby='steps'] {
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+  }
+}
