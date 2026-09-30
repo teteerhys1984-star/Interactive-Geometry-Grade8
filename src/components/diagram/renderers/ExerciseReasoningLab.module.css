@@ -1,0 +1,230 @@
+.lab {
+  width: 100%;
+  direction: rtl;
+  text-align: start;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(
+      circle at 12% 0%,
+      color-mix(in srgb, var(--color-accent-bg) 75%, transparent),
+      transparent 35%
+    ),
+    var(--color-surface);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.header {
+  padding: var(--space-4) var(--space-5) var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: var(--font-xs);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.title {
+  margin: var(--space-1) 0 0;
+  font-size: var(--font-lg);
+}
+
+.counter {
+  direction: ltr;
+  unicode-bidi: isolate;
+  flex: 0 0 auto;
+  padding: var(--space-2) var(--space-3);
+  border-radius: 999px;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  font-weight: 800;
+}
+
+.progress {
+  block-size: 4px;
+  background: var(--color-surface-alt);
+}
+
+.progress span {
+  display: block;
+  block-size: 100%;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-primary));
+  transition: width 180ms ease;
+}
+
+.tasks {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  display: grid;
+  gap: var(--space-4);
+}
+
+.task,
+.correct,
+.review {
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.task:focus-within {
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.correct {
+  border-color: color-mix(in srgb, var(--color-success) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-success) 7%, var(--color-surface));
+}
+
+.review {
+  border-color: color-mix(in srgb, var(--color-warning) 58%, var(--color-border));
+  background: color-mix(in srgb, var(--color-warning) 7%, var(--color-surface));
+}
+
+.taskHead {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: var(--space-3);
+}
+
+.taskNumber {
+  display: grid;
+  place-items: center;
+  inline-size: 1.8rem;
+  block-size: 1.8rem;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  font-size: var(--font-sm);
+  font-weight: 800;
+}
+
+.prompt {
+  margin: 0;
+  line-height: var(--leading-relaxed);
+  font-weight: 650;
+}
+
+.choices {
+  border: 0;
+  margin: var(--space-3) 2.6rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--space-2);
+}
+
+.choice,
+.selected {
+  min-block-size: 2.65rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  background: var(--color-surface-alt);
+}
+
+.choice:hover {
+  border-color: var(--color-primary);
+}
+
+.selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.choice input,
+.selected input {
+  accent-color: var(--color-primary);
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+.feedback {
+  margin: var(--space-3) 2.6rem 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+}
+
+.actions,
+.result {
+  padding: var(--space-4) var(--space-5);
+  border-block-start: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.actions p,
+.result p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+}
+
+.actions button,
+.result button {
+  border: 0;
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-primary);
+  color: white;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 620px) {
+  .header,
+  .tasks,
+  .actions,
+  .result {
+    padding-inline: var(--space-3);
+  }
+
+  .choices {
+    grid-template-columns: 1fr;
+    margin-inline-start: 0;
+  }
+
+  .actions,
+  .result {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress span,
+  .task,
+  .correct,
+  .review {
+    transition: none;
+  }
+}

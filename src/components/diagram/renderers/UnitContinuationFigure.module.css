@@ -1,0 +1,179 @@
+.wrap {
+  width: min(100%, 50rem);
+}
+
+.wrap svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--color-text);
+  font-family: var(--font-arabic);
+}
+
+.grid line {
+  stroke: #8fd0e7;
+  stroke-width: 2;
+}
+
+.yellowCell {
+  fill: #f8d34c;
+  opacity: 0.88;
+}
+
+.redDot {
+  fill: #e13c2f;
+}
+
+.redLabel,
+.measure {
+  fill: #c84432;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.exerciseBubble {
+  fill: #f4cc42;
+  stroke: #e0a82d;
+  stroke-width: 2;
+}
+
+.exerciseNumber {
+  fill: #b76a20;
+  font-size: 22px;
+}
+
+.paper {
+  fill: var(--color-surface);
+  stroke: var(--color-text);
+  stroke-width: 2;
+}
+
+.dashedGrid {
+  stroke: var(--color-text-muted);
+  stroke-width: 1.7;
+  stroke-dasharray: 5 9;
+}
+
+.dot {
+  fill: var(--color-text);
+}
+
+.label {
+  fill: var(--color-text);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 21px;
+  font-style: italic;
+}
+
+.redCross {
+  stroke: #cf4737;
+  stroke-width: 4;
+}
+
+.sourceTriangle,
+.authoredShape {
+  fill: color-mix(in srgb, var(--color-primary-soft) 35%, transparent);
+  stroke: var(--color-text);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+.rightMark {
+  fill: none;
+  stroke: #c84432;
+  stroke-width: 3;
+}
+
+.diagonal {
+  stroke: var(--color-accent);
+  stroke-width: 2.5;
+  stroke-dasharray: 7 5;
+}
+
+.authoredNote {
+  fill: var(--color-primary);
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.patternDot {
+  fill: color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+.axis,
+.baseLine {
+  stroke: var(--color-text);
+  stroke-width: 2.5;
+}
+
+.arrowHead {
+  fill: var(--color-primary);
+}
+
+.vector,
+.vectorSoft,
+.vectorAlt {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 3;
+}
+
+.vectorSoft {
+  stroke: var(--color-success);
+}
+
+.vectorAlt {
+  stroke: var(--color-accent);
+}
+
+.blackRectangle,
+.blueRectangle,
+.redRectangle,
+.greenRectangle {
+  fill: none;
+  stroke-width: 4;
+}
+
+.blackRectangle {
+  stroke: #20252d;
+}
+
+.blueRectangle {
+  stroke: #2368ba;
+}
+
+.redRectangle {
+  stroke: #c93f34;
+}
+
+.greenRectangle {
+  stroke: #1d8557;
+}
+
+.copyLabel {
+  fill: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .authoredShape,
+  .vector,
+  .vectorSoft,
+  .vectorAlt {
+    animation: settle 380ms ease-out both;
+    transform-origin: center;
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0.15;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
