@@ -69,6 +69,12 @@ function collectStrings(blocks: ContentBlock[]): string[] {
         output.push(...block.columns);
         for (const row of block.rows) output.push(...row);
         break;
+      case 'table':
+        if (block.title) output.push(block.title);
+        if (block.caption) output.push(block.caption);
+        output.push(...block.columns);
+        for (const row of block.rows) output.push(...row);
+        break;
     }
   }
   return output;
@@ -111,20 +117,21 @@ describe('course shell', () => {
   });
 });
 
-describe('implementation boundary — Lessons 1–6 (Lesson 6 is the independent Q3–15 continuation)', () => {
+describe('implementation boundary — Lessons 1–7 (Lessons 6 and 7 are the independent Q3–15 and Q16–28 continuations)', () => {
   it('registers exactly one unit', () => {
     expect(subject.units).toHaveLength(1);
     expect(subject.units[0]?.id).toBe('unit-01-parallelograms-and-translation');
   });
 
-  it('registers exactly six lessons in curriculum order', () => {
-    expect(allLessons).toHaveLength(6);
+  it('registers exactly seven lessons in curriculum order', () => {
+    expect(allLessons).toHaveLength(7);
     expect(allLessons[0]?.lesson.id).toBe('lesson-01-translation-and-properties');
     expect(allLessons[1]?.lesson.id).toBe('lesson-02-image-of-a-point');
     expect(allLessons[2]?.lesson.id).toBe('lesson-03-image-of-a-shape');
     expect(allLessons[3]?.lesson.id).toBe('lesson-04-triangle-congruence');
     expect(allLessons[4]?.lesson.id).toBe('lesson-05-unit-one-exercises');
     expect(allLessons[5]?.lesson.id).toBe('lesson-06-unit-one-exercises-continuation');
+    expect(allLessons[6]?.lesson.id).toBe('lesson-07-unit-one-exercises-final');
   });
 
   it('draws only on verified lesson pages or the supplied exercise images', () => {
@@ -161,7 +168,7 @@ describe('implementation boundary — Lessons 1–6 (Lesson 6 is the independent
           'صورة المصدر 3',
           'صورة المصدر 4',
           'صورة المصدر 5',
-          ...Array.from({ length: 13 }, (_, index) => `صورة المصدر — السؤال ${index + 3}`),
+          ...Array.from({ length: 26 }, (_, index) => `صورة المصدر — السؤال ${index + 3}`),
         ],
         `unexpected source page: ${page}`,
       ).toContain(page);
@@ -425,6 +432,18 @@ const VERIFIED_TEXTBOOK_FIGURES = [
   'fig-ex6-q6-grid-shape',
   'fig-ex6-q13-point-grid',
   'fig-ex6-q15-right-triangle',
+  // Lesson 7 reconstructions carry no measured geometry: each one is fixed by
+  // adjacency, the segments actually drawn, the shaded regions and the printed
+  // equality marks. Question 23's chart carries text and arrows only. The
+  // justification per figure is in docs/LESSON-07-FIGURES.md.
+  'fig-ex7-q16-rect-parallelogram',
+  'fig-ex7-q20-rectangle-diagonals',
+  'fig-ex7-q23-proof-flow',
+  'fig-ex7-q24-parallelogram',
+  'fig-ex7-q25-rectangle',
+  'fig-ex7-q26-rhombus',
+  'fig-ex7-q27-isosceles',
+  'fig-ex7-q28-parallels',
 ];
 
 /** The eleven verbatim steps of Lesson 2, in printed order (pages 8–10). */
@@ -545,9 +564,10 @@ describe('authored material never displaces the source', () => {
   it('keeps every unverified textbook figure as a faithful `reference` placeholder', () => {
     const textbookFigures = allDiagrams().filter((d) => d.origin === 'textbook');
     // Lessons 1–5 contribute 43 figures. Lesson 6 adds five reference figures
-    // and three verified reconstructions, for a total of 51 textbook figures.
-    expect(textbookFigures).toHaveLength(51);
-    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(51);
+    // and three reconstructions (51). Lesson 7 adds five reference figures and
+    // eight reconstructions, for a total of 64 textbook figures.
+    expect(textbookFigures).toHaveLength(64);
+    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(64);
     for (const diagram of textbookFigures) {
       if (VERIFIED_TEXTBOOK_FIGURES.includes(diagram.id)) continue;
       expect(diagram.kind, `${diagram.id} must stay a reference placeholder`).toBe('reference');

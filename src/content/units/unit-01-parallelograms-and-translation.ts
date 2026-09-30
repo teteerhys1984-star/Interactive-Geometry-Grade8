@@ -15,6 +15,7 @@ import { lesson03 } from './lesson-03-image-of-a-shape';
 import { lesson04 } from './lesson-04-triangle-congruence';
 import { lesson05 } from './lesson-05-unit-exercises';
 import { lesson06 } from './lesson-06-unit-exercises-continuation';
+import { lesson07 } from './lesson-07-unit-exercises-final';
 
 /**
  * ============================================================================
@@ -446,5 +447,8 @@ export const unit01: UnitInput = {
 
     /* تتمة مستقلة للدرس الخامس — تمرينات الوحدة الأولى: الأسئلة 3–15. */
     lesson06,
+
+    /* تتمة مستقلة ثانية — تمرينات الوحدة الأولى: الأسئلة 16–28، وبها تكتمل المجموعة. */
+    lesson07,
   ],
 };

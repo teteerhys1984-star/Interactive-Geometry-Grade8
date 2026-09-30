@@ -7,6 +7,7 @@ import { QuestionGroup } from './QuestionGroup';
 import { TeachingBlock } from './TeachingBlock';
 import type { TeachingVariant } from './TeachingBlock';
 import { CompareTable } from './CompareTable';
+import { SourceTable } from './SourceTable';
 
 /**
  * Renders the typed content-block list produced by authored lessons.
@@ -51,6 +52,16 @@ export function Block({ block }: { block: ContentBlock }) {
 
     case 'questionGroup':
       return <QuestionGroup title={block.title} items={block.items} />;
+
+    case 'table':
+      return (
+        <SourceTable
+          title={block.title}
+          columns={block.columns}
+          rows={block.rows}
+          caption={block.caption}
+        />
+      );
 
     case 'compare':
       return <CompareTable title={block.title} columns={block.columns} rows={block.rows} />;

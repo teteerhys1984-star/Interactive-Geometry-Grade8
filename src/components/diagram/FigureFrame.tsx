@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { RichText } from '@/components/math';
 import styles from './FigureFrame.module.css';
 
 interface FigureFrameProps {
@@ -16,7 +17,8 @@ interface FigureFrameProps {
  *   - fluid width, never overflows the viewport,
  *   - aspect-ratio box reserves vertical space so nothing jumps while loading,
  *   - the figure body is LTR (diagrams are drawn LTR) while the caption stays
- *     in the document's Arabic RTL flow.
+ *     in the document's Arabic RTL flow, with any `$…$` run inside it isolated
+ *     structurally like every other piece of prose on the page.
  */
 export function FigureFrame({ children, caption, aspectRatio }: FigureFrameProps) {
   return (
@@ -28,7 +30,11 @@ export function FigureFrame({ children, caption, aspectRatio }: FigureFrameProps
       >
         {children}
       </div>
-      {caption ? <figcaption className={styles.caption}>{caption}</figcaption> : null}
+      {caption ? (
+        <figcaption className={styles.caption}>
+          <RichText text={caption} />
+        </figcaption>
+      ) : null}
     </figure>
   );
 }

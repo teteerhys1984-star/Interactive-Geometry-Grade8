@@ -9,6 +9,10 @@ import { UnitExerciseLab } from './UnitExerciseLab';
 import { UnitExerciseFigure } from './UnitExerciseFigure';
 import { ExerciseReasoningLab } from './ExerciseReasoningLab';
 import { UnitContinuationFigure } from './UnitContinuationFigure';
+import { ProofWorkshop } from './ProofWorkshop';
+import { HintLadder } from './HintLadder';
+import { ProofFlow } from './ProofFlow';
+import { UnitFinalFigure } from './UnitFinalFigure';
 
 /**
  * ============================================================================
@@ -26,6 +30,11 @@ import { UnitContinuationFigure } from './UnitContinuationFigure';
  *  could not be verified, the figure stays a `reference` placeholder — see
  *  docs/LESSON-01-FIGURES.md.
  *
+ *  Lesson 7 adds `unit-final-figure`, which follows the same rule: it redraws
+ *  a printed figure only when adjacency, drawn segments, shaded regions and
+ *  equality marks are all explicit in the scan (docs/LESSON-07-FIGURES.md);
+ *  every other Lesson 7 figure stays a `reference`.
+ *
  *  This module is imported once from `src/main.tsx`, so registration is global.
  * ============================================================================
  */
@@ -39,6 +48,10 @@ registerInteractiveRenderer('unit-exercise-lab', UnitExerciseLab);
 registerInteractiveRenderer('unit-exercise-figure', UnitExerciseFigure);
 registerInteractiveRenderer('exercise-reasoning-lab', ExerciseReasoningLab);
 registerInteractiveRenderer('unit-continuation-figure', UnitContinuationFigure);
+registerInteractiveRenderer('proof-workshop', ProofWorkshop);
+registerInteractiveRenderer('hint-ladder', HintLadder);
+registerInteractiveRenderer('proof-flow', ProofFlow);
+registerInteractiveRenderer('unit-final-figure', UnitFinalFigure);
 
 export {
   TranslationFigure,
@@ -51,4 +64,8 @@ export {
   UnitExerciseFigure,
   ExerciseReasoningLab,
   UnitContinuationFigure,
+  ProofWorkshop,
+  HintLadder,
+  ProofFlow,
+  UnitFinalFigure,
 };

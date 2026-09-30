@@ -46,7 +46,11 @@ export function ReferenceDiagram({ spec }: { spec: ReferenceDiagramSpec }) {
           <RichText text={spec.alt} />
         </p>
       </div>
-      {spec.caption ? <figcaption className={styles.caption}>{spec.caption}</figcaption> : null}
+      {spec.caption ? (
+        <figcaption className={styles.caption}>
+          <RichText text={spec.caption} />
+        </figcaption>
+      ) : null}
     </figure>
   );
 }

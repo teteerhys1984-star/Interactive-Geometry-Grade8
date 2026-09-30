@@ -199,6 +199,30 @@ export const teachingBlockSchema = z.object({
   blocks: z.lazy((): z.ZodType => z.array(contentBlockSchema).min(1)),
 });
 
+/**
+ * A REPRODUCED PRINTED TABLE, with any number of columns.
+ *
+ * Added for the «الفرض / الخاصة / النتيجة» proof-plan grids the textbook prints
+ * in Questions 20, 21 and 22: `compare` is fixed at two columns and cannot hold
+ * them. Cells are reproduced exactly as printed, including the dotted blanks
+ * the student is asked to fill («...............»).
+ *
+ * Every row must have as many cells as there are columns — enforced below so a
+ * malformed reproduction fails at registration time rather than in the layout.
+ */
+export const tableBlockSchema = z
+  .object({
+    type: z.literal('table'),
+    title: z.string().min(1).optional(),
+    columns: z.array(z.string().min(1)).min(2),
+    rows: z.array(z.array(z.string().min(1)).min(2)).min(1),
+    /** Arabic caption rendered under the table. */
+    caption: z.string().min(1).optional(),
+  })
+  .refine((block) => block.rows.every((row) => row.length === block.columns.length), {
+    message: 'every table row must have exactly as many cells as there are columns',
+  });
+
 /** A compact two-column comparison table (authored teaching aid). */
 export const compareBlockSchema = z.object({
   type: z.literal('compare'),
@@ -233,6 +257,7 @@ export type ContentBlock =
   | z.infer<typeof listBlockSchema>
   | z.infer<typeof figureBlockSchema>
   | z.infer<typeof questionGroupBlockSchema>
+  | z.infer<typeof tableBlockSchema>
   | z.infer<typeof compareBlockSchema>
   | { type: 'callout'; variant: string; title?: string; blocks: ContentBlock[] }
   | {
@@ -251,6 +276,7 @@ export const contentBlockSchema: z.ZodType<ContentBlock> = z.lazy(() =>
     listBlockSchema,
     figureBlockSchema,
     questionGroupBlockSchema,
+    tableBlockSchema,
     compareBlockSchema,
     calloutBlockSchema,
     teachingBlockSchema,

@@ -1,0 +1,204 @@
+.wrap {
+  width: min(100%, 50rem);
+}
+
+.wrap svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--color-text);
+  font-family: var(--font-arabic);
+}
+
+/* ── points and labels ─────────────────────────────────────────────────── */
+
+.dot {
+  fill: var(--color-text);
+}
+
+.label,
+.labelAccent {
+  fill: var(--color-text);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 22px;
+  font-style: italic;
+}
+
+.labelAccent {
+  fill: var(--color-accent);
+  font-weight: 700;
+}
+
+.lineLabel,
+.lineLabelRed {
+  fill: var(--color-text);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 21px;
+  font-style: italic;
+}
+
+.lineLabelRed {
+  fill: #c84432;
+}
+
+.measure {
+  fill: #c84432;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.note,
+.noteStrong {
+  fill: var(--color-text-muted);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 19px;
+}
+
+.noteStrong {
+  fill: var(--color-primary);
+  font-weight: 700;
+  font-size: 21px;
+}
+
+/* ── strokes and regions ───────────────────────────────────────────────── */
+
+.outline,
+.outlineDashed {
+  fill: none;
+  stroke: var(--color-text);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+.outlineDashed {
+  stroke-width: 2.2;
+  stroke-dasharray: 8 6;
+  stroke-opacity: 0.75;
+}
+
+.edge {
+  stroke: var(--color-text);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.plainRegion {
+  fill: var(--color-surface);
+}
+
+.shadedWarm {
+  fill: #f7d967;
+  fill-opacity: 0.72;
+}
+
+.shadedCool {
+  fill: #8ec6e8;
+  fill-opacity: 0.6;
+}
+
+.panel {
+  fill: color-mix(in srgb, var(--color-primary-soft) 26%, transparent);
+  stroke: color-mix(in srgb, var(--color-primary) 35%, transparent);
+  stroke-width: 1.6;
+}
+
+.helper {
+  stroke: var(--color-text);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.axisLine {
+  stroke: var(--color-accent);
+  stroke-width: 2.6;
+  stroke-dasharray: 10 6;
+}
+
+.parallelLine {
+  stroke: var(--color-text);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.transversal {
+  stroke: #c84432;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.diagonalRed,
+.redSegment {
+  stroke: #c84432;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.rightMark {
+  fill: none;
+  stroke: #c84432;
+  stroke-width: 2.6;
+}
+
+.tick line {
+  stroke: #c84432;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+.angleArc {
+  fill: none;
+  stroke: #c84432;
+  stroke-width: 2.6;
+}
+
+.angleLabel {
+  fill: #c84432;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* ── vectors ───────────────────────────────────────────────────────────── */
+
+.arrowHead {
+  fill: var(--color-primary);
+}
+
+.vector,
+.vectorSoft,
+.vectorGhost {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 3;
+}
+
+.vectorSoft {
+  stroke: var(--color-success);
+}
+
+.vectorGhost {
+  stroke: var(--color-primary);
+  stroke-opacity: 0.45;
+  stroke-width: 2.4;
+  stroke-dasharray: 7 6;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .shadedWarm,
+  .shadedCool,
+  .vector,
+  .vectorSoft,
+  .vectorGhost {
+    animation: fade-in 420ms ease-out both;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

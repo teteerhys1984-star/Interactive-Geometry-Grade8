@@ -1,0 +1,103 @@
+.flow {
+  width: 100%;
+  direction: rtl;
+  text-align: start;
+  padding: var(--space-5) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.chain {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  justify-items: center;
+  gap: 0;
+}
+
+.row {
+  display: grid;
+  justify-items: center;
+  inline-size: 100%;
+}
+
+.pair,
+.pairWithAside {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  inline-size: 100%;
+  flex-wrap: wrap;
+}
+
+.box {
+  flex: 0 1 26rem;
+  min-block-size: 3rem;
+  display: grid;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-primary-soft) 45%, var(--color-surface));
+  text-align: center;
+  line-height: var(--leading-relaxed);
+  font-weight: 600;
+}
+
+.note {
+  flex: 0 0 auto;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-danger) 40%, var(--color-border));
+  border-radius: var(--radius-sm);
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 6%, var(--color-surface));
+  font-size: var(--font-xs);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.aside {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.asideBox {
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid color-mix(in srgb, var(--color-accent) 50%, var(--color-border));
+  border-radius: var(--radius-md);
+  background: var(--color-accent-bg);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  text-align: center;
+}
+
+.asideArrow {
+  color: var(--color-accent);
+  font-size: var(--font-lg);
+}
+
+.arrow {
+  display: block;
+  padding-block: var(--space-1);
+  color: var(--color-primary);
+  font-size: var(--font-xl);
+  line-height: 1;
+}
+
+@media (max-width: 620px) {
+  .box {
+    flex-basis: 100%;
+  }
+
+  .aside {
+    flex-direction: column;
+  }
+
+  .asideArrow {
+    transform: rotate(-90deg);
+  }
+}
