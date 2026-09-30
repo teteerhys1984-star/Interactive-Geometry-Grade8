@@ -65,3 +65,15 @@
     max-width: 100%;
   }
 }
+.previous,
+.next {
+  min-block-size: 4.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+.previous:hover,
+.next:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}

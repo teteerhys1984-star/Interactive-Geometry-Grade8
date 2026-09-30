@@ -247,3 +247,68 @@
     font-size: var(--font-2xl);
   }
 }
+
+.hero {
+  min-block-size: 30rem;
+  border-radius: var(--radius-xl);
+  border-color: color-mix(in srgb, var(--color-primary) 18%, var(--color-border));
+  background: linear-gradient(
+    125deg,
+    color-mix(in srgb, var(--color-surface) 95%, transparent),
+    color-mix(in srgb, var(--color-primary-soft) 82%, var(--color-surface))
+  );
+  box-shadow: var(--shadow-lg);
+  isolation: isolate;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.32;
+  background-image: radial-gradient(circle, var(--color-primary) 1px, transparent 1.5px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(90deg, transparent 25%, #000);
+  pointer-events: none;
+  z-index: -1;
+}
+.heroTitle {
+  letter-spacing: -0.035em;
+  max-width: 12ch;
+}
+.eyebrow {
+  display: inline-flex;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary-soft) 65%, transparent);
+}
+.stat {
+  padding-inline-end: var(--space-5);
+  border-inline-end: 1px solid var(--color-border);
+}
+.ctaPrimary,
+.ctaSecondary {
+  min-block-size: 3rem;
+  justify-content: center;
+  border-radius: 999px;
+}
+.unitCard {
+  min-block-size: 7rem;
+  border-color: color-mix(in srgb, var(--color-primary) 12%, var(--color-border));
+}
+.teacher {
+  border-style: solid;
+  background: color-mix(in srgb, var(--color-surface) 72%, var(--color-surface-alt));
+}
+@media (max-width: 720px) {
+  .hero {
+    min-block-size: auto;
+  }
+  .ctaPrimary,
+  .ctaSecondary {
+    inline-size: 100%;
+  }
+  .stat {
+    padding-inline-end: var(--space-3);
+  }
+}

@@ -95,3 +95,26 @@
 .label {
   padding-block-start: 1px;
 }
+
+.sidebar {
+  inset-block-start: 5.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  background: color-mix(in srgb, var(--color-surface) 94%, transparent);
+  backdrop-filter: blur(12px);
+}
+.list {
+  border-inline-start-color: color-mix(in srgb, var(--color-primary) 24%, var(--color-border));
+}
+.item,
+.activeItem {
+  min-block-size: 2.6rem;
+  align-items: center;
+  transition: all var(--transition-fast);
+}
+.activeItem {
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--color-primary) 45%, transparent);
+}
+.dotActive {
+  box-shadow: 0 0 0 4px var(--color-primary-soft);
+}

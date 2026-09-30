@@ -31,3 +31,35 @@
   gap: var(--space-2);
   flex-wrap: wrap;
 }
+
+.page {
+  padding-block: var(--space-6) var(--space-7);
+}
+.heading {
+  position: relative;
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(
+    130deg,
+    var(--color-surface),
+    color-mix(in srgb, var(--color-primary-soft) 55%, var(--color-surface))
+  );
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.heading::after {
+  content: '';
+  position: absolute;
+  inset-block-start: -3.5rem;
+  inset-inline-end: -2rem;
+  inline-size: 10rem;
+  block-size: 10rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.title {
+  font-size: clamp(1.75rem, 4vw, 2.6rem);
+  letter-spacing: -0.02em;
+}

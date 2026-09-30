@@ -74,3 +74,34 @@
     padding: var(--space-5) var(--space-4);
   }
 }
+
+.article {
+  border-radius: var(--radius-xl);
+  border-color: color-mix(in srgb, var(--color-primary) 14%, var(--color-border));
+  box-shadow: var(--shadow-md);
+}
+.header {
+  position: relative;
+  background: linear-gradient(120deg, var(--color-primary-soft), transparent 70%);
+  margin: calc(-1 * var(--space-6)) calc(-1 * var(--space-5)) var(--space-5);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+@media (max-width: 900px) {
+  .layout {
+    padding-block-start: var(--space-4);
+  }
+  .header {
+    margin: calc(-1 * var(--space-5)) calc(-1 * var(--space-4)) var(--space-5);
+    padding: var(--space-4);
+  }
+}
+@media (max-width: 520px) {
+  .layout {
+    padding-inline: var(--space-3);
+  }
+  .article {
+    padding: var(--space-5) var(--space-4);
+    border-radius: var(--radius-lg);
+  }
+}

@@ -37,3 +37,14 @@
   border-color: var(--color-primary);
   color: #fff;
 }
+.rail {
+  scrollbar-width: thin;
+}
+.item,
+.activeItem {
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+.activeItem {
+  box-shadow: 0 0 0 4px var(--color-primary-soft);
+}

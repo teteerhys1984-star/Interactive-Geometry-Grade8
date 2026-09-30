@@ -48,3 +48,30 @@
 .submit:hover {
   background: var(--color-primary-hover);
 }
+.form {
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-6);
+}
+.input {
+  min-block-size: 3rem;
+  border-radius: var(--radius-md);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-soft);
+  outline: none;
+}
+.submit {
+  min-block-size: 3rem;
+  border-radius: 999px;
+  padding-inline: var(--space-6);
+  transition: all var(--transition-fast);
+}
+.submit:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}

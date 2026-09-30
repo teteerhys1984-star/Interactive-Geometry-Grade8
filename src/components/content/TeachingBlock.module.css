@@ -117,3 +117,14 @@
 .tip {
   --color-teaching-accent: var(--color-hint);
 }
+.block {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+.header {
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--color-teaching-bg) 80%, var(--color-surface)),
+    var(--color-surface)
+  );
+}

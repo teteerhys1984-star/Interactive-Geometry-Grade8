@@ -54,3 +54,28 @@
   border-inline-start-color: var(--color-accent);
   background: var(--color-accent-bg);
 }
+.callout {
+  border: 1px solid var(--color-border);
+  border-inline-start: 4px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+.icon {
+  border: 1px solid var(--color-border);
+}
+.definition,
+.example {
+  border-inline-start-color: var(--color-primary);
+}
+.theorem {
+  border-inline-start-color: var(--color-success);
+}
+.warning {
+  border-inline-start-color: var(--color-warning);
+}
+.hint {
+  border-inline-start-color: var(--color-hint);
+}
+.activity {
+  border-inline-start-color: var(--color-accent);
+}

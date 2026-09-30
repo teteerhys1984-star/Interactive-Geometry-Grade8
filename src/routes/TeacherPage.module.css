@@ -134,3 +134,21 @@
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
+.card {
+  border-radius: var(--radius-lg);
+  border-color: color-mix(in srgb, var(--color-primary) 12%, var(--color-border));
+  transition: all var(--transition-fast);
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--color-primary) 38%, var(--color-border));
+}
+.openButton {
+  border-radius: 999px;
+  min-block-size: 2.75rem;
+  transition: all var(--transition-fast);
+}
+.secondary {
+  border-radius: 999px;
+}
