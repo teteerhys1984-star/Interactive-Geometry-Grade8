@@ -1,10 +1,11 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { App } from './App';
 import { allLessons, lessonDiagrams, referenceFigures, subject } from '@/content/registry';
 import { loadProgress } from '@/lib/progress';
+import { TEACHER_PASSPHRASE, lockTeacherArea, unlockTeacherArea } from '@/lib/teacherAccess';
 
 function renderAt(route: string) {
   return render(
@@ -18,20 +19,47 @@ const lesson = allLessons[0]!.lesson;
 const unit = allLessons[0]!.unit;
 const lastLesson = allLessons[allLessons.length - 1]!.lesson;
 
+/** Every test starts from a locked session, whatever ran before it. */
+beforeEach(() => {
+  lockTeacherArea();
+});
+
 /**
- * Renders at `route` and, when the Teacher Area gate is up, unlocks it with
- * the real passphrase. No-ops on routes that are not gated or when the
- * session is already unlocked.
+ * Opens `route` with the Teacher Area already unlocked, using the very same
+ * passphrase check the gate form calls (`unlockTeacherArea` returns false for
+ * anything but the real passphrase, so the requirement is still asserted here).
+ *
+ * This deliberately does NOT drive the <form>. Typing the eight characters and
+ * clicking «دخول» costs ~700ms per call because every keystroke is an
+ * individual event round-trip, and these helpers are used inside loops that
+ * cover every lesson — the gate would be re-typed once per lesson for no extra
+ * coverage. The form itself is exercised end-to-end by the gate tests below
+ * (correct and wrong passphrase, locking again) and by the per-lesson
+ * rendering suites, so nothing about the protection goes untested.
  */
 async function renderUnlocked(route: string) {
+  expect(unlockTeacherArea(TEACHER_PASSPHRASE)).toBe(true);
   const user = userEvent.setup();
   const view = renderAt(route);
-  const input = screen.queryByLabelText('كلمة المرور المشتركة');
-  if (input) {
-    await user.type(input, 'somer173');
-    await user.click(screen.getByRole('button', { name: 'دخول' }));
-  }
+  expect(screen.queryByLabelText('كلمة المرور المشتركة')).toBeNull();
   return { user, ...view };
+}
+
+/**
+ * Normalised text of every element under `root`, collected in ONE pass.
+ *
+ * `screen.getAllByText()` walks the whole document per call, so asserting a
+ * list of N strings with N queries is O(N × DOM). Collecting once and then
+ * testing membership keeps the identical meaning at a fraction of the cost.
+ * The normalisation mirrors Testing Library's default matcher (collapse
+ * whitespace, then trim).
+ */
+function renderedTexts(root: Element): Set<string> {
+  const texts = new Set<string>();
+  for (const node of root.querySelectorAll('*')) {
+    texts.add((node.textContent ?? '').replace(/\s+/g, ' ').trim());
+  }
+  return texts;
 }
 
 describe('routing', () => {
@@ -176,19 +204,38 @@ describe('reference figures in the rendered lesson', () => {
     }
   });
 
+  it('reaches the figure report through its own tab', async () => {
+    const lessonId = referenceFigures[0]!.lesson.id;
+    const { user, container } = await renderUnlocked(`/teacher/${lessonId}`);
+    const panel = container.querySelector('#teacher-panel-figures') as HTMLElement;
+    expect(panel).toHaveAttribute('hidden');
+    await user.click(screen.getByRole('tab', { name: 'تقرير الأشكال' }));
+    expect(panel).not.toHaveAttribute('hidden');
+    expect(within(panel).getAllByRole('listitem').length).toBeGreaterThan(0);
+  });
+
+  // Budget note: this walks every lesson that owns a reference figure and
+  // renders a full teacher page for each (~2.4s in total locally). The default
+  // 5s left no room on a slower CI runner once Lesson 7 joined, so the cost was
+  // cut first (no per-lesson gate typing, no per-lesson tab activation, no
+  // accessibility-tree walk) and the remaining budget is stated explicitly,
+  // matching the other all-lesson teacher loops in this file.
   it('exposes all reference figures to the teacher area, reported per lesson', async () => {
     expect(referenceFigures.length).toBeGreaterThan(0);
     const lessonIds = [...new Set(referenceFigures.map((figure) => figure.lesson.id))];
     for (const lessonId of lessonIds) {
-      const { user, container, unmount } = await renderUnlocked(`/teacher/${lessonId}`);
-      await user.click(screen.getByRole('tab', { name: 'تقرير الأشكال' }));
+      const { container, unmount } = await renderUnlocked(`/teacher/${lessonId}`);
+      // The four panels are all mounted by design (see TeacherLessonPage), so
+      // the report can be read without activating its tab — the tab itself is
+      // covered by the test above. Counting <li> directly also avoids an
+      // accessibility-tree walk of a panel holding dozens of diagram records.
       const panel = container.querySelector('#teacher-panel-figures') as HTMLElement;
       const target = allLessons.find(({ lesson: item }) => item.id === lessonId)!.lesson;
-      const expected = lessonDiagrams(target).length;
-      expect(within(panel).getAllByRole('listitem')).toHaveLength(expected);
+      const reported = panel.querySelectorAll(':scope > ul > li');
+      expect(reported).toHaveLength(lessonDiagrams(target).length);
       unmount();
     }
-  });
+  }, 15_000);
 });
 
 describe('instructor credit', () => {
@@ -451,13 +498,17 @@ describe('teacher area — per-lesson sections', () => {
         solutions.length,
       );
       expect(container.textContent).toContain('لا تتضمّن إجابات مطبوعة');
-      for (const solution of solutions) {
-        // .trim(): one source reference carries a trailing space; the DOM
-        // normaliser drops it, the string matcher would not.
-        expect(screen.getAllByText(solution.reference.trim()).length).toBeGreaterThan(0);
-      }
+      // One DOM pass, then membership. .trim(): one source reference carries a
+      // trailing space; the DOM normaliser drops it, the string matcher would not.
+      const shown = renderedTexts(container.querySelector('#teacher-panel-solutions')!);
+      const missing = solutions
+        .map((solution) => solution.reference.trim())
+        .filter((reference) => !shown.has(reference));
+      expect(missing).toEqual([]);
       unmount();
     }
+    // Was 16s (and timing out on CI) because every solution triggered its own
+    // full-document text scan; one DOM pass per lesson brings it to ~3.5s.
   }, 15_000);
 
   it('flags every solution that depends on an unreadable figure', async () => {
