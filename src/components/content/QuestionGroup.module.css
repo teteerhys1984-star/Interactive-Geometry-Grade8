@@ -57,3 +57,15 @@
   max-width: none;
   white-space: pre-line;
 }
+.item {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+.item:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.marker {
+  border-radius: 9px;
+}

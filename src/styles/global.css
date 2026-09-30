@@ -116,3 +116,56 @@ svg {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Quiet geometric atmosphere: decorative only, never part of lesson figures. */
+body {
+  background-image:
+    radial-gradient(
+      circle at 12% 8%,
+      color-mix(in srgb, var(--color-accent) 7%, transparent) 0,
+      transparent 25rem
+    ),
+    linear-gradient(color-mix(in srgb, var(--color-primary) 3%, transparent) 1px, transparent 1px),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-primary) 3%, transparent) 1px,
+      transparent 1px
+    );
+  background-size:
+    auto,
+    48px 48px,
+    48px 48px;
+  background-attachment: fixed;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-primary-soft);
+  color: var(--color-text);
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+@media (max-width: 640px) {
+  body {
+    background-size:
+      auto,
+      36px 36px,
+      36px 36px;
+  }
+  h1 {
+    font-size: var(--font-xl);
+  }
+}

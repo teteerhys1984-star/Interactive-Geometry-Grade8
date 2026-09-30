@@ -1,0 +1,153 @@
+.journey {
+  position: relative;
+  display: grid;
+  gap: var(--space-4);
+  max-width: 58rem;
+  margin-inline: auto;
+}
+
+.journey::before {
+  content: '';
+  position: absolute;
+  inset-block: 3rem;
+  inset-inline-start: 2rem;
+  inline-size: 2px;
+  background: linear-gradient(var(--color-accent), var(--color-primary), var(--color-border));
+  opacity: 0.45;
+}
+
+.lessonCard {
+  position: relative;
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  min-block-size: 9rem;
+  padding: var(--space-5);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, var(--color-border));
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(
+      120deg,
+      color-mix(in srgb, var(--color-surface) 96%, transparent),
+      var(--color-surface)
+    ),
+    var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text);
+  text-decoration: none;
+  overflow: hidden;
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-base),
+    border-color var(--transition-fast);
+}
+
+.lessonCard::after {
+  content: '';
+  position: absolute;
+  inset-block-start: -4rem;
+  inset-inline-end: -4rem;
+  inline-size: 11rem;
+  block-size: 11rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+  border-radius: 50%;
+}
+
+.lessonCard:hover {
+  color: var(--color-text);
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--color-accent) 55%, var(--color-border));
+  box-shadow: var(--shadow-md);
+}
+
+.node {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  inline-size: 4rem;
+  block-size: 4rem;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 50%, var(--color-border));
+  border-radius: 18px;
+  background: linear-gradient(145deg, #17254a, #293b72);
+  box-shadow:
+    0 0 0 7px var(--color-bg),
+    0 10px 25px rgb(20 33 67 / 22%);
+  color: #dff9ff;
+  font-size: var(--font-xl);
+  font-weight: 800;
+}
+
+.body {
+  min-width: 0;
+}
+.kicker {
+  display: block;
+  color: var(--color-accent);
+  font-size: var(--font-xs);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+.title {
+  margin: var(--space-1) 0;
+  font-size: var(--font-xl);
+}
+.summary {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-start: var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--font-xs);
+}
+.meta span {
+  padding: 0.15rem var(--space-2);
+  border-radius: 999px;
+  background: var(--color-surface-alt);
+}
+.action {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: var(--font-xl);
+}
+
+.assessment {
+  margin-block-start: var(--space-7);
+}
+
+@media (max-width: 600px) {
+  .journey::before {
+    inset-inline-start: 1.35rem;
+  }
+  .lessonCard {
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+  }
+  .node {
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    border-radius: 12px;
+    font-size: var(--font-base);
+    box-shadow: 0 0 0 5px var(--color-bg);
+  }
+  .action {
+    display: none;
+  }
+  .title {
+    font-size: var(--font-lg);
+  }
+}

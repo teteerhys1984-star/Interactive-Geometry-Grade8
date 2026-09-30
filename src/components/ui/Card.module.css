@@ -48,3 +48,28 @@
   font-size: var(--font-sm);
   color: var(--color-text-muted);
 }
+.card {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--color-primary) 12%, var(--color-border));
+  box-shadow: var(--shadow-sm);
+}
+.card::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 3px;
+  background: linear-gradient(var(--color-primary), var(--color-accent));
+  opacity: 0.55;
+}
+.interactive {
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-base),
+    border-color var(--transition-fast);
+}
+.interactive:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border));
+  box-shadow: var(--shadow-md);
+}

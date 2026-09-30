@@ -95,3 +95,65 @@
 .label {
   padding-block-start: 1px;
 }
+
+.sidebar {
+  inset-block-start: 5.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  background: color-mix(in srgb, var(--color-surface) 94%, transparent);
+  backdrop-filter: blur(12px);
+}
+.list {
+  border-inline-start-color: color-mix(in srgb, var(--color-primary) 24%, var(--color-border));
+}
+.item,
+.activeItem {
+  min-block-size: 2.6rem;
+  align-items: center;
+  transition: all var(--transition-fast);
+}
+.activeItem {
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--color-primary) 45%, transparent);
+}
+.dotActive {
+  box-shadow: 0 0 0 4px var(--color-primary-soft);
+}
+
+.sidebar {
+  color: #ecf3ff;
+  border-color: rgb(112 146 207 / 28%);
+  background:
+    radial-gradient(circle at 100% 0, rgb(35 197 207 / 14%), transparent 11rem),
+    linear-gradient(160deg, #101d3b, #17264b);
+  box-shadow: 0 25px 60px rgb(12 24 49 / 22%);
+}
+.heading {
+  color: #8edee7;
+}
+.lessonLink {
+  color: #f5f7ff;
+}
+.list {
+  border-inline-start-color: rgb(111 211 224 / 30%);
+}
+.item {
+  color: #aebdd5;
+}
+.item:hover {
+  color: #fff;
+  background: rgb(255 255 255 / 7%);
+}
+.activeItem {
+  color: #e8fdff;
+  background: linear-gradient(90deg, rgb(54 190 205 / 18%), rgb(106 86 208 / 20%));
+  box-shadow: inset 3px 0 0 #65d6e1;
+}
+.dot {
+  color: #bdc9dc;
+  background: rgb(255 255 255 / 9%);
+}
+.dotActive {
+  color: #10203d;
+  background: #8be3ea;
+  box-shadow: 0 0 0 4px rgb(94 216 226 / 15%);
+}

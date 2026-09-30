@@ -64,3 +64,56 @@
     text-align: center;
   }
 }
+
+/* Premium, low-contrast navigation chrome. */
+.header {
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  backdrop-filter: blur(18px) saturate(130%);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 55%);
+}
+.inner {
+  min-block-size: 4.25rem;
+}
+.brandMark {
+  display: grid;
+  place-items: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: linear-gradient(145deg, var(--color-primary-soft), var(--color-surface));
+}
+.link,
+.activeLink {
+  transition: all var(--transition-fast);
+}
+
+.header {
+  color: #edf4ff;
+  background: color-mix(in srgb, #0d1730 94%, transparent);
+  border-block-end-color: rgb(136 165 220 / 20%);
+  box-shadow: 0 10px 35px rgb(7 15 33 / 18%);
+}
+.brand {
+  color: #f6f8ff;
+}
+.brand:hover {
+  color: #fff;
+}
+.brandMark {
+  color: #72d6e5;
+  border-color: rgb(125 159 222 / 30%);
+  background: linear-gradient(145deg, rgb(74 94 180 / 38%), rgb(20 38 73 / 70%));
+}
+.link {
+  color: #aebbd2;
+}
+.link:hover {
+  color: #fff;
+  background: rgb(255 255 255 / 8%);
+}
+.activeLink {
+  color: #dffaff;
+  background: rgb(48 168 190 / 16%);
+  box-shadow: inset 0 0 0 1px rgb(82 204 224 / 22%);
+}

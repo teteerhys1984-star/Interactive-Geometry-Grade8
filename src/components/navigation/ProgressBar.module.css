@@ -23,3 +23,11 @@
   border-radius: 999px;
   transition: inline-size 200ms ease;
 }
+.track {
+  block-size: 9px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 8%, var(--color-border));
+}
+.fill {
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  transition: inline-size var(--transition-base);
+}
