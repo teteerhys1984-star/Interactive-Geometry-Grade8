@@ -14,6 +14,7 @@ import { lesson02 } from './lesson-02-image-of-a-point';
 import { lesson03 } from './lesson-03-image-of-a-shape';
 import { lesson04 } from './lesson-04-triangle-congruence';
 import { lesson05 } from './lesson-05-unit-exercises';
+import { lesson06 } from './lesson-06-unit-exercises-continuation';
 
 /**
  * ============================================================================
@@ -442,5 +443,8 @@ export const unit01: UnitInput = {
 
     /* الدرس الخامس — تمرينات الوحدة الأولى؛ الدفعة الأولى: السؤالان 1 و2 فقط. */
     lesson05,
+
+    /* تتمة مستقلة للدرس الخامس — تمرينات الوحدة الأولى: الأسئلة 3–15. */
+    lesson06,
   ],
 };

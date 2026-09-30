@@ -7,6 +7,8 @@ import { ShapeTranslationLab } from './ShapeTranslationLab';
 import { TranslationChallenges } from './TranslationChallenges';
 import { UnitExerciseLab } from './UnitExerciseLab';
 import { UnitExerciseFigure } from './UnitExerciseFigure';
+import { ExerciseReasoningLab } from './ExerciseReasoningLab';
+import { UnitContinuationFigure } from './UnitContinuationFigure';
 
 /**
  * ============================================================================
@@ -35,6 +37,8 @@ registerInteractiveRenderer('shape-translation-lab', ShapeTranslationLab);
 registerInteractiveRenderer('translation-challenges', TranslationChallenges);
 registerInteractiveRenderer('unit-exercise-lab', UnitExerciseLab);
 registerInteractiveRenderer('unit-exercise-figure', UnitExerciseFigure);
+registerInteractiveRenderer('exercise-reasoning-lab', ExerciseReasoningLab);
+registerInteractiveRenderer('unit-continuation-figure', UnitContinuationFigure);
 
 export {
   TranslationFigure,
@@ -45,4 +49,6 @@ export {
   TranslationChallenges,
   UnitExerciseLab,
   UnitExerciseFigure,
+  ExerciseReasoningLab,
+  UnitContinuationFigure,
 };

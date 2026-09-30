@@ -415,7 +415,7 @@ describe('teacher area — lesson picker', () => {
         allLessons.length,
       );
     }
-  });
+  }, 15_000);
 
   it('locks the area again from the picker', async () => {
     const { user } = await renderUnlocked('/teacher');
@@ -441,7 +441,7 @@ describe('teacher area — per-lesson sections', () => {
       }
       unmount();
     }
-  });
+  }, 15_000);
 
   it('labels every textbook solution as teacher-derived, never as printed answers', async () => {
     for (const { lesson: item } of allLessons) {

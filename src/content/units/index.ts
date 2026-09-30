@@ -14,9 +14,10 @@ import { unit01 } from './unit-01-parallelograms-and-translation';
  *    • Unit 1 «متوازيات الأضلاع والانسحاب» — Lesson 2, pages 8–10.
  *    • Unit 1 «متوازيات الأضلاع والانسحاب» — Lesson 3, pages 11–16.
  *    • Unit 1 «متوازيات الأضلاع والانسحاب» — Lesson 4, pages 17–19.
+ *    • Unit 1 «تمرينات الوحدة الأولى» — Lesson 5, questions 1–2.
+ *    • Unit 1 «تتمة الدرس الخامس (1)» — independent continuation, questions 3–15.
  *
  *  NOT yet authored (deliberately):
- *    • Unit 1 «تمرينات ومسائل» — questions 3 onward (questions 1–2 are Lesson 5 batch one)
  *    • Units 2–5                                     pages 30+
  *
  *  TO ADD THE NEXT LESSON: append it to `unit01.lessons` in curriculum order,

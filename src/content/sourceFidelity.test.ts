@@ -111,22 +111,23 @@ describe('course shell', () => {
   });
 });
 
-describe('implementation boundary — Lessons 1–5 (Lesson 5 batch one only)', () => {
+describe('implementation boundary — Lessons 1–6 (Lesson 6 is the independent Q3–15 continuation)', () => {
   it('registers exactly one unit', () => {
     expect(subject.units).toHaveLength(1);
     expect(subject.units[0]?.id).toBe('unit-01-parallelograms-and-translation');
   });
 
-  it('registers exactly five lessons', () => {
-    expect(allLessons).toHaveLength(5);
+  it('registers exactly six lessons in curriculum order', () => {
+    expect(allLessons).toHaveLength(6);
     expect(allLessons[0]?.lesson.id).toBe('lesson-01-translation-and-properties');
     expect(allLessons[1]?.lesson.id).toBe('lesson-02-image-of-a-point');
     expect(allLessons[2]?.lesson.id).toBe('lesson-03-image-of-a-shape');
     expect(allLessons[3]?.lesson.id).toBe('lesson-04-triangle-congruence');
     expect(allLessons[4]?.lesson.id).toBe('lesson-05-unit-one-exercises');
+    expect(allLessons[5]?.lesson.id).toBe('lesson-06-unit-one-exercises-continuation');
   });
 
-  it('draws only on verified lesson pages or the five supplied exercise images', () => {
+  it('draws only on verified lesson pages or the supplied exercise images', () => {
     const pages = new Set<string>();
     for (const { lesson } of allLessons) {
       for (const step of lesson.steps) {
@@ -160,6 +161,7 @@ describe('implementation boundary — Lessons 1–5 (Lesson 5 batch one only)', 
           'صورة المصدر 3',
           'صورة المصدر 4',
           'صورة المصدر 5',
+          ...Array.from({ length: 13 }, (_, index) => `صورة المصدر — السؤال ${index + 3}`),
         ],
         `unexpected source page: ${page}`,
       ).toContain(page);
@@ -419,6 +421,10 @@ const VERIFIED_TEXTBOOK_FIGURES = [
   'fig-ex5-q1-9',
   'fig-ex5-q2-1',
   'fig-ex5-q2-3',
+  // Lesson 6 verification calculations are recorded in docs/LESSON-06-FIGURES.md.
+  'fig-ex6-q6-grid-shape',
+  'fig-ex6-q13-point-grid',
+  'fig-ex6-q15-right-triangle',
 ];
 
 /** The eleven verbatim steps of Lesson 2, in printed order (pages 8–10). */
@@ -538,11 +544,10 @@ describe('authored material never displaces the source', () => {
 
   it('keeps every unverified textbook figure as a faithful `reference` placeholder', () => {
     const textbookFigures = allDiagrams().filter((d) => d.origin === 'textbook');
-    // Lessons 1–2 contribute 14 figures; Lesson 3 contributes 14 deliberately
-    // reference-only figures because its blank-sheet and fine-grid geometry is
-    // not safe to reconstruct from the supplied scans.
-    expect(textbookFigures).toHaveLength(43);
-    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(43);
+    // Lessons 1–5 contribute 43 figures. Lesson 6 adds five reference figures
+    // and three verified reconstructions, for a total of 51 textbook figures.
+    expect(textbookFigures).toHaveLength(51);
+    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(51);
     for (const diagram of textbookFigures) {
       if (VERIFIED_TEXTBOOK_FIGURES.includes(diagram.id)) continue;
       expect(diagram.kind, `${diagram.id} must stay a reference placeholder`).toBe('reference');
