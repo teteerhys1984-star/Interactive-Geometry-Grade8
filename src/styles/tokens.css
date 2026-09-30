@@ -130,6 +130,20 @@
   --color-reference-bg: #faf7ff;
 }
 
+[data-lesson-theme='plum'] {
+  --color-primary: #7e22ce;
+  --color-primary-hover: #6b21a8;
+  --color-primary-soft: #f6ecfd;
+  --color-accent: #0e7490;
+  --color-accent-bg: #e9f6fa;
+  --color-teaching-accent: #7e22ce;
+  --color-teaching-border: #e3d2f5;
+  --color-teaching-bg: #fbf7ff;
+  --color-reference-accent: #b45309;
+  --color-reference-border: #f2ddbf;
+  --color-reference-bg: #fffaf1;
+}
+
 [data-lesson-theme='indigo'] {
   --color-primary: #4338ca;
   --color-primary-hover: #3730a3;

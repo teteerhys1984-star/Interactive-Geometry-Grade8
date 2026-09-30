@@ -16,6 +16,7 @@ import { unit01 } from './unit-01-parallelograms-and-translation';
  *    • Unit 1 «متوازيات الأضلاع والانسحاب» — Lesson 4, pages 17–19.
  *    • Unit 1 «تمرينات الوحدة الأولى» — Lesson 5, questions 1–2.
  *    • Unit 1 «تتمة الدرس الخامس (1)» — independent continuation, questions 3–15.
+ *    • Unit 1 «تتمة الدرس الخامس (2)» — independent continuation, questions 16–28.
  *
  *  NOT yet authored (deliberately):
  *    • Units 2–5                                     pages 30+

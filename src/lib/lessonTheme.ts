@@ -19,6 +19,7 @@ const LESSON_THEMES: Record<string, string> = {
   'lesson-03-image-of-a-shape': 'indigo',
   'lesson-05-unit-one-exercises': 'emerald',
   'lesson-06-unit-one-exercises-continuation': 'sunset',
+  'lesson-07-unit-one-exercises-final': 'plum',
 };
 
 export function lessonTheme(lessonId: string | undefined): string | undefined {

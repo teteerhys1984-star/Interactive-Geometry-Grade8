@@ -21,8 +21,8 @@ beforeEach(() => lockTeacherArea());
 
 describe('Lesson 6 — independent Q3–Q15 exercise lab', () => {
   it('follows Lesson 5 in the registry without changing the Q1–Q2 lesson', () => {
-    expect(allLessons.at(-2)?.lesson.id).toBe(lessonFive.id);
-    expect(allLessons.at(-1)?.lesson.id).toBe(lesson.id);
+    expect(allLessons.at(-3)?.lesson.id).toBe(lessonFive.id);
+    expect(allLessons.at(-2)?.lesson.id).toBe(lesson.id);
     expect(lessonFive.steps.filter((step) => step.origin === 'source')).toHaveLength(19);
     expect(lessonFive.teacherResources?.textbookSolutions).toHaveLength(19);
     expect(lessonFive.steps.some((step) => step.kicker?.includes('السؤال 3'))).toBe(false);
@@ -30,7 +30,7 @@ describe('Lesson 6 — independent Q3–Q15 exercise lab', () => {
 
   it('renders the course home, unit card and lesson outline registration', () => {
     const home = renderAt('/');
-    expect(screen.getByText(/6 دروس متاحة/)).toBeInTheDocument();
+    expect(screen.getByText(/7 دروس متاحة/)).toBeInTheDocument();
     home.unmount();
 
     const unit = renderAt('/unit/unit-01-parallelograms-and-translation');
