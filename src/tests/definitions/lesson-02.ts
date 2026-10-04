@@ -1,0 +1,65 @@
+import type { TestDefinitionInput } from '../schema';
+
+export const definition: TestDefinitionInput = {
+  id: 'lesson-02-test',
+  title: 'اختبار الدرس الثاني — صورة نقطة وفق انسحاب',
+  scope: 'lesson',
+  targetId: 'lesson-02-image-of-a-point',
+  summary:
+    'اختبار شامل يغطي تعريف صورة نقطة، متوازي أضلاع الانسحاب، الحالة الخاصة، والإنشاء بالفرجار وعلى الشبكة.',
+  instructions:
+    'عشرون سؤالاً تقيس فهمك الدقيق للدرس الثاني. يمكنك مراجعة الإجابات والتنقّل قبل التسليم. لا يُعرض أي تصحيح حتى تضغط على تسليم الاختبار.',
+  passingScore: 60,
+  solutionGroupSize: 5,
+  questionIds: [
+    'geo-l02-t01-q01',
+    'geo-l02-t01-q02',
+    'geo-l02-t01-q03',
+    'geo-l02-t01-q04',
+    'geo-l02-t01-q05',
+    'geo-l02-t01-q06',
+    'geo-l02-t01-q07',
+    'geo-l02-t01-q08',
+    'geo-l02-t01-q09',
+    'geo-l02-t01-q10',
+    'geo-l02-t01-q11',
+    'geo-l02-t01-q12',
+    'geo-l02-t01-q13',
+    'geo-l02-t01-q14',
+    'geo-l02-t01-q15',
+    'geo-l02-t01-q16',
+    'geo-l02-t01-q17',
+    'geo-l02-t01-q18',
+    'geo-l02-t01-q19',
+    'geo-l02-t01-q20',
+  ],
+  blueprint: {
+    coverage: [
+      { concept: 'def-parallelogram', label: 'تعريف صورة نقطة ومتوازي أضلاع الانسحاب', count: 5 },
+      { concept: 'special-case', label: 'الحالة الخاصة عندما تقع النقطة على المستقيم', count: 4 },
+      {
+        concept: 'compass-construction',
+        label: 'الإنشاء الهندسي بالفرجار والمسطرة والتعليل',
+        count: 6,
+      },
+      { concept: 'grid-coordinates', label: 'التعيين والحسابات على الشبكة السنتيمترية', count: 5 },
+    ],
+    difficulty: [
+      { level: 'basic', count: 5 },
+      { level: 'medium', count: 8 },
+      { level: 'advanced', count: 5 },
+      { level: 'thinking', count: 2 },
+    ],
+    types: [
+      { type: 'single-choice', count: 7 },
+      { type: 'true-false', count: 3 },
+      { type: 'multi-select', count: 2 },
+      { type: 'numeric', count: 2 },
+      { type: 'exact', count: 1 },
+      { type: 'ordering', count: 1 },
+      { type: 'matching', count: 1 },
+      { type: 'classification', count: 1 },
+      { type: 'error-analysis', count: 2 },
+    ],
+  },
+};

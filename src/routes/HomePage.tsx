@@ -96,6 +96,20 @@ export function HomePage() {
           منطقة المعلّم
         </Link>
       </section>
+
+      <section className={styles.testsSection} aria-labelledby="tests-section-heading">
+        <div>
+          <h2 id="tests-section-heading" className={styles.sectionTitle}>
+            منطقة الاختبارات
+          </h2>
+          <p className={styles.teacherText}>
+            نظام اختبارات مستقل لقياس فهمك الهندسي بأسئلة أصلية متدرجة الصعوبة وحلول تربوية تفصيلية.
+          </p>
+        </div>
+        <Link className={styles.ctaPrimary} to={routes.tests()}>
+          دخول الاختبارات
+        </Link>
+      </section>
     </div>
   );
 }

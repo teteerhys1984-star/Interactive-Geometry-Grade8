@@ -13,6 +13,8 @@ import { ProofWorkshop } from './ProofWorkshop';
 import { HintLadder } from './HintLadder';
 import { ProofFlow } from './ProofFlow';
 import { UnitFinalFigure } from './UnitFinalFigure';
+import { TestGeometryFigure } from './TestGeometryFigure';
+import { TEST_FIGURE_RENDERER } from './testFigureSpec';
 
 /**
  * ============================================================================
@@ -52,6 +54,7 @@ registerInteractiveRenderer('proof-workshop', ProofWorkshop);
 registerInteractiveRenderer('hint-ladder', HintLadder);
 registerInteractiveRenderer('proof-flow', ProofFlow);
 registerInteractiveRenderer('unit-final-figure', UnitFinalFigure);
+registerConstructedRenderer(TEST_FIGURE_RENDERER, TestGeometryFigure);
 
 export {
   TranslationFigure,
@@ -68,4 +71,5 @@ export {
   HintLadder,
   ProofFlow,
   UnitFinalFigure,
+  TestGeometryFigure,
 };

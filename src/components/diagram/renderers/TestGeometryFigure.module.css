@@ -1,0 +1,104 @@
+.invalid {
+  padding: var(--space-4);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.invalidTitle {
+  font-weight: 700;
+  color: var(--color-danger);
+  margin-block-end: var(--space-2);
+}
+
+.invalidAlt {
+  font-size: var(--font-sm);
+}
+
+.svg {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  display: block;
+  margin-inline: auto;
+  overflow: visible;
+}
+
+.grid line {
+  stroke: var(--color-border);
+  stroke-width: 0.5;
+  stroke-dasharray: 2 2;
+  opacity: 0.7;
+}
+
+.polygon {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.polygonFilled {
+  fill: var(--color-primary-soft);
+  stroke: var(--color-primary);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.circle {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 2;
+}
+
+.circleDashed {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 4;
+}
+
+.segment {
+  stroke: var(--color-primary);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.segmentDashed {
+  stroke: var(--color-accent);
+  stroke-width: 1.75;
+  stroke-dasharray: 4 4;
+  stroke-linecap: round;
+}
+
+.arrowHead {
+  fill: var(--color-accent);
+}
+
+.angleMark {
+  stroke: var(--color-accent);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.pointDot {
+  fill: var(--color-primary);
+}
+
+.pointOpen {
+  fill: var(--color-surface);
+  stroke: var(--color-primary);
+  stroke-width: 2;
+}
+
+.pointCross line {
+  stroke: var(--color-primary);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.pointLabel {
+  font-family: var(--font-arabic), serif;
+  font-weight: 700;
+  fill: var(--color-text);
+  user-select: none;
+}

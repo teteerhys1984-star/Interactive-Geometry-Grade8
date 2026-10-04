@@ -1,0 +1,279 @@
+.questionCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  margin-block-end: var(--space-5);
+}
+
+.prompt {
+  font-size: var(--font-base);
+  line-height: var(--leading-relaxed);
+  margin-block-end: var(--space-5);
+  color: var(--color-text);
+}
+
+.inputArea {
+  border-block-start: 1px solid var(--color-surface-alt);
+  padding-block-start: var(--space-4);
+}
+
+/* Options list */
+.optionsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.optionLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.optionLabel:hover {
+  background: var(--color-surface-alt);
+  border-color: var(--color-border-strong);
+}
+
+.optionLabel.selected {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+}
+
+.radioInput,
+.checkboxInput {
+  margin-block-start: 0.25rem;
+  accent-color: var(--color-primary);
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+}
+
+.optionText {
+  flex: 1;
+  font-size: var(--font-base);
+  color: var(--color-text);
+}
+
+/* True / False */
+.trueFalseGroup {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.tfOption {
+  flex: 1 1 8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: var(--font-lg);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tfOption:hover {
+  background: var(--color-surface-alt);
+}
+
+.tfOption.selected {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* Numeric / Exact */
+.textInputRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: 20rem;
+}
+
+.numericField {
+  flex: 1;
+  padding: var(--space-3);
+  font-size: var(--font-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  font-family: inherit;
+}
+
+.numericField:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-soft);
+}
+
+.unitBadge {
+  font-size: var(--font-base);
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+/* Ordering */
+.orderingWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.orderingHint {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+
+.orderingList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.orderingItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.orderIndex {
+  font-weight: 700;
+  color: var(--color-primary);
+  inline-size: 1.5rem;
+  text-align: center;
+}
+
+.orderText {
+  flex: 1;
+}
+
+.orderControls {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.orderBtn {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.5rem;
+  font-size: var(--font-xs);
+  cursor: pointer;
+}
+
+.orderBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Matching */
+.matchingTable {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.matchingRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+}
+
+.matchingLeft {
+  flex: 1 1 12rem;
+  font-weight: 600;
+}
+
+.matchingArrow {
+  color: var(--color-text-muted);
+}
+
+.matchingRight {
+  flex: 1 1 14rem;
+}
+
+.matchingSelect {
+  inline-size: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-family: inherit;
+  font-size: var(--font-sm);
+}
+
+/* Classification */
+.classificationList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.classificationRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.classItemText {
+  font-weight: 600;
+}
+
+.classCategories {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.classCatBtn {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-alt);
+  cursor: pointer;
+  font-size: var(--font-sm);
+  font-family: inherit;
+  transition: all var(--transition-fast);
+}
+
+.classCatBtn:hover {
+  background: var(--color-border);
+}
+
+.classCatBtn.selected {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
