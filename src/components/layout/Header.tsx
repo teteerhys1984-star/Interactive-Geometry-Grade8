@@ -28,6 +28,12 @@ export function Header() {
             المقرر
           </NavLink>
           <NavLink
+            to={routes.tests()}
+            className={({ isActive }) => (isActive ? styles.activeLink : styles.link)}
+          >
+            الاختبارات
+          </NavLink>
+          <NavLink
             to={routes.teacher()}
             className={({ isActive }) => (isActive ? styles.activeLink : styles.link)}
           >

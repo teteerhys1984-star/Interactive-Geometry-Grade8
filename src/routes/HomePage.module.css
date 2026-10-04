@@ -217,7 +217,8 @@
 }
 
 /* ------------------------------------------------------------- teacher --- */
-.teacher {
+.teacher,
+.testsSection {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -227,6 +228,13 @@
   border-radius: var(--radius-lg);
   border: 1px dashed var(--color-border);
   background: var(--color-surface-alt);
+  margin-block-end: var(--space-4);
+}
+
+.testsSection {
+  border-style: solid;
+  border-color: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-primary-soft) 100%);
 }
 
 .teacherText {

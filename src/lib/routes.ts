@@ -17,6 +17,14 @@ export const routes = {
   teacher: () => '/teacher',
   /** Per-lesson Teacher Area — solutions, answer key, figure report, notes. */
   teacherLesson: (lessonId: string) => `/teacher/${lessonId}`,
+  /** Test Area home — lesson tests, unit tests and the Solutions Area. */
+  tests: () => '/tests',
+  /** One test: intro → questions → result, driven by its own definition id. */
+  test: (testId: string) => `/tests/${testId}`,
+  /** Solutions Area index. */
+  testSolutions: () => '/tests/solutions',
+  /** One test's worked solutions, grouped for reading. */
+  testSolutionSet: (testId: string) => `/tests/solutions/${testId}`,
 } as const;
 
 /** Route path patterns used by the router definition. */
@@ -30,5 +38,9 @@ export const routePatterns = {
   assessment: '/assessment/:scopeId',
   teacher: '/teacher',
   teacherLesson: '/teacher/:lessonId',
+  tests: '/tests',
+  test: '/tests/:testId',
+  testSolutions: '/tests/solutions',
+  testSolutionSet: '/tests/solutions/:testId',
   notFound: '*',
 } as const;

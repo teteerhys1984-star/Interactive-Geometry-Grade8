@@ -11,6 +11,10 @@ import {
   SubjectPage,
   TeacherLessonPage,
   TeacherPage,
+  TestRunnerPage,
+  TestSolutionDetailPage,
+  TestSolutionsIndexPage,
+  TestsPage,
   UnitPage,
 } from '@/routes';
 import { ScrollToTop } from './ScrollToTop';
@@ -48,6 +52,10 @@ export function App() {
             <Route path={routePatterns.assessment} element={<AssessmentPage />} />
             <Route path={routePatterns.teacher} element={<TeacherPage />} />
             <Route path={routePatterns.teacherLesson} element={<TeacherLessonPage />} />
+            <Route path={routePatterns.tests} element={<TestsPage />} />
+            <Route path={routePatterns.test} element={<TestRunnerPage />} />
+            <Route path={routePatterns.testSolutions} element={<TestSolutionsIndexPage />} />
+            <Route path={routePatterns.testSolutionSet} element={<TestSolutionDetailPage />} />
             <Route path={routePatterns.notFound} element={<NotFoundPage />} />
           </Routes>
         </ErrorBoundary>

@@ -8,3 +8,9 @@ export { AssessmentPage } from './AssessmentPage';
 export { TeacherPage } from './TeacherPage';
 export { TeacherLessonPage } from './TeacherLessonPage';
 export { NotFoundPage } from './NotFoundPage';
+
+// Independent Test Area routes
+export { TestsPage } from './tests/TestsPage';
+export { TestRunnerPage } from './tests/TestRunnerPage';
+export { TestSolutionsIndexPage } from './tests/TestSolutionsIndexPage';
+export { TestSolutionDetailPage } from './tests/TestSolutionDetailPage';
