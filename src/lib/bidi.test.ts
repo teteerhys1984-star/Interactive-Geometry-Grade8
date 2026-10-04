@@ -5,6 +5,7 @@ import {
   hasUnisolatedNotation,
   isolateLtr,
   plainText,
+  plainTextIsolated,
   splitInlineMath,
   stripIsolates,
 } from './bidi';
@@ -85,5 +86,11 @@ describe('enclosed numerals inside Arabic prose', () => {
 describe('plainText', () => {
   it('strips $…$ delimiters for use in alt attributes', () => {
     expect(plainText('طول الضلع $AB$ يساوي $5$ سم')).toBe('طول الضلع AB يساوي 5 سم');
+  });
+
+  it('isolates inline geometry notation inside accessible SVG descriptions', () => {
+    const description = plainTextIsolated('رسم $AB=5$ سم');
+    expect(description).toBe(`رسم ${LRI}AB=5${PDI} سم`);
+    expect(stripIsolates(description)).toBe('رسم AB=5 سم');
   });
 });

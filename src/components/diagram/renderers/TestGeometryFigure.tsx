@@ -1,13 +1,13 @@
-import { useId, useMemo } from 'react';
+import { useId, useMemo, useState } from 'react';
 import type { ConstructedDiagram } from '@/content/schema';
-import { plainText } from '@/lib/bidi';
+import { plainTextIsolated } from '@/lib/bidi';
 import {
   pointById,
   sceneBounds,
   testFigureSpecSchema,
   type SceneBounds,
+  type ParsedTestFigureSpec,
   type TestFigurePoint,
-  type TestFigureSpec,
 } from './testFigureSpec';
 import styles from './TestGeometryFigure.module.css';
 
@@ -28,16 +28,35 @@ import styles from './TestGeometryFigure.module.css';
  * ============================================================================
  */
 export function TestGeometryFigure({ spec }: { spec: ConstructedDiagram }) {
+  const [zoomed, setZoomed] = useState(false);
+  const viewportId = `test-figure-viewport-${useId().replace(/[^a-zA-Z0-9]/g, '')}`;
   const parsed = testFigureSpecSchema.safeParse(spec.construction);
   if (!parsed.success) {
     return (
       <div className={styles.invalid} role="note">
         <p className={styles.invalidTitle}>الرسم غير متاح</p>
-        <p className={styles.invalidAlt}>{plainText(spec.alt)}</p>
+        <p className={styles.invalidAlt}>{plainTextIsolated(spec.alt)}</p>
       </div>
     );
   }
-  return <SceneSvg scene={parsed.data} title={plainText(spec.alt)} />;
+  return (
+    <div className={styles.figure}>
+      <div className={styles.controls} dir="rtl">
+        <button
+          className={styles.zoomButton}
+          type="button"
+          aria-expanded={zoomed}
+          aria-controls={viewportId}
+          onClick={() => setZoomed((current) => !current)}
+        >
+          {zoomed ? 'إعادة الحجم الأصلي' : 'تكبير الرسم'}
+        </button>
+      </div>
+      <div className={styles.viewport} id={viewportId}>
+        <SceneSvg scene={parsed.data} title={plainTextIsolated(spec.alt)} zoomed={zoomed} />
+      </div>
+    </div>
+  );
 }
 
 const LABEL_OFFSETS: Record<NonNullable<TestFigurePoint['labelSide']>, [number, number]> = {
@@ -62,7 +81,7 @@ interface Layout {
   rightAngleSize: number;
 }
 
-function layoutOf(scene: TestFigureSpec): Layout {
+function layoutOf(scene: ParsedTestFigureSpec): Layout {
   const bounds = sceneBounds(scene) ?? { minX: 0, maxX: 1, minY: 0, maxY: 1 };
   const spanX = Math.max(bounds.maxX - bounds.minX, 1);
   const spanY = Math.max(bounds.maxY - bounds.minY, 1);
@@ -79,7 +98,15 @@ function layoutOf(scene: TestFigureSpec): Layout {
   };
 }
 
-function SceneSvg({ scene, title }: { scene: TestFigureSpec; title: string }) {
+function SceneSvg({
+  scene,
+  title,
+  zoomed,
+}: {
+  scene: ParsedTestFigureSpec;
+  title: string;
+  zoomed: boolean;
+}) {
   const uid = useId().replace(/[^a-zA-Z0-9]/g, '');
   const layout = useMemo(() => layoutOf(scene), [scene]);
   const bounds = layout.bounds;
@@ -99,9 +126,10 @@ function SceneSvg({ scene, title }: { scene: TestFigureSpec; title: string }) {
 
   return (
     <svg
-      className={styles.svg}
+      className={zoomed ? `${styles.svg} ${styles.svgZoomed}` : styles.svg}
       viewBox={viewBox}
       preserveAspectRatio="xMidYMid meet"
+      style={{ direction: 'ltr', unicodeBidi: 'isolate' }}
       role="img"
       aria-label={title}
     >
@@ -112,7 +140,7 @@ function SceneSvg({ scene, title }: { scene: TestFigureSpec; title: string }) {
           markerHeight="10"
           refX="8"
           refY="3"
-          orient="auto"
+          orient="auto-start-reverse"
         >
           <path d="M0,0 L8,3 L0,6 Z" className={styles.arrowHead} />
         </marker>
@@ -127,6 +155,10 @@ function SceneSvg({ scene, title }: { scene: TestFigureSpec; title: string }) {
               y1={sy(scene.grid!.minY)}
               x2={sx(x)}
               y2={sy(scene.grid!.maxY)}
+              style={{
+                strokeWidth: layout.strokeWidth * 0.55,
+                strokeDasharray: `${layout.size * 0.015} ${layout.size * 0.015}`,
+              }}
             />
           ))}
           {range(scene.grid.minY, scene.grid.maxY).map((y) => (
@@ -136,6 +168,10 @@ function SceneSvg({ scene, title }: { scene: TestFigureSpec; title: string }) {
               y1={sy(y)}
               x2={sx(scene.grid!.maxX)}
               y2={sy(y)}
+              style={{
+                strokeWidth: layout.strokeWidth * 0.55,
+                strokeDasharray: `${layout.size * 0.015} ${layout.size * 0.015}`,
+              }}
             />
           ))}
         </g>
@@ -152,6 +188,7 @@ function SceneSvg({ scene, title }: { scene: TestFigureSpec; title: string }) {
             key={`poly-${index}`}
             d={`${path} Z`}
             className={polygon.fill ? styles.polygonFilled : styles.polygon}
+            style={{ strokeWidth: layout.strokeWidth }}
           />
         );
       })}
@@ -166,6 +203,12 @@ function SceneSvg({ scene, title }: { scene: TestFigureSpec; title: string }) {
             cy={sy(center.y)}
             r={circle.radius}
             className={circle.dashed ? styles.circleDashed : styles.circle}
+            style={{
+              strokeWidth: layout.strokeWidth,
+              ...(circle.dashed
+                ? { strokeDasharray: `${layout.size * 0.04} ${layout.size * 0.04}` }
+                : {}),
+            }}
           />
         );
       })}
@@ -183,8 +226,32 @@ function SceneSvg({ scene, title }: { scene: TestFigureSpec; title: string }) {
             x2={sx(to.x)}
             y2={sy(to.y)}
             className={segment.dashed ? styles.segmentDashed : styles.segment}
+            style={{
+              strokeWidth: layout.strokeWidth,
+              ...(segment.dashed
+                ? { strokeDasharray: `${layout.size * 0.04} ${layout.size * 0.04}` }
+                : {}),
+            }}
             markerEnd={arrow === 'end' || arrow === 'both' ? `url(#arrow-${uid})` : undefined}
             markerStart={arrow === 'both' ? `url(#arrow-${uid})` : undefined}
+          />
+        );
+      })}
+
+      {(scene.segments ?? []).map((segment, index) => {
+        if (!segment.ticks) return null;
+        const from = at(segment.from);
+        const to = at(segment.to);
+        if (!from || !to) return null;
+        return (
+          <SegmentTicks
+            key={`segment-ticks-${index}`}
+            from={from}
+            to={to}
+            count={segment.ticks}
+            size={layout.size}
+            strokeWidth={layout.strokeWidth}
+            toSvgY={sy}
           />
         );
       })}
@@ -205,6 +272,7 @@ function SceneSvg({ scene, title }: { scene: TestFigureSpec; title: string }) {
             key={`right-${index}`}
             points={`${sx(p1.x)},${sy(p1.y)} ${sx(p2.x)},${sy(p2.y)} ${sx(p3.x)},${sy(p3.y)}`}
             className={styles.angleMark}
+            style={{ strokeWidth: layout.strokeWidth }}
           />
         );
       })}
@@ -221,11 +289,27 @@ function SceneSvg({ scene, title }: { scene: TestFigureSpec; title: string }) {
             first={first}
             second={second}
             radius={layout.arcRadius}
-            ticks={mark.ticks ?? 1}
+            ticks={mark.ticks}
             strokeWidth={layout.strokeWidth}
           />
         );
       })}
+
+      {(scene.annotations ?? []).map((annotation, index) => (
+        <text
+          key={`annotation-${index}`}
+          x={sx(annotation.x)}
+          y={sy(annotation.y)}
+          className={styles.annotation}
+          fontSize={layout.fontSize * 0.88}
+          textAnchor={annotation.anchor}
+          dominantBaseline="middle"
+          direction="ltr"
+          unicodeBidi="isolate"
+        >
+          {annotation.text}
+        </text>
+      ))}
 
       {scene.points.map((point) => {
         const side = point.labelSide ?? 'n';
@@ -247,10 +331,11 @@ function SceneSvg({ scene, title }: { scene: TestFigureSpec; title: string }) {
                 cy={sy(point.y)}
                 r={layout.dotRadius * 1.2}
                 className={styles.pointOpen}
+                style={{ strokeWidth: layout.strokeWidth }}
               />
             ) : null}
             {mark === 'cross' ? (
-              <g className={styles.pointCross}>
+              <g className={styles.pointCross} style={{ strokeWidth: layout.strokeWidth }}>
                 <line
                   x1={sx(point.x) - layout.dotRadius * 1.4}
                   y1={sy(point.y) - layout.dotRadius * 1.4}
@@ -265,20 +350,72 @@ function SceneSvg({ scene, title }: { scene: TestFigureSpec; title: string }) {
                 />
               </g>
             ) : null}
-            <text
-              x={sx(point.x) + dx * layout.labelGap}
-              y={sy(point.y) + dy * layout.labelGap}
-              className={styles.pointLabel}
-              fontSize={layout.fontSize}
-              textAnchor="middle"
-              dominantBaseline="middle"
-            >
-              {point.label ?? point.id}
-            </text>
+            {point.showLabel ? (
+              <text
+                x={sx(point.x) + dx * layout.labelGap}
+                y={sy(point.y) + dy * layout.labelGap}
+                className={styles.pointLabel}
+                fontSize={layout.fontSize}
+                textAnchor="middle"
+                dominantBaseline="middle"
+                direction="ltr"
+                unicodeBidi="isolate"
+              >
+                {point.label ?? point.id}
+              </text>
+            ) : null}
           </g>
         );
       })}
     </svg>
+  );
+}
+
+function SegmentTicks({
+  from,
+  to,
+  count,
+  size,
+  strokeWidth,
+  toSvgY,
+}: {
+  from: TestFigurePoint;
+  to: TestFigurePoint;
+  count: 1 | 2 | 3;
+  size: number;
+  strokeWidth: number;
+  toSvgY: (y: number) => number;
+}) {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const length = Math.hypot(dx, dy) || 1;
+  const tangent = { x: dx / length, y: dy / length };
+  const normal = { x: -tangent.y, y: tangent.x };
+  const tickLength = size * 0.055;
+  const gap = size * 0.035;
+  const center = { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 };
+
+  return (
+    <g className={styles.segmentTick} style={{ strokeWidth }} aria-hidden="true">
+      {Array.from({ length: count }, (_, index) => {
+        const offset = (index - (count - 1) / 2) * gap;
+        const tickCenter = {
+          x: center.x + tangent.x * offset,
+          y: center.y + tangent.y * offset,
+        };
+        const first = {
+          x: tickCenter.x - normal.x * tickLength * 0.5,
+          y: tickCenter.y - normal.y * tickLength * 0.5,
+        };
+        const second = {
+          x: tickCenter.x + normal.x * tickLength * 0.5,
+          y: tickCenter.y + normal.y * tickLength * 0.5,
+        };
+        return (
+          <line key={index} x1={first.x} y1={toSvgY(first.y)} x2={second.x} y2={toSvgY(second.y)} />
+        );
+      })}
+    </g>
   );
 }
 
@@ -294,7 +431,7 @@ function AngleArc({
   first: TestFigurePoint;
   second: TestFigurePoint;
   radius: number;
-  ticks: 1 | 2 | 3;
+  ticks: 1 | 2 | 3 | undefined;
   strokeWidth: number;
 }) {
   const centerX = vertex.x;
@@ -323,15 +460,16 @@ function AngleArc({
   };
   const tickNormal = { x: Math.cos(midAngle), y: Math.sin(midAngle) };
   const tickLength = radius * 0.28;
+  const tickCount = ticks ?? 0;
 
   return (
-    <g className={styles.angleMark}>
+    <g className={styles.angleMark} style={{ strokeWidth }}>
       <path
         d={`M${start.x},${start.y} A${radius},${radius} 0 0 ${sweep} ${end.x},${end.y}`}
         fill="none"
       />
-      {Array.from({ length: ticks }, (_, tick) => {
-        const offset = ticks === 1 ? 0 : (tick - (ticks - 1) / 2) * strokeWidth * 3;
+      {Array.from({ length: tickCount }, (_, tick) => {
+        const offset = tickCount === 1 ? 0 : (tick - (tickCount - 1) / 2) * strokeWidth * 3;
         const along = {
           x: tickCenter.x + tickNormal.x * offset,
           y: tickCenter.y + tickNormal.y * offset,

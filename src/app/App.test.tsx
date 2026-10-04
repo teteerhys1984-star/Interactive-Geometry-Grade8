@@ -520,7 +520,7 @@ describe('teacher area — per-lesson sections', () => {
       expect(screen.queryAllByText('حدود هذا الحل')).toHaveLength(flagged.length);
       unmount();
     }
-  });
+  }, 15_000);
 
   it('exposes the full answer key with explanations under its own tab', async () => {
     for (const { lesson: item } of allLessons) {

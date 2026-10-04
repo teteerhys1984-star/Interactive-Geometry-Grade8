@@ -16,6 +16,7 @@ function renderAt(route: string) {
 describe('Test Area UI and workflow', () => {
   beforeEach(() => {
     clearTestSession('lesson-01-test');
+    clearTestSession('lesson-02-test');
   });
 
   it('renders the Test Area homepage at /tests', () => {
@@ -38,6 +39,28 @@ describe('Test Area UI and workflow', () => {
     );
     expect(await screen.findByText('السؤال 1')).toBeInTheDocument();
     expect(screen.getAllByText('الإجابة الصحيحة:').length).toBeGreaterThan(0);
+  });
+
+  it('renders the same audited question figure in the corresponding solutions prompt', async () => {
+    const user = userEvent.setup();
+    renderAt('/tests/solutions/lesson-02-test');
+    expect(await screen.findByText('السؤال 1')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /6–10/ }));
+    expect(
+      await screen.findByRole('img', { name: /دائرتان إنشائيتان مركزاهما/ }),
+    ).toBeInTheDocument();
+  });
+
+  it('shows a question figure in the active runner without exposing its solution', async () => {
+    const user = userEvent.setup();
+    renderAt('/tests/lesson-02-test');
+    await user.click(screen.getByText('بدء الاختبار الآن'));
+    await user.click(screen.getByRole('button', { name: 'السؤال 8' }));
+
+    expect(screen.getByRole('img', { name: /دائرتان إنشائيتان مركزاهما/ })).toBeInTheDocument();
+    expect(screen.queryByText('الإجابة الصحيحة:')).toBeNull();
+    expect(screen.queryByText('التعليل وخطوات الحل:')).toBeNull();
   });
 
   it('active test runner never shows correct/incorrect feedback or solutions before submit', async () => {

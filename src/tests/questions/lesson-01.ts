@@ -2,11 +2,13 @@ import {
   classification,
   errorAnalysis,
   exact,
+  figureBlock,
   matching,
   multiSelect,
   numeric,
   ordering,
   singleChoice,
+  testFigure,
   trueFalse,
 } from '../authoring';
 import type { TestQuestionInput } from '../schema';
@@ -214,6 +216,43 @@ export const questions: TestQuestionInput[] = [
     difficulty: 'medium',
     prompt: [
       'مثلثان متطابقان $T_1$ و $T_2$ لهما أطوال الأضلاع نفسها وقياسات الزوايا نفسها، ولكن أضلاع $T_2$ ليست موازية لأضلاع $T_1$. ما التفسير الهندسي الصحيح؟',
+      figureBlock(
+        testFigure({
+          id: 'test-l01-q10-triangle-orientations',
+          alt: 'مثلثان متطابقان بهيئتين مختلفتي الاتجاه على الصفحة، من دون علامات قياس.',
+          caption:
+            'هيئتان مثلثيتان تخطيطيتان غير مقيّستين وباتجاهين مختلفين؛ لا توجد أبعاد أو زوايا مقاسة.',
+          sourceRefs: [P6, P7],
+          spec: {
+            points: [
+              { id: 't1-a', x: 0, y: 0, showLabel: false, mark: 'none' },
+              { id: 't1-b', x: 3, y: 0, showLabel: false, mark: 'none' },
+              { id: 't1-c', x: 1, y: 2, showLabel: false, mark: 'none' },
+              { id: 't2-a', x: 7, y: 0, showLabel: false, mark: 'none' },
+              {
+                id: 't2-b',
+                x: 7 + 3 / Math.sqrt(2),
+                y: 3 / Math.sqrt(2),
+                showLabel: false,
+                mark: 'none',
+              },
+              {
+                id: 't2-c',
+                x: 7 - 1 / Math.sqrt(2),
+                y: 3 / Math.sqrt(2),
+                showLabel: false,
+                mark: 'none',
+              },
+            ],
+            polygons: [{ points: ['t1-a', 't1-b', 't1-c'] }, { points: ['t2-a', 't2-b', 't2-c'] }],
+            annotations: [
+              { x: 1.3, y: -0.65, text: 'T₁' },
+              { x: 7.65, y: -0.65, text: 'T₂' },
+            ],
+            questionLabels: [],
+          },
+        }),
+      ),
     ],
     choices: [
       {

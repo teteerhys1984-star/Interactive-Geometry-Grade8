@@ -2,11 +2,13 @@ import {
   classification,
   errorAnalysis,
   exact,
+  figureBlock,
   matching,
   multiSelect,
   numeric,
   ordering,
   singleChoice,
+  testFigure,
   trueFalse,
 } from '../authoring';
 import type { TestQuestionInput } from '../schema';
@@ -80,7 +82,28 @@ export const questions: TestQuestionInput[] = [
     lessonId: LESSON_ID,
     concept: 'ex1-mcq-concepts',
     difficulty: 'basic',
-    prompt: ['في متوازي الأضلاع $MNPQ$، المتجه $\\overrightarrow{MQ}$ يكافئ المتجه:'],
+    prompt: [
+      'في متوازي الأضلاع $MNPQ$، المتجه $\\overrightarrow{MQ}$ يكافئ المتجه:',
+      figureBlock(
+        testFigure({
+          id: 'test-l05-q03-parallelogram-vector',
+          alt: 'متوازي الأضلاع $MNPQ$ بترتيب الرؤوس المذكور في السؤال؛ لا توجد أسهم على متجهات الخيارات.',
+          caption:
+            'رسم تخطيطي غير مقيّس للترتيب $MNPQ$ فقط؛ السهم على المتجه المعطى يظهر في نص السؤال لا على الخيارات.',
+          sourceRefs: [S_EX1],
+          spec: {
+            points: [
+              { id: 'M', x: 0, y: 0, labelSide: 'sw' },
+              { id: 'N', x: 5, y: 0, labelSide: 'se' },
+              { id: 'P', x: 6.5, y: 3, labelSide: 'ne' },
+              { id: 'Q', x: 1.5, y: 3, labelSide: 'nw' },
+            ],
+            polygons: [{ points: ['M', 'N', 'P', 'Q'] }],
+            questionLabels: ['M', 'N', 'P', 'Q'],
+          },
+        }),
+      ),
+    ],
     choices: [
       { id: 'opt-a', text: '$\\overrightarrow{NP}$' },
       { id: 'opt-b', text: '$\\overrightarrow{PN}$' },

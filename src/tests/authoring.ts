@@ -70,6 +70,11 @@ export function testFigure(input: {
   };
 }
 
+/** Embed a declarative Test Area figure in a question's typed prompt blocks. */
+export function figureBlock(diagram: DiagramSpec): ContentBlock {
+  return { type: 'figure', diagram };
+}
+
 /* ------------------------------------------------------------------------ */
 /*  Question construction                                                    */
 /* ------------------------------------------------------------------------ */
