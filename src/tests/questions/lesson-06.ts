@@ -2,11 +2,13 @@ import {
   classification,
   errorAnalysis,
   exact,
+  figureBlock,
   matching,
   multiSelect,
   numeric,
   ordering,
   singleChoice,
+  testFigure,
   trueFalse,
 } from '../authoring';
 import type { TestQuestionInput } from '../schema';
@@ -132,6 +134,35 @@ export const questions: TestQuestionInput[] = [
     difficulty: 'medium',
     prompt: [
       'في مثلث متساوي الساقين $ABC$ ($AB = AC$)، رُسم منصف الزاوية $\\widehat{A}$ وقطع القاعدة $[BC]$ في $D$. ما سبب تطابق المثلثين $ABD$ و $ACD$؟',
+      figureBlock(
+        testFigure({
+          id: 'test-l06-q06-isosceles-angle-bisector',
+          alt: 'المثلث $ABC$ متساوي الساقين عند $A$، والمنصف $AD$ يقسم زاوية الرأس؛ العلامات تعرض $AB=AC$ والمنصف فقط.',
+          caption:
+            'رسم تخطيطي غير مقيّس يكرر المعطيات المذكورة؛ لا توجد علامة زاوية قائمة أو علامة على $BD$ و$DC$.',
+          sourceRefs: [S_EX],
+          spec: {
+            points: [
+              { id: 'A', x: 0, y: 4, labelSide: 'n' },
+              { id: 'B', x: -3, y: 0, labelSide: 'sw' },
+              { id: 'C', x: 3, y: 0, labelSide: 'se' },
+              { id: 'D', x: 0, y: 0, labelSide: 's' },
+            ],
+            segments: [
+              { from: 'A', to: 'B', ticks: 1 },
+              { from: 'B', to: 'D' },
+              { from: 'D', to: 'A' },
+              { from: 'A', to: 'C', ticks: 1 },
+              { from: 'C', to: 'D' },
+            ],
+            angles: [
+              { at: 'A', from: 'B', to: 'D', ticks: 1 },
+              { at: 'A', from: 'D', to: 'C', ticks: 1 },
+            ],
+            questionLabels: ['A', 'B', 'C', 'D'],
+          },
+        }),
+      ),
     ],
     choices: [
       {
@@ -243,7 +274,36 @@ export const questions: TestQuestionInput[] = [
     lessonId: LESSON_ID,
     concept: 'parallelogram-symmetry',
     difficulty: 'medium',
-    prompt: ['رتّب خطوات إثبات أن النقطة $O$ هي منتصف القطرين في متوازي الأضلاع $ABCD$:'],
+    prompt: [
+      'رتّب خطوات إثبات أن النقطة $O$، وهي نقطة تقاطع قطري متوازي الأضلاع $ABCD$، هي منتصف كلٍّ منهما:',
+      figureBlock(
+        testFigure({
+          id: 'test-l06-q12-parallelogram-diagonals',
+          alt: 'متوازي الأضلاع $ABCD$ وقطراه $AC$ و$BD$ يتقاطعان عند $O$؛ لا توجد علامات على أن $O$ منتصف أي قطر.',
+          caption:
+            'رسم تخطيطي غير مقيّس يحدد نقطة تقاطع القطرين $O$ فقط؛ لا تضاف علامات منتصف أو تطابق.',
+          sourceRefs: [S_EX],
+          spec: {
+            points: [
+              { id: 'A', x: 0, y: 0, labelSide: 'sw' },
+              { id: 'B', x: 5, y: 0, labelSide: 'se' },
+              { id: 'C', x: 7, y: 3, labelSide: 'ne' },
+              { id: 'D', x: 2, y: 3, labelSide: 'nw' },
+              { id: 'O', x: 3.5, y: 1.5, labelSide: 'se' },
+            ],
+            segments: [
+              { from: 'A', to: 'B' },
+              { from: 'B', to: 'C' },
+              { from: 'C', to: 'D' },
+              { from: 'D', to: 'A' },
+              { from: 'A', to: 'C' },
+              { from: 'B', to: 'D' },
+            ],
+            questionLabels: ['A', 'B', 'C', 'D', 'O'],
+          },
+        }),
+      ),
+    ],
     items: [
       {
         id: 's1',

@@ -2,11 +2,13 @@ import {
   classification,
   errorAnalysis,
   exact,
+  figureBlock,
   matching,
   multiSelect,
   numeric,
   ordering,
   singleChoice,
+  testFigure,
   trueFalse,
 } from '../authoring';
 import type { TestQuestionInput } from '../schema';
@@ -320,6 +322,22 @@ export const questions: TestQuestionInput[] = [
     difficulty: 'advanced',
     prompt: [
       'طُلب إنشاء صورة دائرة بالانسحاب، فقام تلميذ بتعيين صورة نقطة واحدة $K$ من محيط الدائرة ورسم دائرة مركزها $K$. أين وجه الخطأ؟',
+      figureBlock(
+        testFigure({
+          id: 'test-l03-q16-circle-center-and-rim',
+          alt: 'دائرة تخطيطية بمركز غير مسمى ونقطة $K$ موضوعة على محيطها؛ لا تظهر صورة الدائرة المنقولة.',
+          caption: 'تمثيل للدائرة الأصلية والنقطة $K$ على محيطها كما يذكر السؤال؛ الرسم غير مقيّس.',
+          sourceRefs: [P14, P15],
+          spec: {
+            points: [
+              { id: 'center', x: 0, y: 0, showLabel: false, mark: 'cross' },
+              { id: 'K', x: 2.4, y: 1.8, labelSide: 'ne' },
+            ],
+            circles: [{ center: 'center', radius: 3 }],
+            questionLabels: ['K'],
+          },
+        }),
+      ),
     ],
     steps: [
       { id: 'st1', text: "صورة دائرة تتحدد بنقل مركز الدائرة $O$ إلى $O'$ أولاً." },

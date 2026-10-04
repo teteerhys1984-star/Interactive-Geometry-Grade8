@@ -81,6 +81,11 @@ export function plainText(text: string): string {
   return text.replace(/\$([^$]+)\$/g, '$1');
 }
 
+/** Strip maths delimiters while preserving each notation run's LTR direction. */
+export function plainTextIsolated(text: string): string {
+  return text.replace(/\$([^$]+)\$/g, (_match, value: string) => isolateLtr(value));
+}
+
 /**
  * Enclosed alphanumerics (U+2460 ① … U+24FF) have Unicode bidi class L.
  * The textbook uses them heavily as object identifiers inside Arabic prose

@@ -2,13 +2,16 @@ import {
   classification,
   errorAnalysis,
   exact,
+  figureBlock,
   matching,
   multiSelect,
   numeric,
   ordering,
   singleChoice,
+  testFigure,
   trueFalse,
 } from '../authoring';
+import { compassIntersectionFigure } from '../figureScenes';
 import type { TestQuestionInput } from '../schema';
 
 /**
@@ -357,7 +360,17 @@ export const questions: TestQuestionInput[] = [
     concept: 'u1-image-point',
     difficulty: 'thinking',
     prompt: [
-      'في الإنشاء بالفرجار لصورة $M$، تتقاطع القوسان في نقطتين $X$ و $Y$. كيف نميز النقطة الصحيحة؟',
+      'في الإنشاء بالفرجار لصورة $M$ وفق الانسحاب الذي ينقل $A$ إلى $B$، تتقاطع القوسان في نقطتين $X$ و $Y$. كيف نميز النقطة الصحيحة؟',
+      figureBlock(
+        compassIntersectionFigure({
+          id: 'test-u01-q19-compass-intersections',
+          startLabel: 'A',
+          endLabel: 'B',
+          alt: 'دائرتان إنشائيتان مركزاهما $B$ و$M$ تتقاطعان في النقطتين $X$ و$Y$؛ سهم $AB$ يوضح الاتجاه المعطى من دون تمييز الصحيح.',
+          caption: 'رسم تخطيطي غير مقيّس يعرض المرشحين $X$ و$Y$ معاً ولا يختار أياً منهما.',
+          sourceRefs: S2,
+        }),
+      ),
     ],
     steps: [
       { id: 's1', text: 'إحدى النقطتين تحقق الاتجاه من $A$ إلى $B$ وتكمل متوازي الأضلاع.' },
@@ -655,6 +668,30 @@ export const questions: TestQuestionInput[] = [
     difficulty: 'advanced',
     prompt: [
       'في الطائرة الورقية $ABCD$ حيث $AB = AD$ و $CB = CD$. ما الخاصية التي تجعل المثلثين $ABC$ و $ADC$ طبوقين؟',
+      figureBlock(
+        testFigure({
+          id: 'test-u01-q37-kite-triangle-correspondence',
+          alt: 'الطائرة الورقية $ABCD$ مقسومة بالقطر $AC$؛ علامات $AB=AD$ و$CB=CD$ كما وردت في السؤال.',
+          caption: 'رسم تخطيطي غير مقيّس؛ العلامات تعرض المساواتين المذكورتين والقطر المشترك فقط.',
+          sourceRefs: S4,
+          spec: {
+            points: [
+              { id: 'A', x: 0, y: 5, labelSide: 'n' },
+              { id: 'B', x: 3, y: 1, labelSide: 'e' },
+              { id: 'C', x: 0, y: -5, labelSide: 's' },
+              { id: 'D', x: -3, y: 1, labelSide: 'w' },
+            ],
+            segments: [
+              { from: 'A', to: 'B', ticks: 1 },
+              { from: 'B', to: 'C', ticks: 2 },
+              { from: 'C', to: 'D', ticks: 2 },
+              { from: 'D', to: 'A', ticks: 1 },
+              { from: 'A', to: 'C' },
+            ],
+            questionLabels: ['A', 'B', 'C', 'D'],
+          },
+        }),
+      ),
     ],
     choices: [
       { id: 'a', text: 'تساوي الأضلاع الثلاثة (ضلعان معطيان والقطر $[AC]$ مشترك)' },
@@ -673,6 +710,33 @@ export const questions: TestQuestionInput[] = [
     difficulty: 'advanced',
     prompt: [
       'مثلثان قائمان طبوقان مساحة كل منهما $15\\ \\mathrm{cm}^2$. طول أحد الأضلاع القائمة $5\\ \\mathrm{cm}$. ما طول الضلع القائم الآخر؟',
+      figureBlock(
+        testFigure({
+          id: 'test-u01-q38-right-triangle-area',
+          alt: 'مثلث قائم تخطيطي واحد من المثلثين المتطابقين؛ يوضح الضلع القائم المعطى $5$ والمساحة المعطاة $15$ فقط.',
+          caption:
+            'رسم تخطيطي غير مقيّس لأحد المثلثين المتطابقين؛ النسب البصرية لا تمثل الأطوال، ولا يوسم الضلع المطلوب.',
+          sourceRefs: S4,
+          spec: {
+            points: [
+              { id: 'right', x: 0, y: 0, showLabel: false, mark: 'none' },
+              { id: 'known-leg-end', x: 4, y: 0, showLabel: false, mark: 'none' },
+              { id: 'other-leg-end', x: 0, y: 2.7, showLabel: false, mark: 'none' },
+            ],
+            segments: [
+              { from: 'right', to: 'known-leg-end' },
+              { from: 'right', to: 'other-leg-end' },
+              { from: 'known-leg-end', to: 'other-leg-end' },
+            ],
+            rightAngles: [{ at: 'right', from: 'known-leg-end', to: 'other-leg-end' }],
+            annotations: [
+              { x: 2, y: 0.36, text: '5 cm' },
+              { x: 1.1, y: 1.05, text: '15 cm²' },
+            ],
+            questionLabels: [],
+          },
+        }),
+      ),
     ],
     numerator: 6,
     denominator: 1,

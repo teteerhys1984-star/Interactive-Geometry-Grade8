@@ -2,6 +2,7 @@ import {
   classification,
   errorAnalysis,
   exact,
+  figureBlock,
   matching,
   multiSelect,
   numeric,
@@ -9,6 +10,7 @@ import {
   singleChoice,
   trueFalse,
 } from '../authoring';
+import { compassIntersectionFigure } from '../figureScenes';
 import type { TestQuestionInput } from '../schema';
 
 /**
@@ -170,7 +172,17 @@ export const questions: TestQuestionInput[] = [
     concept: 'compass-construction',
     difficulty: 'medium',
     prompt: [
-      'في الإنشاء بالفرجار لصورة $M$ وفق الانسحاب من $G$ إلى $H$، تتقاطع الدائرتان في نقطتين. على أي أساس نختار إحدى النقطتين ونرفض الأخرى؟ (اختر كل الإجابات الصحيحة)',
+      'في الإنشاء بالفرجار لصورة $M$ وفق الانسحاب من $G$ إلى $H$، تتقاطع الدائرتان في نقطتين $X$ و $Y$. على أي أساس نختار إحدى النقطتين ونرفض الأخرى؟ (اختر كل الإجابات الصحيحة)',
+      figureBlock(
+        compassIntersectionFigure({
+          id: 'test-l02-q08-compass-intersections',
+          startLabel: 'G',
+          endLabel: 'H',
+          alt: 'دائرتان إنشائيتان مركزاهما $H$ و$M$ تتقاطعان في النقطتين $X$ و$Y$؛ سهم $GH$ يوضح الاتجاه المعطى، من دون تمييز إحدى النقطتين.',
+          caption: 'رسم تخطيطي غير مقيّس يعرض المرشحين $X$ و$Y$ معاً ولا يختار أياً منهما.',
+          sourceRefs: [P9],
+        }),
+      ),
     ],
     choices: [
       {

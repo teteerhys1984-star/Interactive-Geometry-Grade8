@@ -2,11 +2,13 @@ import {
   classification,
   errorAnalysis,
   exact,
+  figureBlock,
   matching,
   multiSelect,
   numeric,
   ordering,
   singleChoice,
+  testFigure,
   trueFalse,
 } from '../authoring';
 import type { TestQuestionInput } from '../schema';
@@ -45,6 +47,13 @@ const LESSON_ID = 'lesson-04-triangle-congruence';
 const P17 = { page: 17, locator: 'نشاط وحالات تطابق مثلثين الثلاث' };
 const P18 = { page: 18, locator: 'أمثلة الحالات الثلاث وتطبيقها' };
 const P19 = { page: 19, locator: 'تحقق من فهمك وتدرب والطائرة الورقية' };
+
+// The layout uses the exact givens BC = 6, ∠B = 50° and ∠C = 70°.
+const asaBase = 6;
+const asaAngleB = (50 * Math.PI) / 180;
+const asaSideBA = (asaBase * Math.sin((70 * Math.PI) / 180)) / Math.sin((60 * Math.PI) / 180);
+const asaApexX = asaSideBA * Math.cos(asaAngleB);
+const asaApexY = asaSideBA * Math.sin(asaAngleB);
 
 export const questions: TestQuestionInput[] = [
   /* ------------------------------------------------------------------ 01 */
@@ -134,6 +143,40 @@ export const questions: TestQuestionInput[] = [
     difficulty: 'medium',
     prompt: [
       'في المثلثين $ABC$ و $DEF$، لدينا $BC = EF = 6\\ \\mathrm{cm}$ والزاويتان المجاورتان $\\widehat{B} = \\widehat{E} = 50^\\circ$ و $\\widehat{C} = \\widehat{F} = 70^\\circ$. ما حالة التطابق التي تُثبت تطابق المثلثين؟',
+      figureBlock(
+        testFigure({
+          id: 'test-l04-q06-corresponding-triangles',
+          alt: 'مثلثان $ABC$ و$DEF$؛ الرأس $A$ يقابل $D$، والضلع $BC$ يقابل $EF$، والعلامات تكرر فقط الضلع والزاويتين المذكورة في السؤال.',
+          caption:
+            'رسم تخطيطي غير مقيّس؛ يستند إلى المعطيات المذكورة في السؤال من دون إظهار قياسات إضافية.',
+          sourceRefs: [P17, P18],
+          spec: {
+            points: [
+              { id: 'A', x: asaApexX, y: asaApexY, labelSide: 'n' },
+              { id: 'B', x: 0, y: 0, labelSide: 'sw' },
+              { id: 'C', x: asaBase, y: 0, labelSide: 'se' },
+              { id: 'D', x: 9 + asaApexX, y: asaApexY, labelSide: 'n' },
+              { id: 'E', x: 9, y: 0, labelSide: 'sw' },
+              { id: 'F', x: 9 + asaBase, y: 0, labelSide: 'se' },
+            ],
+            segments: [
+              { from: 'A', to: 'B' },
+              { from: 'B', to: 'C', ticks: 1 },
+              { from: 'C', to: 'A' },
+              { from: 'D', to: 'E' },
+              { from: 'E', to: 'F', ticks: 1 },
+              { from: 'F', to: 'D' },
+            ],
+            angles: [
+              { at: 'B', from: 'A', to: 'C' },
+              { at: 'C', from: 'B', to: 'A' },
+              { at: 'E', from: 'D', to: 'F' },
+              { at: 'F', from: 'E', to: 'D' },
+            ],
+            questionLabels: ['A', 'B', 'C', 'D', 'E', 'F'],
+          },
+        }),
+      ),
     ],
     choices: [
       { id: 'opt-a', text: 'الحالة الثانية: طول ضلع وقياسا الزاويتين المجاورتين له' },
@@ -166,6 +209,26 @@ export const questions: TestQuestionInput[] = [
     difficulty: 'medium',
     prompt: [
       'في متوازي الأضلاع $ABCD$، يقسم القطر $[AC]$ الشكل إلى مثلثين $ABC$ و $CDA$. أيُّ الأدلة الآتية تُثبت تطابقهما؟ (اختر كل الإجابات الصحيحة)',
+      figureBlock(
+        testFigure({
+          id: 'test-l04-q08-parallelogram-diagonal',
+          alt: 'متوازي الأضلاع $ABCD$ مع القطر $AC$ فقط، كما يذكر السؤال؛ لا تظهر علامات على الأضلاع أو الزوايا.',
+          caption:
+            'رسم تخطيطي غير مقيّس يوضح تقسيم $ABCD$ بالقطر $AC$؛ لا توجد علامات قياس إضافية.',
+          sourceRefs: [P18],
+          spec: {
+            points: [
+              { id: 'A', x: 0, y: 0, labelSide: 'sw' },
+              { id: 'B', x: 5, y: 0, labelSide: 'se' },
+              { id: 'C', x: 7, y: 3, labelSide: 'ne' },
+              { id: 'D', x: 2, y: 3, labelSide: 'nw' },
+            ],
+            polygons: [{ points: ['A', 'B', 'C', 'D'] }],
+            segments: [{ from: 'A', to: 'C' }],
+            questionLabels: ['A', 'B', 'C', 'D'],
+          },
+        }),
+      ),
     ],
     choices: [
       { id: 'c1', text: '$[AC]$ ضلع مشتركة بين المثلثين' },
@@ -265,6 +328,30 @@ export const questions: TestQuestionInput[] = [
     difficulty: 'medium',
     prompt: [
       'في شكل الطائرة الورقية $ABCD$ حيث $AB = AD$ و $CB = CD$. ما هما المثلثان الطبوقان اللذان يشتركان في القطر $[AC]$؟',
+      figureBlock(
+        testFigure({
+          id: 'test-l04-q13-kite-diagonal',
+          alt: 'شكل طائرة ورقية $ABCD$ مقسوم بالقطر $AC$؛ العلامات على $AB$ و$AD$، ثم $CB$ و$CD$، تمثل المساواتين الواردتين في السؤال.',
+          caption: 'رسم تخطيطي غير مقيّس؛ لا تظهر إلا المساواتان المصرح بهما والقطر المشترك $AC$.',
+          sourceRefs: [P19],
+          spec: {
+            points: [
+              { id: 'A', x: 0, y: 5, labelSide: 'n' },
+              { id: 'B', x: 3, y: 1, labelSide: 'e' },
+              { id: 'C', x: 0, y: -5, labelSide: 's' },
+              { id: 'D', x: -3, y: 1, labelSide: 'w' },
+            ],
+            segments: [
+              { from: 'A', to: 'B', ticks: 1 },
+              { from: 'B', to: 'C', ticks: 2 },
+              { from: 'C', to: 'D', ticks: 2 },
+              { from: 'D', to: 'A', ticks: 1 },
+              { from: 'A', to: 'C' },
+            ],
+            questionLabels: ['A', 'B', 'C', 'D'],
+          },
+        }),
+      ),
     ],
     choices: [
       { id: 'opt-a', text: 'المثلثان $ABC$ و $ADC$' },
@@ -299,6 +386,38 @@ export const questions: TestQuestionInput[] = [
     difficulty: 'advanced',
     prompt: [
       'في المثلثين القائمين $ABC$ في $A$ و $DEF$ في $D$، لدينا الوتران متساويان $BC = EF$ وضلعان قائمان $AB = DE$. ماذا نستنتج حتماً عن الضلعين القائمين الآخرين $[AC]$ و $[DF]$؟',
+      figureBlock(
+        testFigure({
+          id: 'test-l04-q15-right-triangle-correspondence',
+          alt: 'مثلثان قائمان $ABC$ و$DEF$؛ علامة القائمة عند $A$ و$D$، وعلامات التساوي على $BC$ مع $EF$ وعلى $AB$ مع $DE$ كما في السؤال.',
+          caption:
+            'رسم تخطيطي غير مقيّس يكرر معطيات الوتر والضلع القائم فقط؛ لا توضع علامة على الضلعين المطلوبين.',
+          sourceRefs: [P19],
+          spec: {
+            points: [
+              { id: 'A', x: 0, y: 0, labelSide: 'nw' },
+              { id: 'B', x: 4, y: 0, labelSide: 'se' },
+              { id: 'C', x: 0, y: 3, labelSide: 'nw' },
+              { id: 'D', x: 8, y: 0, labelSide: 'nw' },
+              { id: 'E', x: 12, y: 0, labelSide: 'se' },
+              { id: 'F', x: 8, y: 3, labelSide: 'nw' },
+            ],
+            segments: [
+              { from: 'A', to: 'B', ticks: 1 },
+              { from: 'A', to: 'C' },
+              { from: 'B', to: 'C', ticks: 2 },
+              { from: 'D', to: 'E', ticks: 1 },
+              { from: 'D', to: 'F' },
+              { from: 'E', to: 'F', ticks: 2 },
+            ],
+            rightAngles: [
+              { at: 'A', from: 'B', to: 'C' },
+              { at: 'D', from: 'E', to: 'F' },
+            ],
+            questionLabels: ['A', 'B', 'C', 'D', 'E', 'F'],
+          },
+        }),
+      ),
     ],
     choices: [
       { id: 'opt-a', text: '$AC = DF$ بحكم تطابق المثلثين القائمين' },
@@ -348,6 +467,33 @@ export const questions: TestQuestionInput[] = [
     difficulty: 'advanced',
     prompt: [
       'في الشكل الذي فيه مستقيمان متقاطعان في $M$ بحيث $AM = ME$ و $BM = MF$. ما سبب تطابق المثلثين $AMB$ و $EMF$؟',
+      figureBlock(
+        testFigure({
+          id: 'test-l04-q17-vertical-angle-triangles',
+          alt: 'مستقيمان يتقاطعان في $M$؛ النقاط $A$ و$M$ و$E$ على استقامة، وكذلك $B$ و$M$ و$F$. العلامات تكرر $AM=ME$ و$BM=MF$ فقط.',
+          caption:
+            'رسم تخطيطي غير مقيّس يوضح موضع المثلثين $AMB$ و$EMF$ وعلامتي تساوي الضلعين المعطاتين؛ لا توجد علامة على الزوايا.',
+          sourceRefs: [P18],
+          spec: {
+            points: [
+              { id: 'A', x: -3, y: 1, labelSide: 'nw' },
+              { id: 'M', x: 0, y: 0, labelSide: 'se' },
+              { id: 'E', x: 3, y: -1, labelSide: 'se' },
+              { id: 'B', x: -1, y: -2, labelSide: 'sw' },
+              { id: 'F', x: 1, y: 2, labelSide: 'ne' },
+            ],
+            segments: [
+              { from: 'A', to: 'M', ticks: 1 },
+              { from: 'M', to: 'E', ticks: 1 },
+              { from: 'B', to: 'M', ticks: 2 },
+              { from: 'M', to: 'F', ticks: 2 },
+              { from: 'A', to: 'B' },
+              { from: 'E', to: 'F' },
+            ],
+            questionLabels: ['A', 'M', 'E', 'B', 'F'],
+          },
+        }),
+      ),
     ],
     choices: [
       {
