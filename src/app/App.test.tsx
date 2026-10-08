@@ -242,7 +242,7 @@ describe('instructor credit', () => {
   it('displays the instructor name and phone exactly as supplied', () => {
     renderAt('/');
     expect(screen.getByText('المهندس سومر شاهين')).toBeInTheDocument();
-    const phone = screen.getByText('0930215022');
+    const phone = within(screen.getByRole('contentinfo')).getByText('0930215022');
     expect(phone).toBeInTheDocument();
     // Digits must be LTR-isolated inside the Arabic footer.
     expect(phone).toHaveAttribute('dir', 'ltr');
