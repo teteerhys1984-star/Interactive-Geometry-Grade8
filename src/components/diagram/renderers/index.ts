@@ -1,3 +1,4 @@
+import { LessonOneLab } from './LessonOneLab';
 import { registerConstructedRenderer, registerInteractiveRenderer } from '../registry';
 import { TranslationFigure } from './TranslationFigure';
 import { GridFigure } from './GridFigure';
@@ -73,3 +74,5 @@ export {
   UnitFinalFigure,
   TestGeometryFigure,
 };
+
+registerInteractiveRenderer('lesson-one-lab', LessonOneLab);

@@ -188,12 +188,13 @@ describe('progress and completion', () => {
 });
 
 describe('reference figures in the rendered lesson', () => {
-  it('shows the faithful placeholder with its textbook page', () => {
-    // Step 1 is now the authored introduction; the first textbook step is 2.
-    const stepIndex = lesson.steps.findIndex((step) => step.origin === 'source') + 1;
+  it('teaches Lesson 1 with labelled platform diagrams instead of book placeholders', () => {
+    const stepIndex =
+      lesson.steps.findIndex((step) => step.id === 'step-01-activity-damascus-pavement') + 1;
     renderAt(`/lesson/${lesson.id}/step/${stepIndex}`);
-    expect(screen.getByText('يوجد رسم هنا — راجع الكتاب')).toBeInTheDocument();
-    expect(screen.getAllByText('5').length).toBeGreaterThan(0);
+    expect(screen.queryByText('يوجد رسم هنا — راجع الكتاب')).toBeNull();
+    expect(screen.getByRole('slider', { name: 'تقدّم انسحاب الحجر' })).toBeInTheDocument();
+    expect(screen.getByText(/رسم تعليمي من إعداد المنصّة/)).toBeInTheDocument();
   });
 
   it('never renders the unregistered-renderer defect notice', () => {
@@ -548,7 +549,7 @@ describe('teacher area — per-lesson sections', () => {
 
   it('shows each lesson’s pedagogical notes under their own tab', async () => {
     const noteTitles: [string, string][] = [
-      [allLessons[0]!.lesson.id, 'الحلول المرتبطة بأشكال غير مقروءة'],
+      [allLessons[0]!.lesson.id, 'حدود النشر والوصول'],
       [allLessons[1]!.lesson.id, 'الشبكتان المُعاد رسمهما، والأشكال التي بقيت مرجعية'],
     ];
     for (const [lessonId, noteTitle] of noteTitles) {
