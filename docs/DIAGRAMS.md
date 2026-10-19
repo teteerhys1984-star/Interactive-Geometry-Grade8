@@ -26,14 +26,23 @@ them now would mean inventing requirements.
 | ------------------------ | ------------- | ------------------------------------------------------------------ |
 | `translation-figure`     | `constructed` | A shape and its image under a translation (Lessons 1–2, authored). |
 | `grid-figure`            | `interactive` | Squared-paper figures: exact lattice points, optional reveals.     |
-| `construction-figure`    | `interactive` | Step-by-step ruler-and-compass constructions.                      |
+| `construction-figure`    | `interactive` | Step-by-step ruler-and-compass constructions (static if `steps` is empty). |
 | `translation-playground` | `interactive` | Draggable point with a live, exactly computed image.               |
+| `point-image-lab`        | `interactive` | Lesson 2: drag `M`, watch `M'`, the parallelogram and the flattened case. |
+| `compass-lab`            | `interactive` | Lesson 2: the compass construction, as a stepper or as a static proof. |
+| `lattice-placement`      | `interactive` | Lesson 2: student places a point on a sheet; feedback gives the method first. |
+| `vector-chain`           | `interactive` | Lesson 2: successive translations of a triangle or a parallelogram. |
 
 A renderer may draw a **textbook** figure only when every coordinate was read
 from the scan and then verified arithmetically; that verification is written
 down per figure (see `docs/LESSON-02-FIGURES.md`) and a fidelity test refuses
-any redrawn textbook figure that is not on the verified list. Everything else
-stays `reference`.
+any redrawn textbook figure that is not on the verified list.
+
+A figure that is **not** a reproduction must declare `origin: 'authored'` and
+badge itself «رسم تعليمي من إعداد المنصّة». It may keep the printed relations
+(incidence, order, equalities, which intersection is retained) but never claims
+the printed distances. An `origin: 'textbook'` figure without a verification
+record still has to stay a `reference` placeholder.
 
 Shared fields on every variant:
 
@@ -52,6 +61,49 @@ by `assetUrl()`. The schema enforces this, and a fidelity test checks it.
 `constructed.construction` is intentionally an opaque record. We will **not**
 fix the geometry vocabulary (points, segments, arcs, angle marks, tick marks…)
 until real figures show us what is genuinely needed.
+
+### Lesson 2 lab parameters
+
+All four labs validate their own `spec.params` and return `null` on bad input,
+so a malformed figure degrades to nothing rather than to a wrong drawing.
+
+`point-image-lab`
+
+| Key                        | Type                                   | Notes                                        |
+| -------------------------- | -------------------------------------- | -------------------------------------------- |
+| `a`, `b`, `m`, `general`   | `[number, number]`                     | Free point `M`, and the position «الحالة العامة». |
+| `collinear`                | `[number, number] \| null`            | A position exactly on `(AB)`; enables the one-click switch. |
+| `bounds`                   | `{minX,maxX,minY,maxY}`                | Drawing window.                              |
+| `snap`                     | `number`                               | Drag/slider step.                            |
+| `showGrid`, `showDiagonals`| `boolean`                              | Grid, and the two diagonals with the midpoint. |
+
+`compass-lab`
+
+| Key            | Type                        | Notes                                                   |
+| -------------- | --------------------------- | ------------------------------------------------------- |
+| `h`, `g`, `m`  | `[number, number]`          | Givens: `G → H` is the translation.                     |
+| `steps`        | `string[]`                  | Construction captions; one per stepper position.        |
+| `proofStep`    | `number \| null`            | Which step the proof view starts on.                    |
+| `rejectedNote` | `string`                    | Explanation shown with the rejected intersection.       |
+| `mode`         | `'construction' \| 'proof'` | `proof` shows everything static, with no controls.      |
+| `proofCaption` | `string \| null`            | The proof sentence shown in `proof` mode.                |
+
+`lattice-placement`
+
+| Key           | Type                                     | Notes                                                        |
+| ------------- | ---------------------------------------- | ------------------------------------------------------------ |
+| `cols`, `rows`| `number`                                 | Printed sheet extent, `0…cols` × `0…rows`.                    |
+| `gridStyle`   | `'solid' \| 'dashed'`                    | Page-10 sheet is solid, page 8 dashed.                       |
+| `segments`    | `{from,to,dashed?}[]`                    | Printed straight lines (e.g. page 8's oblique line).         |
+| `points`      | `{x,y,label?,tone?}[]`                   | Printed givens.                                              |
+| `tasks`       | `{id,prompt,label,answer,hint,success,revealAfter}[]` | One placement each; the answer is only announced on success or explicit reveal. |
+| `instruction` | `string`                                 | Method reminder, never the answer.                           |
+| `extend`      | `{left,right,bottom,top}`                | Extra notebook squares outside the printed sheet.            |
+
+`vector-chain`
+
+Two modes. `triangle` takes `{a,b,c,captions,finalNote}`; `parallelogram` takes
+`{a,b,c,d,tasks:[{id,label,from,to,applyTo,imageLabel,note}]}`.
 
 ## Dispatch
 

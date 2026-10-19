@@ -550,7 +550,7 @@ describe('teacher area — per-lesson sections', () => {
   it('shows each lesson’s pedagogical notes under their own tab', async () => {
     const noteTitles: [string, string][] = [
       [allLessons[0]!.lesson.id, 'حدود النشر والوصول'],
-      [allLessons[1]!.lesson.id, 'الشبكتان المُعاد رسمهما، والأشكال التي بقيت مرجعية'],
+      [allLessons[1]!.lesson.id, 'كيف تُقرأ ورقة الحل'],
     ];
     for (const [lessonId, noteTitle] of noteTitles) {
       const { user, container, unmount } = await renderUnlocked(`/teacher/${lessonId}`);

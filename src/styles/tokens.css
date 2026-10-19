@@ -96,18 +96,24 @@
  * Contrast of the themed text colours against --color-surface (#ffffff) stays
  * above the WCAG AA threshold for body text.
  */
-[data-lesson-theme='teal'] {
-  --color-primary: #0f766e;
-  --color-primary-hover: #0b5a54;
-  --color-primary-soft: #e2f4f1;
-  --color-accent: #b45309;
-  --color-accent-bg: #fdf3e7;
-  --color-teaching-accent: #0f766e;
-  --color-teaching-border: #cbe6e2;
-  --color-teaching-bg: #f4fbfa;
-  --color-reference-accent: #0e7490;
-  --color-reference-border: #c4e3ec;
-  --color-reference-bg: #f1fafd;
+/*
+ * Lesson 2 — «ورق مربّعات دافئ»: the identity of *image of a point under a
+ * translation*. Warm squared paper, petrol ink, burnt-coral images, saffron
+ * construction aids. It deliberately differs from Lesson 1's default palette
+ * (indigo/teal) without touching layout, spacing or typography.
+ */
+[data-lesson-theme='paper'] {
+  --color-primary: #0f4c5c;
+  --color-primary-hover: #0b3b47;
+  --color-primary-soft: #e6f1f2;
+  --color-accent: #b4471f;
+  --color-accent-bg: #fdf1ea;
+  --color-teaching-accent: #0f4c5c;
+  --color-teaching-border: #cfe3e3;
+  --color-teaching-bg: #f7fbfa;
+  --color-reference-accent: #9a6a08;
+  --color-reference-border: #ecd9b3;
+  --color-reference-bg: #fffaf0;
 }
 
 [data-lesson-theme='emerald'] {
