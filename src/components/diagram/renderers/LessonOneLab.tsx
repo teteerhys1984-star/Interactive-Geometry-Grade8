@@ -439,18 +439,51 @@ export function LessonOneLab({ spec }: { spec: InteractiveDiagram }) {
     const project = (v: XY): XY => [22 + v[0] * 23, 25 + v[1] * 23 * Math.sqrt(3)];
     body = (
       <>
-        {Array.from({ length: 6 }, (_, r) => (
-          <line key={`h${r}`} x1="5" x2="605" y1={25 + r * 40} y2={25 + r * 40} stroke="#afd1df" />
-        ))}
-        {Array.from({ length: 30 }, (_, i) => (
-          <g key={i}>
-            <path
-              d={`M${i * 46 - 200} 25l115 200 M${i * 46 - 200} 225l115 -200`}
-              fill="none"
+        <defs>
+          <clipPath id={`${uid}-lattice-clip`}>
+            <rect
+              x="5"
+              y={project([0, 0])[1]}
+              width="600"
+              height={project([0, 5])[1] - project([0, 0])[1]}
+            />
+          </clipPath>
+        </defs>
+        {/* All source vertices satisfy x + y odd. The three line families
+            use that same lattice and projection: horizontal, +60°, -60°. */}
+        <g data-testid="lattice-grid" clipPath={`url(#${uid}-lattice-clip)`}>
+          {Array.from({ length: 6 }, (_, r) => (
+            <line
+              key={`h${r}`}
+              x1={project([-1, r])[0]}
+              x2={project([26, r])[0]}
+              y1={project([-1, r])[1]}
+              y2={project([26, r])[1]}
               stroke="#afd1df"
             />
-          </g>
-        ))}
+          ))}
+          {Array.from({ length: 18 }, (_, i) => {
+            const k = -7 + i * 2;
+            return (
+              <g key={k}>
+                <line
+                  x1={project([k, 0])[0]}
+                  y1={project([k, 0])[1]}
+                  x2={project([k + 5, 5])[0]}
+                  y2={project([k + 5, 5])[1]}
+                  stroke="#afd1df"
+                />
+                <line
+                  x1={project([k, 0])[0]}
+                  y1={project([k, 0])[1]}
+                  x2={project([k - 5, 5])[0]}
+                  y2={project([k - 5, 5])[1]}
+                  stroke="#afd1df"
+                />
+              </g>
+            );
+          })}
+        </g>
         {latticeFigures.map((f) => (
           <g key={f.n}>
             <polygon
@@ -460,8 +493,8 @@ export function LessonOneLab({ spec }: { spec: InteractiveDiagram }) {
               stroke="#b6881a"
             />
             <text
-              x={project(shift([2, 1.7], f.at))[0]}
-              y={project(shift([2, 1.7], f.at))[1]}
+              x={project(shift([2, f.n === 3 || f.n === 6 ? 0.55 : 1.7], f.at))[0]}
+              y={project(shift([2, f.n === 3 || f.n === 6 ? 0.55 : 1.7], f.at))[1]}
               textAnchor="middle"
             >
               {f.n}
