@@ -35,11 +35,29 @@ import {
  */
 
 describe('page 8 — the squared-paper activity', () => {
-  it('draws the sheet as 8 columns by 5 rows with the line x + y = 5', () => {
-    expect(page8.cols).toBe(8);
+  it('draws the sheet as 9 columns by 5 rows with the line x + y = 5', () => {
+    expect(page8.cols).toBe(9);
     expect(page8.rows).toBe(5);
     expect(page8.line.from).toEqual([0, 5]);
     expect(page8.line.to).toEqual([5, 0]);
+  });
+
+  it('puts every printed point on a sheet node, with three cells right of M', () => {
+    // The scan has ten vertical lines, i.e. nine columns. M sits on column
+    // line 6 and the sheet keeps cells 6, 7 and 8 to its right: an eight-column
+    // sheet would have cut two of them off.
+    expect(page8.cols - page8.points.M[0]).toBe(3);
+    for (const point of Object.values(page8.points)) {
+      expect(Number.isInteger(point[0]) && Number.isInteger(point[1])).toBe(true);
+      expect(point[0]).toBeGreaterThanOrEqual(0);
+      expect(point[0]).toBeLessThanOrEqual(page8.cols);
+      expect(point[1]).toBeGreaterThanOrEqual(0);
+      expect(point[1]).toBeLessThanOrEqual(page8.rows);
+    }
+    // The two right-hand columns carry no printed point.
+    const columns = new Set(Object.values(page8.points).map((point) => point[0]));
+    expect(columns.has(7)).toBe(false);
+    expect(columns.has(8)).toBe(false);
   });
 
   it('keeps B, P and A exactly on the printed line', () => {

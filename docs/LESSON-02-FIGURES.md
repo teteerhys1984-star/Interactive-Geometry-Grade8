@@ -23,7 +23,9 @@ figure is a finite list of integers, not an approximation.
 
 ### `fig-8-activity-grid` — page 8, نشاط · 1. على ورقة سنتيمترية
 
-Origin = bottom-left node of the printed sheet; unit = one cell.
+Sheet = **9 columns × 5 rows** (ten vertical grid lines, spaced 27–28 px in the
+scan); `M` sits on column line 6, so three cells lie to its right. Origin =
+bottom-left node of the printed sheet; unit = one cell.
 
 | Point | Coordinates |
 | ----- | ----------- |
@@ -37,8 +39,10 @@ Verification performed before the figure was allowed out of `reference`:
 
 1. **Collinearity.** The printed line passes through `B`, `P`, `A`. The read
    coordinates satisfy `x + y = 5` for all three, i.e. they are exactly
-   collinear on a slope −1 line, and the drawn line runs corner to corner from
-   (0, 5) to (5, 0) as printed.
+   collinear on a slope −1 line. As printed, the drawn line starts at the
+   **top-left corner** (0, 5) and reaches the bottom edge at (5, 0) — it is not a
+   corner-to-corner diagonal of the sheet, and the three columns to the right of
+   `M` stay empty.
 2. **Shared row / column.** `N` and `B` share column 1; `N` and `M` share row 2.
    Both are directly visible in the scan and both agree with the readings.
 3. **Constructed image lands on a node.** The activity asks for the point `M'`
@@ -104,7 +108,7 @@ tests, and each one is captioned as a platform drawing.
 | Figure id                      | Renderer              | Relation preserved from the printed page                                                     |
 | ------------------------------ | --------------------- | -------------------------------------------------------------------------------------------- |
 | `auth-02-blank-sheet`          | `construction-figure` | `A`, `B`, `N` collinear in that order; `M` off the line.                                      |
-| `auth-02-definition`           | `construction-figure` | `ABM'M` is a parallelogram with `I` the common midpoint of `[AM']` and `[BM]`.                |
+| `auth-02-definition`           | `construction-figure` | `ABM'M` is a parallelogram; **the printed figure shows only the sides** (`[AM]`, `[BM']` dashed). The diagonals `[AM']`, `[BM]` and the midpoint `I` are the platform's addition. |
 | `auth-02-special-case`         | `construction-figure` | `A`, `M`, `I`, `B`, `M'` collinear with `I` the common midpoint.                             |
 | `auth-02-compass-given`        | `construction-figure` | `[HG]` horizontal, `M` below and to the right of `G`.                                         |
 | `auth-02-compass-construction` | `compass-lab`         | `𝒞₁(M, GH)`, `𝒞₂(H, GM)`, both intersections, the retained one and the rejected one.          |
@@ -122,22 +126,33 @@ The scans give no measurements for the blank-sheet sketches, so those figures
 say so in their captions, and the two solutions that would otherwise depend on
 them carry a `limitation` note.
 
-## 3. Teacher-only answer sheets
+## 3. Teacher-only figures (answer sheets and check diagrams)
 
-Two extra `grid-figure` specs add the computed images to the printed sheets.
-They are `origin: 'authored'`, live only in the Teacher Area, and never appear in
-a student step:
+Four extra `origin: 'authored'` specs live only in the Teacher Area and never
+appear in a student step. Two are `grid-figure` answer sheets that add the
+computed images to the printed sheets:
 
 | Figure id                | Shows                                                                                      |
 | ------------------------ | ------------------------------------------------------------------------------------------ |
 | `auth-02-page8-answers`  | `M' (3,5)`, `N' (−2,5)`, `P' (−1,6)`, with notebook margins on the left and above.           |
 | `auth-02-page10-answers` | `M' (6,3)`, `M'' (4,0)`, `N' (2,2)`, `N'' = N`, `P (6,4)`, `Q (4,−2)`, two rows below the sheet. |
 
+The other two are `construction-figure` diagrams for the two «تحقّق من فهمك»
+prompts, whose whole answer is the *order* of the four vertices. The printed page
+shows no drawing for them; each diagram is one exact instance of the order the
+solution names, with the translated pair of sides dashed:
+
+| Figure id                | Shows                                                                      |
+| ------------------------ | -------------------------------------------------------------------------- |
+| `auth-02-check-pqnm`     | `P → Q → N → M`, with `[PQ]` and `[MN]` dashed (equal and parallel).        |
+| `auth-02-check-jkrt`     | `J → K → R → T`, with `[JK]` and `[TR]` dashed (equal and parallel).        |
+
 ## 4. Verification log
 
 | Check                                                        | Where it is asserted                                    |
 | ------------------------------------------------------------ | ------------------------------------------------------- |
 | Coordinates are integers and lie on the sheet                | `sourceFidelity.test.ts`, `GridFigure.test.tsx`          |
+| The page-8 sheet is 9 × 5 with three cells right of `M`      | `lesson-02-geometry.test.ts`                             |
 | `M'`, `N'`, `P'` on page 8 are the computed images            | `lesson-02-rebuild.test.tsx`                             |
 | The six page-10 placements equal the computed images          | `lesson-02-rebuild.test.tsx`                             |
 | `N''` returns to `N`                                          | `lesson-02-geometry.test.ts`                             |

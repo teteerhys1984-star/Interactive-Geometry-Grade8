@@ -4,6 +4,8 @@ import userEvent from '@testing-library/user-event';
 import { getLesson } from '@/content/registry';
 import type { ContentBlock, DiagramSpec } from './schema';
 import {
+  figCheckJkrt,
+  figCheckPqnm,
   figCompassConstruction,
   figCompassProof,
   figPage8Answers,
@@ -208,6 +210,44 @@ describe('Lesson 2 — interactive labs agree with the geometry module', () => {
     ).toBe(true);
   });
 
+  it('draws the two check-understanding quadrilaterals in the order their solution names', () => {
+    // PQNM and JKRT are parallelograms read on the perimeter: the translated
+    // pair of sides must be the pair drawn dashed, or the figure would
+    // illustrate PQMN / JKTR — the very mistake the solution warns about.
+    type CheckElement =
+      | { kind: 'point'; at: [number, number]; label?: string }
+      | { kind: 'segment'; from: [number, number]; to: [number, number]; dashed?: boolean };
+
+    for (const [diagram, order] of [
+      [figCheckPqnm, ['P', 'Q', 'N', 'M']],
+      [figCheckJkrt, ['J', 'K', 'R', 'T']],
+    ] as const) {
+      const elements = paramsOf(diagram).elements as CheckElement[];
+      const points = new Map<string, [number, number]>();
+      for (const element of elements) {
+        if (element.kind === 'point' && element.label) points.set(element.label, element.at);
+      }
+      const corners = order.map((label) => points.get(label));
+      expect(corners.every(Boolean), diagram.id).toBe(true);
+      const [p, q, n, m] = corners as [number, number][];
+      expect(isParallelogram(p!, q!, n!, m!), diagram.id).toBe(true);
+
+      const dashed = elements.filter(
+        (element): element is Extract<CheckElement, { kind: 'segment' }> =>
+          element.kind === 'segment' && element.dashed === true,
+      );
+      expect(dashed, diagram.id).toHaveLength(2);
+      expect(
+        dashed.some((s) => samePoint(s.from, p!) && samePoint(s.to, q!)),
+        diagram.id,
+      ).toBe(true);
+      expect(
+        dashed.some((s) => samePoint(s.from, m!) && samePoint(s.to, n!)),
+        diagram.id,
+      ).toBe(true);
+    }
+  });
+
   it('uses a genuinely collinear M in the two-case lab', () => {
     const params = paramsOf(figTwoCasesLab);
     const a = params.a as [number, number];
@@ -323,13 +363,14 @@ describe('Lesson 2 — Teacher Area completeness', () => {
     }
   });
 
-  it('attaches a figure to every solution that needs one', () => {
+  it('attaches a figure to every solution', () => {
     const withFigures = solutions.filter((solution) =>
       solution.blocks.some((block) => block.type === 'figure'),
     );
-    // The two fill-in prompts on page 10 are answered by naming the
-    // quadrilateral; every other prompt is a construction or a placement.
-    expect(withFigures).toHaveLength(15);
+    // The two fill-in prompts on page 10 name a quadrilateral rather than a
+    // construction; their figures are the platform's instances of the two
+    // orders, so every one of the seventeen solutions now carries a figure.
+    expect(withFigures).toHaveLength(17);
   });
 
   it('flags exactly the two solutions that lean on our own distances', () => {

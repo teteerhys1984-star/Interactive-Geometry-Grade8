@@ -102,11 +102,14 @@ export function circleIntersections(
 
 /* --------------------------------------------------------------------------
  *  PAGE 8 — النشاط · 1. على ورقة سنتيمترية
- *  Printed sheet: 8 columns × 5 rows. The printed line runs from the top-left
- *  corner (0,5) to (5,0), so every point on it satisfies x + y = 5.
+ *  Printed sheet: 9 columns × 5 rows. The printed line runs from the top-left
+ *  corner (0,5) down to the bottom edge at (5,0), so every point on it
+ *  satisfies x + y = 5. Per the scan, M sits on column line 6 and the sheet
+ *  keeps three empty cells to its right — that is where the ninth column comes
+ *  from; the eight-column reading stopped two cells short of the printed edge.
  * ----------------------------------------------------------------------- */
 export const page8 = {
-  cols: 8,
+  cols: 9,
   rows: 5,
   line: { from: [0, 5] as XY, to: [5, 0] as XY },
   points: {

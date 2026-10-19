@@ -38,17 +38,21 @@ const page10Source = { page: 10, locator: 'تدرّب — ③' } as const;
 
 const AUTHORED_CAPTION =
   'رسم تعليمي من إعداد المنصّة — يحفظ العلاقات المطبوعة، والمسافات فيه ليست من الكتاب.';
+/** For the two «تحقّق من فهمك» diagrams: the page prints no figure at all. */
+const CHECK_CAPTION =
+  'رسم تعليمي من إعداد المنصّة — الصفحة المطبوعة لا ترسم شكلاً لهذين المطلوبين، والمسافات هنا ليست من الكتاب.';
 const TEXTBOOK_CAPTION = 'الشكل المطبوع — أُعيد رسمه بالشبكة نفسها والإحداثيات نفسها.';
 
 /* --------------------------------------------------------------------------
- *  PAGE 8 — squared paper: 8 × 5, line from (0,5) to (5,0)
+ *  PAGE 8 — squared paper: 9 × 5, line from (0,5) to (5,0). M sits on column
+ *  line 6, so three of the nine columns lie to its right, as printed.
  * ----------------------------------------------------------------------- */
 export const figPage8Grid: InteractiveDiagram = {
   kind: 'interactive',
   origin: 'textbook',
   id: 'fig-8-activity-grid',
   renderer: 'grid-figure',
-  alt: 'شبكة سنتيمترية من ثمانية أعمدة وخمسة أسطر، يمرّ فيها مستقيم من الزاوية العليا اليسرى إلى أسفل اليمين، عليه النقاط $B$ و$P$ و$A$، وخارجه النقطة $N$ على يسار الشبكة والنقطة $M$ على يمينها.',
+  alt: 'شبكة سنتيمترية من تسعة أعمدة وخمسة أسطر، يمرّ فيها مستقيم من الزاوية العليا اليسرى نازلاً إلى الحافة السفلى عند العمود الخامس، وعليه النقاط $B$ ثم $P$ ثم $A$. وداخل الشبكة النقطة $N$ في العمود الأول والسطر الثاني، والنقطة $M$ في العمود السادس والسطر الثاني، وتمتدّ ثلاثة أعمدة إلى يمين $M$ حتى الحافة اليمنى.',
   caption: `صفحة ٨ — ${TEXTBOOK_CAPTION}`,
   source: page8Source,
   params: {
@@ -103,7 +107,7 @@ export const figPage8Lab: InteractiveDiagram = {
   origin: 'authored',
   id: 'auth-02-page8-lab',
   renderer: 'lattice-placement',
-  alt: 'شبكة نشاط الصفحة ٨: ثمانية أعمدة وخمسة أسطر، والمستقيم المائل المطبوع، والنقاط $A$ و$B$ و$M$ و$N$ و$P$، مع مساحة إضافية على اليسار والأعلى تقع فيها الصور الخارجية.',
+  alt: 'شبكة نشاط الصفحة ٨: تسعة أعمدة وخمسة أسطر، والمستقيم المائل المطبوع، والنقاط $A$ و$B$ و$M$ و$N$ و$P$، مع مساحة إضافية على اليسار تقع فيها الصورة الخارجية $N′$.',
   caption:
     'شبكة نشاط الصفحة ٨ مع مساحة إضافية على صفحة الدفتر — المساحة الإضافية من إعداد المنصّة، والنقاط والمستقيم من الشكل المطبوع.',
   params: {
@@ -156,7 +160,7 @@ export const figPage10Grid: InteractiveDiagram = {
   origin: 'textbook',
   id: 'fig-10-exercise-3-grid',
   renderer: 'grid-figure',
-  alt: 'شبكة من ثمانية أعمدة وستة أسطر، فيها النقطة $M$ في الزاوية العليا اليمنى، والنقطة $N$ أسفل منها إلى اليسار، والنقطة $A$ في الوسط، وفي السطر السفلي النقاط $B$ ثم $P$ ثم $Q$ بالترتيب.',
+  alt: 'شبكة من ثمانية أعمدة وستة أسطر، فيها النقطة $M$ في الزاوية العليا اليمنى، والنقطة $N$ في العمود الرابع والسطر الخامس، والنقطة $A$ في العمود الخامس والسطر الرابع، وفي السطر الأول فوق الحافة السفلى النقاط $B$ ثم $P′$ ثم $Q′$ من اليسار إلى اليمين.',
   caption: `صفحة ١٠ — ${TEXTBOOK_CAPTION}`,
   source: page10Source,
   params: {
@@ -404,7 +408,7 @@ export const figTwoCasesLab: InteractiveDiagram = {
   origin: 'authored',
   id: 'auth-02-two-cases',
   renderer: 'point-image-lab',
-  alt: "شبكة ورسم متوازي أضلاع $ABM'M$ مع قطبيه $[AM']$ و$[BM]$ المتقاطعين في $I$؛ وتحريك النقطة $M$ إلى المستقيم $(AB)$ يجعل النقاط الأربع على استقامة واحدة.",
+  alt: "شبكة ورسم متوازي أضلاع $ABM'M$ مع قطريه $[AM']$ و$[BM]$ المتقاطعين في $I$؛ وتحريك النقطة $M$ إلى المستقيم $(AB)$ يجعل النقاط الأربع على استقامة واحدة.",
   caption: `رسم تفاعلي من إعداد المنصّة: حرّك $M$ وراقب متوازي الأضلاع والقطرين. ${AUTHORED_CAPTION}`,
   params: {
     a: twoCasesSheet.A,
@@ -810,5 +814,81 @@ export const figPage10Answers: InteractiveDiagram = {
     reveals: [],
     extend: { start: 0, end: 0, bottom: 2, top: 0 },
     extendNote: 'السطران الإضافيان أسفل الشبكة هما المساحة التي يوفّرها الدفتر، وفيهما تقع $Q$.',
+  },
+};
+
+/* --------------------------------------------------------------------------
+ *  TEACHER-ONLY check-understanding figures.
+ *  «تحقّق من فهمك» prints two fill-in prompts and no drawing at all: the whole
+ *  answer is the order of the four vertices. Each figure below is one exact
+ *  instance of the order the solution names, with the translated pair of sides
+ *  drawn dashed so the teacher can show why that pair is parallel and equal.
+ *  The distances are the platform's; no printed figure is being reproduced.
+ * ----------------------------------------------------------------------- */
+const checkPqnm = {
+  P: [0, 0] as XY,
+  Q: [3, 1] as XY,
+  M: [0, 4] as XY,
+};
+const checkPqnmImage: XY = [
+  checkPqnm.M[0] + checkPqnm.Q[0] - checkPqnm.P[0],
+  checkPqnm.M[1] + checkPqnm.Q[1] - checkPqnm.P[1],
+];
+
+export const figCheckPqnm: InteractiveDiagram = {
+  kind: 'interactive',
+  origin: 'authored',
+  id: 'auth-02-check-pqnm',
+  renderer: 'construction-figure',
+  alt: 'الرباعي $PQNM$ مرسوم بترتيب رؤوسه على المحيط: $P$ ثم $Q$ ثم $N$ ثم $M$؛ والضلعان $[PQ]$ و$[MN]$ مرسومان متقطّعين للدلالة على أنهما الزوج المتبادل بالانسحاب نفسه، فيكونان متوازيين ومتساويين.',
+  caption: `صفحة ١٠ — تحقّق من فهمك، العبارة ١. ${CHECK_CAPTION}`,
+  params: {
+    padding: 0.75,
+    steps: [],
+    elements: [
+      { kind: 'segment', from: checkPqnm.P, to: checkPqnm.Q, tone: 'mark', dashed: true },
+      { kind: 'segment', from: checkPqnm.M, to: checkPqnmImage, tone: 'mark', dashed: true },
+      { kind: 'segment', from: checkPqnm.Q, to: checkPqnmImage, tone: 'ink' },
+      { kind: 'segment', from: checkPqnmImage, to: checkPqnm.M, tone: 'ink' },
+      { kind: 'segment', from: checkPqnm.M, to: checkPqnm.P, tone: 'ink' },
+      { kind: 'point', at: checkPqnm.P, label: 'P', tone: 'ink', offset: [-0.52, 0.5] },
+      { kind: 'point', at: checkPqnm.Q, label: 'Q', tone: 'ink', offset: [0.35, 0.5] },
+      { kind: 'point', at: checkPqnmImage, label: 'N', tone: 'mark', offset: [0.35, -0.3] },
+      { kind: 'point', at: checkPqnm.M, label: 'M', tone: 'mark', offset: [-0.62, -0.28] },
+    ],
+  },
+};
+
+const checkJkrt = {
+  J: [0, 0] as XY,
+  K: [4, 2] as XY,
+  T: [1, 4] as XY,
+};
+const checkJkrtImage: XY = [
+  checkJkrt.T[0] + checkJkrt.K[0] - checkJkrt.J[0],
+  checkJkrt.T[1] + checkJkrt.K[1] - checkJkrt.J[1],
+];
+
+export const figCheckJkrt: InteractiveDiagram = {
+  kind: 'interactive',
+  origin: 'authored',
+  id: 'auth-02-check-jkrt',
+  renderer: 'construction-figure',
+  alt: 'الرباعي $JKRT$ مرسوم بترتيب رؤوسه على المحيط: $J$ ثم $K$ ثم $R$ ثم $T$؛ والضلعان $[JK]$ و$[TR]$ مرسومان متقطّعين للدلالة على أنهما الزوج المتبادل بالانسحاب نفسه، فيكونان متوازيين ومتساويين.',
+  caption: `صفحة ١٠ — تحقّق من فهمك، العبارة ٢. ${CHECK_CAPTION}`,
+  params: {
+    padding: 0.75,
+    steps: [],
+    elements: [
+      { kind: 'segment', from: checkJkrt.J, to: checkJkrt.K, tone: 'mark', dashed: true },
+      { kind: 'segment', from: checkJkrt.T, to: checkJkrtImage, tone: 'mark', dashed: true },
+      { kind: 'segment', from: checkJkrt.K, to: checkJkrtImage, tone: 'ink' },
+      { kind: 'segment', from: checkJkrtImage, to: checkJkrt.T, tone: 'ink' },
+      { kind: 'segment', from: checkJkrt.T, to: checkJkrt.J, tone: 'ink' },
+      { kind: 'point', at: checkJkrt.J, label: 'J', tone: 'ink', offset: [-0.5, 0.5] },
+      { kind: 'point', at: checkJkrt.K, label: 'K', tone: 'ink', offset: [0.35, 0.42] },
+      { kind: 'point', at: checkJkrtImage, label: 'R', tone: 'mark', offset: [0.3, -0.28] },
+      { kind: 'point', at: checkJkrt.T, label: 'T', tone: 'mark', offset: [-0.62, -0.24] },
+    ],
   },
 };

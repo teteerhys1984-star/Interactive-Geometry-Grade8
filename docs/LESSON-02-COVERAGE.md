@@ -33,8 +33,10 @@ The three pages were read line by line, then the two squared-paper figures were
 calibrated numerically (grid-line detection + point centroids) so that no
 coordinate is eyeballed:
 
-- page 8 sheet: **8 columns × 5 rows**, points `A(4,1) B(1,4) P(2,3) M(6,2) N(1,2)`,
-  printed line from `(0,5)` to `(5,0)`;
+- page 8 sheet: **9 columns × 5 rows** (ten vertical grid lines, nine cells),
+  points `A(4,1) B(1,4) P(2,3) M(6,2) N(1,2)`, printed line from `(0,5)` to
+  `(5,0)`. `M` sits on column line 6, and the sheet keeps three cells to its
+  right; an earlier eight-column reading cut two of them off and is superseded;
 - page 10 sheet: **8 columns × 6 rows**, points `M(8,6) N(4,5) A(5,4) B(3,1) P′(4,1) Q′(6,1)`,
   with `M` exactly on the top-right corner node.
 
@@ -67,7 +69,7 @@ source was guessed at or replaced by a similar problem.
 | P8-2-2  | «ليكن T الانسحاب الذي ينقل النقطة A إلى النقطة B ... اشرح العمل الذي قمت به.»                  | `step-02` question 2 + teacher solution      | S/R — full sentence, including «اشرح العمل»                      |
 | P8-LRN  | «تعلّم»                                                                                        | `step-03` kicker                            | S                                                               |
 | P8-DEF  | «تعريف: ... الرباعي ABM′M متوازي أضلاع ... [AM′] و [BM] متناصفتان.»                            | `step-03-definition` callout                | S/R — verbatim, including the exclusion «لا تنتمي إلى (AB)»      |
-| P8-DEF-F| parallelogram `A B M′ M` with dashed diagonals `[AM′]`, `[BM]`                                 | `step-03` figure `auth-02-definition`        | authored exact instance of the same configuration (badged)      |
+| P8-DEF-F| parallelogram `A B M′ M`: sides `[AB]` and `[MM′]` drawn, `[AM]` and `[BM′]` dashed. **The printed figure draws no diagonals `[AM′]`, `[BM]` and no point `I`** | `step-03` figure `auth-02-definition`        | authored instance of the printed configuration (badged), **plus** the platform's diagonals `[AM′]`, `[BM]` and their midpoint `I`, added to make «متناصفتان» visible |
 
 ## 2. Page 9 — «حالة خاصة» and «اكتساب معارف»
 
@@ -118,7 +120,7 @@ them and are all badged «شرح المنصّة».
 | 3  | `teach-02-reading-the-vector`       | authored| worked example, then the page-8 placement lab (`M′`, `N′`)        |
 | 4  | `step-02-activity-blank-paper`      | page 8  | activity 2 (the grid disappears)                                  |
 | 5  | `teach-03-when-the-grid-disappears` | authored| why a compass is now needed; what “image” must guarantee          |
-| 6  | `step-03-definition`                | page 8  | the printed definition + diagonals                                |
+| 6  | `step-03-definition`                | page 8  | the printed definition; the diagonals and `I` are the platform's  |
 | 7  | `teach-04-why-a-parallelogram`      | authored| why the definition is exactly “same direction, same distance”     |
 | 8  | `step-04-special-case`              | page 9  | printed special case                                              |
 | 9  | `teach-05-two-cases`                | authored| both cases side by side; draggable lab switches between them      |
@@ -204,13 +206,13 @@ lesson's palette, layout, spacing or typography changes.
 | Item                          | Result                                                                    |
 | ----------------------------- | ------------------------------------------------------------------------- |
 | Steps                         | 18 — 11 printed (ids unchanged, printed order) + 7 authored, all badged.   |
-| Figures                       | 2 reproduced sheets, 13 authored figures, 2 teacher-only answer sheets.    |
+| Figures                       | 2 reproduced sheets, 13 authored student figures, 2 teacher-only answer sheets, 2 teacher-only check figures. |
 | `reference` placeholders       | 0 (the five blank-sheet ones were replaced by badged reconstructions).     |
-| Teacher solutions              | 17 — one per printed prompt, each with steps, rule, check, figure, page.   |
+| Teacher solutions              | 17 — one per printed prompt; steps, rule, check, figure and page each.     |
 | Assessment                    | 12 platform-authored questions, 3 types, every one with an explanation.    |
-| `lesson-02-geometry.test.ts`   | 28 / 28 pass.                                                              |
-| `lesson-02-rebuild.test.tsx`   | 28 / 28 pass.                                                              |
-| Full suite                     | 394 / 394 pass across 34 files (`npm run verify`).                         |
+| `lesson-02-geometry.test.ts`   | 29 / 29 pass.                                                              |
+| `lesson-02-rebuild.test.tsx`   | 29 / 29 pass.                                                              |
+| Full suite                     | 396 / 396 pass across 34 files (`npm run verify`).                         |
 | Build                          | production build succeeds (only the pre-existing chunk-size warning).      |
 
 The visual check was performed in a real Chromium instance (headless shell 131)
