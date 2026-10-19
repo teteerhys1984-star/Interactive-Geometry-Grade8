@@ -1,0 +1,65 @@
+.lab {
+  width: 100%;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid #bfd8df;
+  border-radius: 1rem;
+  background: linear-gradient(145deg, #f2fafb, #fffdf5);
+  color: #173b50;
+}
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 430px;
+  overflow: visible;
+}
+.svg text {
+  font: 16px sans-serif;
+  fill: #16394b;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+.svg polygon,
+.svg path,
+.svg line,
+.svg circle {
+  vector-effect: non-scaling-stroke;
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: center;
+  margin-block: 0.8rem;
+}
+.controls select,
+.controls button {
+  font: inherit;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid #526f81;
+  border-radius: 0.5rem;
+  background: white;
+  color: #173b50;
+}
+.controls label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+.controls input {
+  accent-color: #007b7b;
+  width: min(220px, 60vw);
+}
+.controls :focus-visible {
+  outline: 3px solid #bf5900;
+  outline-offset: 3px;
+}
+.readout {
+  display: block;
+  padding: 0.7rem 1rem;
+  border-inline-start: 4px solid #007b7b;
+  background: #e3f1f2;
+  line-height: 1.9;
+}

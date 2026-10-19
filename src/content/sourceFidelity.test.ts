@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { allLessons, referenceFigures, subject } from './registry';
+import { lesson01TeacherSteps } from './units/lesson-01-exercises';
 import { subjectSchema } from './schema';
 import type { ContentBlock, DiagramSpec, Question } from './schema';
 import { hasUnisolatedNotation } from '@/lib/bidi';
@@ -147,6 +148,8 @@ describe('implementation boundary — Lessons 1–7 (Lessons 6 and 7 are the ind
     for (const page of pages) {
       expect(
         [
+          '3',
+          '4',
           '5',
           '6',
           '7',
@@ -244,7 +247,9 @@ describe('source fidelity', () => {
 
   it('requires a textbook page reference on every SOURCE step', () => {
     for (const { lesson } of allLessons) {
-      for (const step of lesson.steps) {
+      for (const step of lesson.id === 'lesson-01-translation-and-properties'
+        ? [...lesson.steps, ...lesson01TeacherSteps]
+        : lesson.steps) {
         if (step.origin !== 'source') continue;
         expect(step.source, `step ${step.id} is missing a source`).toBeDefined();
         expect(String(step.source?.page).length).toBeGreaterThan(0);
@@ -382,16 +387,18 @@ describe('diagram contracts', () => {
  * ============================================================================
  */
 
-/** The eight verbatim steps of Lesson 1, in printed order. */
+/** Student source sequence: launch followed by ordinary lesson concepts. */
 const SOURCE_STEP_IDS = [
+  'launch-naming-area',
+  'launch-properties',
+  'launch-criteria',
+  'launch-grid',
+  'launch-marked',
+  'launch-circles',
   'step-01-activity-damascus-pavement',
   'step-02-activity-another-translation',
   'step-03-learn-translation-concept',
   'step-04-properties-of-translation',
-  'step-05-check-fifteen-parallelograms',
-  'step-06-check-why-not-a-translation',
-  'step-07-practice-triangular-tiling',
-  'step-08-practice-semicircle-area',
 ];
 
 /**
@@ -403,9 +410,9 @@ const VERBATIM_CORPUS = [
   'الأسئلة الآتية تسمح بطرح مفهوم الانسحاب وفق مستقيم.',
   'وفق أية حركة يمكن أن تنتقل قصاصة الحجر ① لتنطبق على قصاصة الحجر ②؟',
   'نقول إن الحجر ② هو صورة الحجر ① وفق الانسحاب الذي ينقل النقطة $A$ إلى النقطة $B$.',
-  'هل يوجد انسحاب ينقل الحجر ⑩ إلى الحجر ⑧؟ إنْ نعم، ما هو؟',
+  'هل يوجد انسحاب ينقل الحجر ⑧ إلى الحجر ⑪؟ إنْ نعم، ما هو؟',
   'يحافظ الانسحاب على:',
-  'لدينا في الشكل التالي 15 متوازي أضلاع مرقمة من الرقم 1 حتى الرقم 15.',
+  'لدينا في الشكل التالي 15 متوازي أضلاع طبوقة مرقمة من الرقم 1 حتى الرقم 15.',
   'اشرح لماذا الشكل الأحمر ليس صورة للشكل الأزرق وفق انسحاب.',
   'دلّ على كل شكل وصورته وفق انسحاب.',
   'استنتج مساحة المنطقة الملونة باللون الأزرق',
@@ -517,7 +524,7 @@ const LESSON_3_VERBATIM_CORPUS = [
 describe('authored material never displaces the source', () => {
   const lesson = allLessons[0]!.lesson;
 
-  it('keeps all eight verbatim steps, unchanged and in printed order', () => {
+  it('keeps launch and ordinary source steps in order, with check/practice in Teacher Area', () => {
     const sourceIds = lesson.steps.filter((s) => s.origin === 'source').map((s) => s.id);
     expect(sourceIds).toEqual(SOURCE_STEP_IDS);
   });
@@ -526,7 +533,7 @@ describe('authored material never displaces the source', () => {
     // Each authored step must be adjacent to source steps only — i.e. the
     // source sequence read on its own is still the printed sequence.
     expect(lesson.steps.filter((s) => s.origin === 'authored').length).toBeGreaterThan(0);
-    expect(lesson.steps).toHaveLength(15);
+    expect(lesson.steps).toHaveLength(17);
   });
 
   it('still contains every checked verbatim sentence, character for character', () => {
@@ -537,6 +544,7 @@ describe('authored material never displaces the source', () => {
         ...(step.kicker ? [step.kicker] : []),
         ...collectStrings(step.blocks),
       ]);
+    haystack.push(...lesson01TeacherSteps.flatMap((step) => collectStrings(step.blocks)));
     for (const sentence of VERBATIM_CORPUS) {
       expect(haystack, `verbatim sentence lost: ${sentence}`).toContain(sentence);
     }
@@ -565,9 +573,10 @@ describe('authored material never displaces the source', () => {
     const textbookFigures = allDiagrams().filter((d) => d.origin === 'textbook');
     // Lessons 1–5 contribute 43 figures. Lesson 6 adds five reference figures
     // and three reconstructions (51). Lesson 7 adds five reference figures and
-    // eight reconstructions, for a total of 64 textbook figures.
-    expect(textbookFigures).toHaveLength(64);
-    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(64);
+    // eight reconstructions. Lesson 1 now uses authored explanatory figures,
+    // not the previous seven reference occurrences: 57 textbook figures remain.
+    expect(textbookFigures).toHaveLength(57);
+    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(57);
     for (const diagram of textbookFigures) {
       if (VERIFIED_TEXTBOOK_FIGURES.includes(diagram.id)) continue;
       expect(diagram.kind, `${diagram.id} must stay a reference placeholder`).toBe('reference');
@@ -751,8 +760,10 @@ describe('teacher resources', () => {
 
   it('solves every printed question of Lesson 1', () => {
     expect(lesson01Resources).toBeDefined();
-    // 4 + 2 + 6 + 1 + 1 + 2 = 16 printed prompts across pages 5–7.
-    expect(lesson01Resources!.textbookSolutions.length).toBe(16);
+    // Six ordinary activity prompts are now worked in the student lesson.
+    // Teacher Area retains six strip prompts, four panels in one prompt,
+    // one lattice prompt, and two semicircle prompts (10 solution records).
+    expect(lesson01Resources!.textbookSolutions.length).toBe(10);
   });
 
   it('solves every printed question of Lesson 2', () => {
@@ -770,7 +781,9 @@ describe('teacher resources', () => {
   it('reproduces each printed question verbatim inside its solution', () => {
     for (const { lesson } of allLessons) {
       const printed = new Set<string>();
-      for (const step of lesson.steps) {
+      for (const step of lesson.id === 'lesson-01-translation-and-properties'
+        ? lesson01TeacherSteps
+        : lesson.steps) {
         if (step.origin !== 'source') continue;
         for (const block of step.blocks) {
           if (block.type === 'questionGroup') {
@@ -785,9 +798,9 @@ describe('teacher resources', () => {
     }
   });
 
-  it('flags every Lesson 1 solution, all of which lean on an unreadable figure', () => {
+  it('resolves the earlier Lesson 1 source limitations using the newly supplied pages', () => {
     const flagged = lesson01Resources!.textbookSolutions.filter((s) => s.limitation);
-    expect(flagged.length).toBe(lesson01Resources!.textbookSolutions.length);
+    expect(flagged).toEqual([]);
   });
 
   it('flags exactly the Lesson 2 solutions that lean on an unreadable figure', () => {
