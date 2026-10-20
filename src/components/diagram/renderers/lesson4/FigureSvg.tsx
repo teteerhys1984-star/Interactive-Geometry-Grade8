@@ -391,6 +391,19 @@ export function FigureSvg({ spec, ariaLabel, className }: FigureSvgProps) {
           textAnchor="middle"
           dominantBaseline="middle"
           fontSize={label.fontSize}
+          /*
+           * The same size again, as an inline style. A presentation attribute
+           * is the weakest declaration in the author origin, so ANY author rule
+           * that happens to match `<text>` silently wins it — which is exactly
+           * what happened: an unscoped `text { font-size: 5px }` in another
+           * component's stylesheet (CSS Modules do not hash type selectors)
+           * drew every label of this lesson at 5 user units. The inline style
+           * is the one declaration no stylesheet can outrank, so the size this
+           * component computes is the size that paints. The attribute stays:
+           * `figureTypography`/`figureLayout` and the typography suite read it,
+           * and it remains the no-CSS fallback.
+           */
+          style={{ fontSize: `${label.fontSize}px` }}
           className={`${LABEL_CLASS[label.tone] ?? styles.label ?? ''} ${
             label.fontWeight === 'vertex' ? styles.vertexLabel : ''
           }`}
@@ -407,6 +420,8 @@ export function FigureSvg({ spec, ariaLabel, className }: FigureSvgProps) {
           textAnchor="middle"
           dominantBaseline="middle"
           fontSize={typography.frame}
+          /* Inline for the same reason as the labels above. */
+          style={{ fontSize: `${typography.frame}px` }}
           className={`${styles.label} ${styles.frameLabel}`}
         >
           {label.text}

@@ -60,7 +60,20 @@
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
-text {
+/*
+ * Scoped to `.wrap` on purpose. A CSS Module hashes classes and ids — it does
+ * NOT hash a bare type selector — so an unscoped `text { … }` here was emitted
+ * into the shared stylesheet and applied to every <svg> in the application. It
+ * outranked the `font-size` presentation attribute that `lesson4/FigureSvg`
+ * writes on its labels, so Lesson 4's figures were drawn at 5 user units
+ * instead of their own scale (roughly 7–28× too large on screen) for four
+ * merged revisions, while every unit test stayed green.
+ *
+ * `.wrap` is the element this component already draws around its <svg>, so the
+ * matching set is unchanged: these figures still render at 5 units tall.
+ * `lesson4-cascade.test.tsx` guards both halves of that statement.
+ */
+.wrap text {
   fill: var(--color-text);
   font-family: serif;
   font-size: 5px;

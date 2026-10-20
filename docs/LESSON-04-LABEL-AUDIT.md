@@ -98,10 +98,21 @@ Three consequences, all visible in the lesson:
    kite centre, and the `2`/`3`/`2.6` triples in «تدرّب ②» touched the sides,
    the ticks and each other.
 
-No `font-size` rule in CSS overrides the SVG, no `preserveAspectRatio`
-distortion is involved, and the coordinates themselves are correct (the
-geometry suite re-measures them). The defect is purely in the **typographic
-scale and the label anchor model** of the one shared drawing component.
+No `preserveAspectRatio` distortion is involved, and the coordinates themselves
+are correct (the geometry suite re-measures them). Within the component, the
+defect is in the **typographic scale and the label anchor model**.
+
+> **Correction (revision 3 — see §8).** An earlier version of this paragraph
+> also claimed that _"no `font-size` rule in CSS overrides the SVG"_. **That was
+> false**, and it is the reason the first two revisions produced no visible
+> change on the published site. One unscoped rule in another component's
+> stylesheet — `text { … font-size: 5px }` in
+> `UnitExerciseFigure.module.css` — reached the shared bundle unhashed and
+> outranked the `font-size` presentation attribute that `FigureSvg` writes.
+> Every label in the lesson therefore painted at 5 user units whatever
+> `figureTypography` returned. The measurements in §4, §6 and §7 describe the
+> layout model correctly, but they describe the _intended_ size, not the size
+> that was on screen. §8 records the cause, the fix and the new guard.
 
 ## 3. Fix
 
@@ -423,3 +434,149 @@ npx vitest run \
 - **Consequently: no claim is made that the lesson was inspected in a browser.**
   What is verified is the geometry, the type scale, the computed label boxes at
   three widths and an offline raster of every drawing.
+
+## 8. Revision 3 — the stylesheet that was repainting every label
+
+Revisions 1 and 2 (§3–§7) fixed the type scale _inside_ the renderer. Neither
+changed what the published site showed. This section records why, and what was
+done about it.
+
+### 8.1 What was actually on screen
+
+`FigureSvg` writes its size as an **SVG presentation attribute**:
+
+```tsx
+<text … fontSize={label.fontSize} …>       // FigureSvg.tsx
+```
+
+A presentation attribute is the weakest declaration in the author origin. One
+rule in a _different_ component's stylesheet was tripping over it:
+
+```css
+/* src/components/diagram/renderers/UnitExerciseFigure.module.css */
+text {
+  fill: var(--color-text);
+  font-family: serif;
+  font-size: 5px;
+}
+```
+
+CSS Modules hash classes and ids; they do **not** hash a bare type selector. That
+rule was therefore emitted verbatim into the shared bundle
+(`dist/assets/index-*.css`) and matched every `<text>` in the application — every
+Lesson 4 figure, every lab stage, and the teacher diagrams. The letters were
+correct in the markup and 5 user units tall on screen.
+
+At the article's figure width (≈ 776 px on a laptop), that is:
+
+| drawing                        | `viewBox.w` | declared | painted  |
+| ------------------------------ | ----------- | -------- | -------- |
+| `fig-19-check-rectangle`       | 8.6         | 16 px    | ≈ 451 px |
+| `fig-18-example-asa` / `-sss`  | 9.4         | 16 px    | ≈ 413 px |
+| `auth-04-translation-intro`    | 9.4         | 16 px    | ≈ 413 px |
+| `fig-19-isosceles`, lab panels | 10.4        | 16 px    | ≈ 373 px |
+| `auth-04-definition-pair`      | 10.6        | 16 px    | ≈ 366 px |
+| `fig-18-example-sas`           | 15.6        | 16 px    | ≈ 249 px |
+| `fig-19-kite`                  | 19.6        | 16 px    | ≈ 198 px |
+| `fig-17-activity-cases`        | 33.4        | 16 px    | ≈ 116 px |
+| `fig-19-pairs`                 | 32.7        | 16 px    | ≈ 119 px |
+
+The last row is why «تدرّب ②» looked _least_ broken: a wide three-panel window
+scales a 5-unit glyph down to about 119 px, while a single tall figure scales it
+up to 450 px. One rule, wildly different damage per figure — which is also why
+the earlier revisions kept chasing per-figure proportions.
+
+`stroke-width: 0.16em` on `.label` resolved against those 5 units too (0.8 u), so
+the white halo that was supposed to separate a letter from a 3 px side became
+thinner than the side: the strokes ran through the glyphs.
+
+### 8.2 Why CI stayed green
+
+- `vite.config.ts` runs the suite with `css: false`. **No stylesheet is ever
+  loaded in a test.**
+- `lesson4-typography.test.tsx` reads `getAttribute('font-size')` — the exact
+  value the cascade was discarding. It asserted the declaration, not the paint.
+- The comparison images in §6 and §7 were produced by an uncommitted harness that
+  resolved only `lesson4/figure.module.css`; the application stylesheet was not
+  in the picture, so the leak could not appear in it.
+
+The earlier claim in §2 that "no `font-size` rule in CSS overrides the SVG" was
+therefore wrong, and it was load-bearing. It is corrected there.
+
+### 8.3 The fix
+
+1. **`UnitExerciseFigure.module.css`** — `text { … }` → `.wrap text { … }`.
+   `.wrap` is the div this component already draws around its `<svg>`, so the
+   matching set is unchanged and Lesson 5 renders exactly as before.
+2. **`FigureSvg.tsx`** — each label now also carries the same size as an inline
+   `style={{ fontSize: … }}`. The attribute stays (layout maths and the
+   typography suite read it, and it is the no-CSS fallback), but the inline
+   style is the one declaration no stylesheet can outrank, so the size the
+   component computes is the size that paints — whatever any future stylesheet
+   says about `<text>`.
+3. **`lesson4-cascade.test.tsx`** — a guard that installs the application's real
+   stylesheets (read from disk, with Vite's hashed class names) and asserts, for
+   all 14 constructed figures and all 9 lab panels (3 cases × 3 stages), that
+   the **computed** `font-size` equals the declared one. Plus a static check that
+   no CSS Module ships an unscoped `text` rule, and two anchors that Lesson 5 is
+   still 5 px and Lesson 1 still 16 px.
+
+On the unmodified baseline that guard reports **17 failed / 3 passed**, naming
+`UnitExerciseFigure.module.css: text` and lines such as
+`«A» declared 0.183px but painted 5.000px`. After the fix: **20 passed**.
+
+### 8.4 Result at the 750 px reference width
+
+Every drawing, rasterised from the real rendered markup with the whole
+application stylesheet applied, before (bare `text` rule) and after (scoped rule
+plus inline size). `docs/assets/lesson-04/cascade-fix/` holds eight before/after
+sheets (red = before, teal = after).
+
+| drawing                            | viewBox     | labels | before    | after      |
+| ---------------------------------- | ----------- | ------ | --------- | ---------- |
+| `auth-04-definition-pair`          | 10.6 × 5.6  | 6      | 353.8 px  | 16 px      |
+| `auth-04-teacher-activity`         | 10.4 × 6.6  | 11     | 360.6 px  | 15–16 px   |
+| `auth-04-teacher-check`            | 8.6 × 6.1   | 4      | 436.0 px  | 16 px      |
+| `auth-04-teacher-isosceles`        | 10.4 × 9.2  | 8      | 360.6 px  | 15.5–16 px |
+| `auth-04-teacher-kite`             | 19.6 × 17.6 | 7      | 191.3 px  | 15.5–16 px |
+| `auth-04-translation-intro`        | 9.4 × 5.0   | 6      | 398.9 px  | 16 px      |
+| `fig-17-activity-cases`            | 33.4 × 8.6  | 26     | 112.3 px  | 14–16 px   |
+| `fig-18-example-asa`               | 9.4 × 9.2   | 6      | 398.9 px  | 16 px      |
+| `fig-18-example-sas`               | 15.6 × 7.5  | 9      | 240.4 px  | 15.5–16 px |
+| `fig-18-example-sss`               | 9.4 × 4.6   | 4      | 398.9 px  | 16 px      |
+| `fig-19-check-rectangle`           | 8.6 × 6.1   | 6      | 436.0 px  | 15–16 px   |
+| `fig-19-isosceles`                 | 10.4 × 9.2  | 6      | 360.6 px  | 16 px      |
+| `fig-19-kite`                      | 19.6 × 17.6 | 13     | 191.3 px  | 15.5–16 px |
+| `fig-19-pairs`                     | 32.7 × 7.9  | 21     | 114.7 px  | 12.7 px    |
+| lab 1–1 … 3–3 (9 panels)           | 10.4 × 6.6  | 7–11   | 360.6 px  | 15–16 px   |
+| `lesson1-lab` (Lesson 1)           | 600 × 330   | —      | unchanged | unchanged  |
+| `lesson5-unit-exercise` (Lesson 5) | 120 × 48    | —      | unchanged | unchanged  |
+
+A range such as 15–16 px is the roles of one figure: a vertex at 16 px, a value
+at 15.5, an angle value at 15, a panel number at 14. The lesson now paints four
+sizes instead of one accidental 5. `fig-19-pairs` is the single figure with a
+`labelScale` (0.82, measurements only), so its values paint at 12.7 px while its
+vertex names stay at 16 px — the behaviour §7.3 defends.
+
+Confirmed in the emitted bundle: the only `text` selectors left are
+`._svg_1gxka_10 text` (Lesson 1) and `._wrap_1b4vf_1 text` (Lesson 5, scoped).
+There is no bare `text` rule, and no Lesson 4 rule declares `font-size` at all.
+
+### 8.5 Limits of this revision
+
+- **Still no browser.** Nothing here is a browser session: no layout engine, no
+  font shaping, no RTL flow, no dark mode, no mobile width. The rasters come from
+  `resvg` fed the real markup and the real stylesheet — which is enough to prove
+  _which rule wins_, and is what the previous two revisions lacked, but it is not
+  the page.
+- The rasters substitute **DejaVu Sans** for `Noto Naskh Arabic, Amiri, Segoe UI,
+Tahoma`, and flatten `var(--token)` to values (resvg does not inherit the
+  page's `:root` into a bare SVG fragment). Colours and letter widths therefore
+  approximate the page; the _sizes_ — the subject of this revision — are exact.
+- The cascade itself is not an approximation. "Presentation attribute < author
+  CSS" and "inline style > author CSS" are specified behaviour, and the guard
+  asserts the computed value through the DOM rather than trusting the reading.
+- **The published site could not be reached from this environment** (`*.github.io`
+  and the Pages artefact host are outside the network policy). The deployed
+  commit was rebuilt locally with the same CI commands and its bundle inspected
+  instead.
