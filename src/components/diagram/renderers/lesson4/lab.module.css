@@ -1,0 +1,342 @@
+/*
+ * ============================================================================
+ *  LESSON 4 — «تطابق المثلثات» lab stylesheet
+ * ============================================================================
+ *  A deliberate identity for a lesson about triangles: warm paper, mulberry
+ *  ink, teal givens and coral images, with a fine triangular watermark. It is
+ *  NOT the Lesson 2 squared-paper sheet nor the Lesson 3 indigo canvas.
+ *
+ *  All colours are tokens, so the dark palette and the lesson theme apply.
+ * ============================================================================
+ */
+
+.lab {
+  --l4-paper: #fffdf6;
+  --l4-ink: #263248;
+  --l4-mulberry: #7a1f5c;
+  --l4-teal: #0f766e;
+  --l4-coral: #c2410c;
+  --l4-gold: #b45309;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  inline-size: 100%;
+  padding: var(--space-4);
+  color: var(--color-text);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(122, 31, 92, 0.08), transparent 52%),
+    radial-gradient(circle at 92% 100%, rgba(15, 118, 110, 0.1), transparent 55%),
+    linear-gradient(180deg, #fffdf6 0%, #fff9f4 100%);
+  border: 1px solid var(--color-teaching-border);
+  border-inline-start: 4px solid var(--l4-mulberry);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--l4-mulberry);
+  font-size: var(--font-xs);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.title {
+  margin: 0.1rem 0 0;
+  color: var(--l4-ink);
+  font-size: var(--font-lg);
+}
+
+.intro {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+  line-height: var(--leading-relaxed);
+}
+
+.counter {
+  display: inline-flex;
+  gap: 0.2rem;
+  align-items: baseline;
+  padding: 0.15rem 0.6rem;
+  color: var(--l4-ink);
+  font-size: var(--font-sm);
+  background: #fff;
+  border: 1px solid rgba(122, 31, 92, 0.25);
+  border-radius: 999px;
+}
+
+.tabs,
+.stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.tab,
+.tabActive,
+.stageButton,
+.stageActive {
+  min-block-size: 2.4rem;
+  padding: var(--space-2) var(--space-3);
+  color: var(--l4-ink);
+  font: inherit;
+  font-size: var(--font-sm);
+  background: #fff;
+  border: 1px solid rgba(38, 50, 72, 0.18);
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease;
+}
+
+.tab:hover,
+.stageButton:hover {
+  border-color: var(--l4-mulberry);
+  transform: translateY(-1px);
+}
+
+.tabActive {
+  color: #fff;
+  background: var(--l4-mulberry);
+  border-color: var(--l4-mulberry);
+}
+
+.stageActive {
+  color: #fff;
+  background: var(--l4-teal);
+  border-color: var(--l4-teal);
+}
+
+.canvas {
+  display: block;
+  inline-size: 100%;
+  padding: var(--space-2);
+  background: #fffdf6;
+  border: 1px solid rgba(38, 50, 72, 0.14);
+  border-radius: calc(var(--radius-md) - 5px);
+}
+
+.caseNote {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  color: var(--l4-ink);
+  font-size: var(--font-sm);
+  background: rgba(15, 118, 110, 0.08);
+  border-inline-start: 3px solid var(--l4-teal);
+  border-radius: var(--radius-sm);
+}
+
+.readout {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: var(--space-3);
+  color: var(--l4-ink);
+  font-size: var(--font-sm);
+  background: #fff;
+  border: 1px dashed rgba(180, 83, 9, 0.45);
+  border-radius: var(--radius-sm);
+}
+
+.readoutRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: baseline;
+}
+
+.chip {
+  padding: 0.05rem 0.45rem;
+  font-size: var(--font-xs);
+  border-radius: 999px;
+}
+
+.chipOk {
+  color: #0b5d52;
+  background: rgba(15, 118, 110, 0.14);
+}
+
+.chipNo {
+  color: #8a1d1d;
+  background: rgba(194, 65, 12, 0.14);
+}
+
+.tasks {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card,
+.cardCorrect,
+.cardWrong {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: #fff;
+  border: 1px solid rgba(38, 50, 72, 0.16);
+  border-radius: var(--radius-sm);
+}
+
+.cardCorrect {
+  border-color: rgba(15, 118, 110, 0.55);
+  background: rgba(15, 118, 110, 0.05);
+}
+
+.cardWrong {
+  border-color: rgba(194, 65, 12, 0.5);
+  background: rgba(194, 65, 12, 0.05);
+}
+
+.cardHead {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+}
+
+.taskNumber {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.7rem;
+  block-size: 1.7rem;
+  color: #fff;
+  font-size: var(--font-sm);
+  background: var(--l4-mulberry);
+  border-radius: 50%;
+}
+
+.prompt {
+  margin: 0;
+  color: var(--l4-ink);
+  font-size: var(--font-sm);
+  line-height: var(--leading-relaxed);
+}
+
+.options {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.option,
+.optionOn {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+  padding: var(--space-2) var(--space-3);
+  color: var(--l4-ink);
+  font-size: var(--font-sm);
+  background: #fffdf6;
+  border: 1px solid rgba(38, 50, 72, 0.16);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.optionOn {
+  background: rgba(15, 118, 110, 0.1);
+  border-color: var(--l4-teal);
+}
+
+.option input {
+  margin-block-start: 0.3rem;
+  accent-color: var(--l4-teal);
+}
+
+.review {
+  padding-block-start: var(--space-2);
+  color: var(--l4-ink);
+  font-size: var(--font-sm);
+  line-height: var(--leading-relaxed);
+  border-block-start: 1px dashed rgba(38, 50, 72, 0.2);
+}
+
+.review p {
+  margin: 0 0 var(--space-1);
+}
+
+.reason {
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.actions p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-xs);
+}
+
+.primary {
+  padding: var(--space-2) var(--space-4);
+  color: #fff;
+  font: inherit;
+  font-size: var(--font-sm);
+  background: var(--l4-mulberry);
+  border: 1px solid var(--l4-mulberry);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.primary:disabled {
+  background: #a999a3;
+  border-color: #a999a3;
+  cursor: not-allowed;
+}
+
+.secondary {
+  padding: var(--space-2) var(--space-4);
+  color: var(--l4-mulberry);
+  font: inherit;
+  font-size: var(--font-sm);
+  background: #fff;
+  border: 1px solid var(--l4-mulberry);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.figureWrap {
+  padding: var(--space-2);
+  background: #fffdf6;
+  border: 1px solid rgba(38, 50, 72, 0.14);
+  border-radius: calc(var(--radius-md) - 5px);
+}
+
+.badge {
+  padding: 0.1rem 0.55rem;
+  color: var(--l4-gold);
+  font-size: var(--font-xs);
+  font-weight: 600;
+  background: rgba(180, 83, 9, 0.1);
+  border: 1px solid rgba(180, 83, 9, 0.3);
+  border-radius: 999px;
+}
+
+.reviewList {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

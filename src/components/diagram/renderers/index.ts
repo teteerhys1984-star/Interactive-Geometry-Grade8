@@ -17,6 +17,13 @@ import { UnitFinalFigure } from './UnitFinalFigure';
 import { TestGeometryFigure } from './TestGeometryFigure';
 import { TEST_FIGURE_RENDERER } from './testFigureSpec';
 import { CompassLab, LatticePlacement, PointImageLab, VectorChain } from './lesson2';
+import {
+  CaseJustifyLab,
+  CongruenceCasesLab,
+  CongruenceFigure,
+  CongruenceProofLab,
+  KitePairLab,
+} from './lesson4';
 
 /**
  * ============================================================================
@@ -64,6 +71,14 @@ registerInteractiveRenderer('compass-lab', CompassLab);
 registerInteractiveRenderer('lattice-placement', LatticePlacement);
 registerInteractiveRenderer('vector-chain', VectorChain);
 
+/* Lesson 4 — «تطابق المثلثات»: the reconstructed textbook figures, the page-17
+ * activity lab, and the two practice labs that follow «تدرّب» ① and ②/③. */
+registerConstructedRenderer('congruence-figure', CongruenceFigure);
+registerInteractiveRenderer('congruence-cases-lab', CongruenceCasesLab);
+registerInteractiveRenderer('case-justify-lab', CaseJustifyLab);
+registerInteractiveRenderer('kite-pair-lab', KitePairLab);
+registerInteractiveRenderer('congruence-proof-lab', CongruenceProofLab);
+
 export {
   TranslationFigure,
   GridFigure,
@@ -84,6 +99,11 @@ export {
   CompassLab,
   LatticePlacement,
   VectorChain,
+  CongruenceFigure,
+  CongruenceCasesLab,
+  CaseJustifyLab,
+  KitePairLab,
+  CongruenceProofLab,
 };
 
 registerInteractiveRenderer('lesson-one-lab', LessonOneLab);

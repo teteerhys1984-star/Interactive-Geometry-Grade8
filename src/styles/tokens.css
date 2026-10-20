@@ -172,6 +172,26 @@
   --color-reference-bg: #faf7ff;
 }
 
+/*
+ * Lesson 4 — «تطابق المثلثات»: mulberry ink on warm paper, with teal givens
+ * and a burnt-orange image. A lesson about triangles reads as a pair of
+ * matched impressions, so the palette is built around two inks that are
+ * clearly different yet equally weighted — never a dark page.
+ */
+[data-lesson-theme='congruence'] {
+  --color-primary: #7a1f5c;
+  --color-primary-hover: #611648;
+  --color-primary-soft: #fbeaf4;
+  --color-accent: #0f766e;
+  --color-accent-bg: #e6f5f2;
+  --color-teaching-accent: #7a1f5c;
+  --color-teaching-border: #edd6e4;
+  --color-teaching-bg: #fffaf6;
+  --color-reference-accent: #b45309;
+  --color-reference-border: #f0d9bc;
+  --color-reference-bg: #fff8ee;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --color-bg: #11151c;

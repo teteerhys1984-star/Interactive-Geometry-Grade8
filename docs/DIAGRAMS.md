@@ -32,6 +32,11 @@ them now would mean inventing requirements.
 | `compass-lab`            | `interactive` | Lesson 2: the compass construction, as a stepper or as a static proof. |
 | `lattice-placement`      | `interactive` | Lesson 2: student places a point on a sheet; feedback gives the method first. |
 | `vector-chain`           | `interactive` | Lesson 2: successive translations of a triangle or a parallelogram. |
+| `congruence-figure`      | `constructed` | Lesson 4: a plane figure with ticks, angle arcs, right angles, dashed images and lettered points. |
+| `congruence-cases-lab`   | `interactive` | Lesson 4: the page-17 activity — pick a case, complete `ABC`, translate it by `N → M`. |
+| `case-justify-lab`       | `interactive` | Lesson 4: choose the congruence case that justifies each printed pair (reviewed as a set). |
+| `kite-pair-lab`          | `interactive` | Lesson 4: select the congruent pairs inside the kite (reviewed as a set). |
+| `congruence-proof-lab`   | `interactive` | Lesson 4: the four parts of «تدرّب ③» as a guided proof (reviewed as a set). |
 
 A renderer may draw a **textbook** figure only when every coordinate was read
 from the scan and then verified arithmetically; that verification is written

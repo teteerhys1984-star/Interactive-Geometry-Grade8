@@ -1,132 +1,201 @@
 import type { AssessmentInput, ContentBlock } from '../schema';
+
+/**
+ * ============================================================================
+ *  الدرس الرابع — الاختبار النهائي (من إعداد المنصّة)
+ * ============================================================================
+ *
+ *  Twelve platform-written questions. They are NOT printed exercises: the book
+ *  prints no assessment for these pages, so every question carries
+ *  `origin: 'authored'` and its own teacher-only explanation.
+ *
+ *  Correctness rules honoured here:
+ *    • every multiple-choice question has exactly one defensible answer;
+ *    • numeric answers are exact (54, 60) and use tolerance 0;
+ *    • no question can be answered from the answer key, because the key is
+ *      rendered only inside the Teacher Area.
+ * ============================================================================
+ */
+
 const p = (text: string): ContentBlock[] => [{ type: 'paragraph', text }];
-const c = (id: string, text: string) => ({ id, blocks: p(text) });
+const choice = (id: string, text: string) => ({ id, blocks: p(text) });
+
 export const lesson04Assessment: AssessmentInput = {
   id: 'lesson-04-final-assessment',
   title: 'الاختبار النهائي — تطابق المثلثات',
   passingScore: 70,
   instructions:
-    'أجب عن الأسئلة كلها، ويمكنك تعديل إجاباتك قبل التسليم. لن يظهر التصحيح إلا بعد تسليم الاختبار كاملاً.',
+    'أجب عن الأسئلة كلها، ويمكنك تعديل إجاباتك قبل التسليم. لا يظهر التصحيح إلا بعد تسليم الاختبار كاملاً.',
   questions: [
     {
-      id: 'l4-q01-sas',
+      id: 'l4-q01-identify-sas',
       type: 'multiple-choice',
       origin: 'authored',
-      skill: 'ضلعان والزاوية المحصورة',
-      prompt: p('أي معطيات تكفي لإثبات تطابق مثلثين؟'),
+      skill: 'تمييز حالة ضلعان والزاوية المحصورة',
+      prompt: p(
+        'في مثلثين: $AB = DE = 5$، و$AC = DF = 7$، و$\\widehat{BAC} = \\widehat{EDF} = 40°$. أي حالة تثبت التطابق؟',
+      ),
       choices: [
-        c('l4-q01-a', 'تساوي طولي ضلعين وقياس الزاوية المحصورة بينهما مع مقابلاتها.'),
-        c('l4-q01-b', 'تساوي زاوية واحدة فقط.'),
-        c('l4-q01-c', 'تساوي محيطَي المثلثين فقط.'),
+        choice('l4-q01-a', 'ضلعان والزاوية المحصورة بينهما.'),
+        choice('l4-q01-b', 'ضلع وزاويتان مجاورتان له.'),
+        choice('l4-q01-c', 'الأضلاع الثلاثة.'),
       ],
       correctChoiceId: 'l4-q01-a',
-      explanation: p('هذه هي حالة ضلع–زاوية محصورة–ضلع.'),
+      explanation: p(
+        'الزاوية $\\widehat{BAC}$ محصورة بين $[AB]$ و$[AC]$، والزاوية $\\widehat{EDF}$ محصورة بين $[DE]$ و$[DF]$؛ فالمعطيات هي ضلعان والزاوية المحصورة.',
+      ),
     },
     {
-      id: 'l4-q02-asa',
+      id: 'l4-q02-asa-true',
       type: 'true-false',
       origin: 'authored',
-      skill: 'ضلع وزاويتان مجاورتان',
-      prompt: p('يتطابق مثلثان إذا تساوى طول ضلع وقياسا الزاويتين المجاورتين له مع مقابلاتها.'),
+      skill: 'حالة ضلع وزاويتين مجاورتين',
+      prompt: p(
+        'يتطابق مثلثان إذا تساوى طول ضلع وقياسا الزاويتين المجاورتين له من أحدهما مع مقابلاتها في المثلث الآخر.',
+      ),
       answer: true,
-      explanation: p('هذه إحدى حالات التطابق الثلاث الواردة في الدرس.'),
+      explanation: p('هذه هي الحالة الثانية الواردة في الدرس، بشرط أن تكون الزاويتان مجاورتين للضلع المعلوم.'),
     },
     {
-      id: 'l4-q03-sss',
-      type: 'multiple-choice',
-      origin: 'authored',
-      skill: 'الأضلاع الثلاثة',
-      prompt: p('في مثلثين، الأطوال هي $3,4,5$ في كليهما. ما النتيجة؟'),
-      choices: [
-        c('l4-q03-a', 'المثلثان متطابقان بحالة تساوي الأضلاع الثلاثة.'),
-        c('l4-q03-b', 'متشابهان فقط.'),
-        c('l4-q03-c', 'لا يمكن الاستنتاج.'),
-      ],
-      correctChoiceId: 'l4-q03-a',
-      explanation: p('تساوت أطوال الأضلاع الثلاثة مع مقابلاتها.'),
-    },
-    {
-      id: 'l4-q04-correspondence',
+      id: 'l4-q03-correspondence',
       type: 'multiple-choice',
       origin: 'authored',
       skill: 'العناصر المتقابلة',
-      prompt: p("إذا قابل $A$ النقطة $A'$، و$B$ النقطة $B'$، فأي ضلع يقابل $[AB]$؟"),
-      choices: [c('l4-q04-a', "$[A'B']$"), c('l4-q04-b', "$[B'C']$"), c('l4-q04-c', "$[A'C']$")],
-      correctChoiceId: 'l4-q04-a',
-      explanation: p('طرفا الضلع ينتقلان إلى الطرفين المقابلين لهما.'),
+      prompt: p('إذا كان $ABC \\cong DEF$، فأي ضلع يقابل $[AB]$؟'),
+      choices: [
+        choice('l4-q03-a', '$[DE]$'),
+        choice('l4-q03-b', '$[DF]$'),
+        choice('l4-q03-c', '$[EF]$'),
+      ],
+      correctChoiceId: 'l4-q03-a',
+      explanation: p('الترتيب $ABC \\cong DEF$ يعني $A \\leftrightarrow D$ و$B \\leftrightarrow E$، فيقابل $[AB]$ الضلع $[DE]$.'),
     },
     {
-      id: 'l4-q05-not-enough',
+      id: 'l4-q04-aaa-not-enough',
       type: 'true-false',
       origin: 'authored',
       skill: 'تمييز المعطيات الكافية',
-      prompt: p('تساوي زاويتين فقط في مثلثين يكفي دائماً لإثبات تطابقهما.'),
+      prompt: p('تساوي قياسات الزوايا الثلاث في مثلثين يكفي دائماً لإثبات تطابقهما.'),
       answer: false,
-      explanation: p('خطأ شائع: الزاويتان تحددان الشكل لا الحجم؛ نحتاج ضلعاً مناسباً أيضاً.'),
+      explanation: p(
+        'تساوي الزوايا يحدّد شكل المثلث لا حجمه؛ فقد يكون أحدهما مكبّراً للآخر، فيكونان متشابهين لا متطابقين.',
+      ),
     },
     {
-      id: 'l4-q06-included',
+      id: 'l4-q05-included-angle',
       type: 'multiple-choice',
       origin: 'authored',
       skill: 'الزاوية المحصورة',
       prompt: p('ما الزاوية المحصورة بين الضلعين $[AB]$ و$[AC]$؟'),
       choices: [
-        c('l4-q06-a', '$\\widehat{BAC}$'),
-        c('l4-q06-b', '$\\widehat{ABC}$'),
-        c('l4-q06-c', '$\\widehat{ACB}$'),
+        choice('l4-q05-a', '$\\widehat{BAC}$'),
+        choice('l4-q05-b', '$\\widehat{ABC}$'),
+        choice('l4-q05-c', '$\\widehat{ACB}$'),
       ],
-      correctChoiceId: 'l4-q06-a',
-      explanation: p('رأس الضلعين المشترك هو $A$.'),
+      correctChoiceId: 'l4-q05-a',
+      explanation: p('رأس الزاوية المحصورة بين ضلعين هو نقطة التقائهما المشتركة، وهي هنا $A$.'),
     },
     {
-      id: 'l4-q07-third-angle',
+      id: 'l4-q06-third-angle',
       type: 'numeric',
       origin: 'authored',
       skill: 'مجموع زوايا المثلث',
-      prompt: p('زاويتان في مثلث قياساهما $44^\\circ$ و$82^\\circ$. ما قياس الزاوية الثالثة؟'),
+      prompt: p('زاويتان في مثلث قياساهما $44°$ و$82°$. ما قياس الزاوية الثالثة؟'),
       answer: 54,
       tolerance: 0,
       unit: 'درجة',
-      explanation: p('$180-44-82=54$.'),
+      explanation: p('$180° - 44° - 82° = 54°$.'),
     },
     {
-      id: 'l4-q08-right-hypotenuse-leg',
+      id: 'l4-q07-right-hypotenuse-leg',
       type: 'true-false',
       origin: 'authored',
-      skill: 'المثلثات القائمة',
+      skill: 'تطابق المثلثين القائمين',
       prompt: p(
         'يتطابق مثلثان قائمان إذا تساوى وتر وضلع قائمة من أحدهما مع وتر وضلع قائمة من الآخر.',
       ),
       answer: true,
-      explanation: p('هذه الحالة الخاصة مذكورة في نهاية الدرس.'),
+      explanation: p('هذه إحدى الحالتين الخاصتين المذكورتين في نهاية الدرس للمثلثين القائمين.'),
     },
     {
-      id: 'l4-q09-right-hypotenuse-angle',
+      id: 'l4-q08-right-hypotenuse-angle',
       type: 'multiple-choice',
       origin: 'authored',
-      skill: 'المثلثات القائمة',
+      skill: 'تطابق المثلثين القائمين',
       prompt: p('في مثلثين قائمين، تساوى الوتر وزاوية حادة. ما النتيجة؟'),
       choices: [
-        c('l4-q09-a', 'المثلثان متطابقان.'),
-        c('l4-q09-b', 'لا يمكن أن يتطابقا.'),
-        c('l4-q09-c', 'يتساوى المحيط فقط.'),
+        choice('l4-q08-a', 'المثلثان متطابقان.'),
+        choice('l4-q08-b', 'لا يمكن أن يتطابقا.'),
+        choice('l4-q08-c', 'يتساوى محيطاهما فقط دون تطابق.'),
       ],
-      correctChoiceId: 'l4-q09-a',
-      explanation: p('هذه الحالة الخاصة الثانية للمثلثين القائمين.'),
+      correctChoiceId: 'l4-q08-a',
+      explanation: p('هذه الحالة الخاصة الثانية: الوتر وزاوية حادة، وبها يثبت التطابق.'),
     },
     {
-      id: 'l4-q10-definition',
+      id: 'l4-q09-definition',
       type: 'multiple-choice',
       origin: 'authored',
       skill: 'تعريف التطابق',
-      prompt: p('ماذا يعني تطابق مثلثين؟'),
+      prompt: p('ما معنى أن يتطابق مثلثان؟'),
       choices: [
-        c('l4-q10-a', 'تساوي عناصر أحدهما مع العناصر المقابلة لها في الآخر.'),
-        c('l4-q10-b', 'تساوي مساحتيهما فقط.'),
-        c('l4-q10-c', 'وجود زاوية مشتركة فقط.'),
+        choice('l4-q09-a', 'تساوي عناصر أحدهما مع العناصر المقابلة لها في المثلث الآخر.'),
+        choice('l4-q09-b', 'تساوي مساحتيهما فقط.'),
+        choice('l4-q09-c', 'وجود زاوية مشتركة بينهما.'),
+      ],
+      correctChoiceId: 'l4-q09-a',
+      explanation: p('هذا هو تعريف الدرس، وعناصر المثلث هي أضلاعه وزواياه.'),
+    },
+    {
+      id: 'l4-q10-conclusion-isosceles',
+      type: 'multiple-choice',
+      origin: 'authored',
+      skill: 'الاستنتاج من التطابق',
+      prompt: p(
+        'في التمرين ③، أثبتنا أن $MEB \\cong MFC$. أي مساواة تنتج مباشرة من هذا التطابق؟',
+      ),
+      choices: [
+        choice('l4-q10-a', '$ME = MF$'),
+        choice('l4-q10-b', '$AB = BC$'),
+        choice('l4-q10-c', '$\\widehat{A} = 90°$'),
       ],
       correctChoiceId: 'l4-q10-a',
-      explanation: p('هذا هو تعريف التطابق الوارد في الكتاب، وعناصر المثلث هي أضلاعه وزواياه.'),
+      explanation: p(
+        'التطابق يعطي تساوي العناصر المتقابلة: $M \\leftrightarrow M$ و$E \\leftrightarrow F$، فالضلع $[ME]$ يقابل $[MF]$.',
+      ),
+    },
+    {
+      id: 'l4-q11-rectangle-angle',
+      type: 'numeric',
+      origin: 'authored',
+      skill: 'زوايا المستطيل والزوايا المتبادلة',
+      prompt: p(
+        'في مستطيل $ABCD$، القطر $[BD]$، والزاوية $\\widehat{ADB} = 30°$. ما قياس الزاوية $\\widehat{ABD}$؟',
+      ),
+      answer: 60,
+      tolerance: 0,
+      unit: 'درجة',
+      explanation: p(
+        'الزاوية عند $A$ قائمة، ومجموع زوايا المثلث $ABD$ هو $180°$؛ إذن $\\widehat{ABD} = 180° - 90° - 30° = 60°$.',
+      ),
+    },
+    {
+      id: 'l4-q12-why-proof',
+      type: 'multiple-choice',
+      origin: 'authored',
+      skill: 'طبيعة البرهان',
+      prompt: p('لماذا لا يكفي أن يبدو المثلثان متطابقين في الرسم؟'),
+      choices: [
+        choice(
+          'l4-q12-a',
+          'لأن الرسم تخطيطي وقد لا يكون مرسوماً بمقياس، والبرهان يحتاج مساواة مكتوبة ومبرَّرة.',
+        ),
+        choice('l4-q12-b', 'لأن الرسم لا يُستعمل أبداً في الهندسة.'),
+        choice('l4-q12-c', 'لأن التطابق لا يمكن إثباته إلا بالقياس بالأدوات.'),
+      ],
+      correctChoiceId: 'l4-q12-a',
+      explanation: p(
+        'الرسم يساعد على قراءة المعطيات وترتيب الرؤوس، لكن الحكم يحتاج مساواة مستندة إلى معطى أو خاصية مثبتة.',
+      ),
     },
   ],
 };
