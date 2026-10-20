@@ -4,9 +4,10 @@ import { LtrIsolate } from '@/components/math';
 import styles from './ShapeTranslationLab.module.css';
 
 type Point = [number, number];
-type ShapeKind = 'segment' | 'triangle' | 'ray' | 'circle';
+type ShapeKind = 'line' | 'segment' | 'triangle' | 'ray' | 'circle';
 
 const SHAPES: readonly { id: ShapeKind; label: string }[] = [
+  { id: 'line', label: 'مستقيم' },
   { id: 'segment', label: 'قطعة مستقيمة' },
   { id: 'triangle', label: 'مثلث' },
   { id: 'ray', label: 'نصف مستقيم' },
@@ -14,6 +15,10 @@ const SHAPES: readonly { id: ShapeKind; label: string }[] = [
 ];
 
 const pointsByShape: Record<Exclude<ShapeKind, 'circle'>, Point[]> = {
+  line: [
+    [1.2, 2],
+    [4.8, 3.2],
+  ],
   segment: [
     [1.4, 2.2],
     [4.1, 3.1],
@@ -30,10 +35,40 @@ const pointsByShape: Record<Exclude<ShapeKind, 'circle'>, Point[]> = {
 };
 
 const labelsByShape: Record<Exclude<ShapeKind, 'circle'>, string[]> = {
+  line: ['M', 'N'],
   segment: ['M', 'N'],
   triangle: ['A', 'B', 'C'],
   ray: ['M', 'H'],
 };
+
+/** Clip an infinite line to the explorer's mathematical window. */
+function clipLineToWindow(first: Point, second: Point): [Point, Point] {
+  const [x1, y1] = first;
+  const dx = second[0] - x1;
+  const dy = second[1] - y1;
+  const points: Point[] = [];
+  const addIfInside = (x: number, y: number) => {
+    if (x < -1e-8 || x > 11 + 1e-8 || y < -1e-8 || y > 7 + 1e-8) return;
+    if (points.some(([px, py]) => Math.hypot(px - x, py - y) < 1e-8)) return;
+    points.push([Math.max(0, Math.min(11, x)), Math.max(0, Math.min(7, y))]);
+  };
+
+  if (Math.abs(dx) > 1e-12) {
+    for (const x of [0, 11]) {
+      const t = (x - x1) / dx;
+      addIfInside(x, y1 + t * dy);
+    }
+  }
+  if (Math.abs(dy) > 1e-12) {
+    for (const y of [0, 7]) {
+      const t = (y - y1) / dy;
+      addIfInside(x1 + t * dx, y);
+    }
+  }
+
+  if (points.length >= 2) return [points[0]!, points[1]!];
+  return [first, second];
+}
 
 export function ShapeTranslationLab({ spec }: { spec: InteractiveDiagram }) {
   const [shape, setShape] = useState<ShapeKind>('triangle');
@@ -49,7 +84,15 @@ export function ShapeTranslationLab({ spec }: { spec: InteractiveDiagram }) {
   const sourcePoints = shape === 'circle' ? ([[2.7, 3]] as Point[]) : pointsByShape[shape];
   const imagePoints = sourcePoints.map(translate);
   const isRay = shape === 'ray';
+  const isLine = shape === 'line';
   const isClosed = shape === 'triangle';
+  const sourceLine = isLine ? clipLineToWindow(sourcePoints[0]!, sourcePoints[1]!) : null;
+  const imageLine = isLine ? clipLineToWindow(imagePoints[0]!, imagePoints[1]!) : null;
+  const lineDirection: Point = [
+    pointsByShape.line[1]![0] - pointsByShape.line[0]![0],
+    pointsByShape.line[1]![1] - pointsByShape.line[0]![1],
+  ];
+  const lineCoincident = Math.abs(lineDirection[0] * dy - lineDirection[1] * dx) < 1e-8;
 
   function pointString(points: Point[]) {
     return points.map(([x, y]) => `${x},${sy(y)}`).join(' ');
@@ -155,6 +198,14 @@ export function ShapeTranslationLab({ spec }: { spec: InteractiveDiagram }) {
             </>
           ) : isClosed ? (
             <polygon points={pointString(sourcePoints)} className={styles.sourceShape} />
+          ) : isLine ? (
+            <line
+              x1={sourceLine![0][0]}
+              y1={sy(sourceLine![0][1])}
+              x2={sourceLine![1][0]}
+              y2={sy(sourceLine![1][1])}
+              className={styles.sourceLine}
+            />
           ) : (
             <polyline
               points={pointString(sourcePoints)}
@@ -214,6 +265,14 @@ export function ShapeTranslationLab({ spec }: { spec: InteractiveDiagram }) {
                   O′
                 </text>
               </>
+            ) : isLine ? (
+              <line
+                x1={imageLine![0][0]}
+                y1={sy(imageLine![0][1])}
+                x2={imageLine![1][0]}
+                y2={sy(imageLine![1][1])}
+                className={styles.imageLine}
+              />
             ) : (
               <>
                 {isClosed ? (
@@ -254,8 +313,12 @@ export function ShapeTranslationLab({ spec }: { spec: InteractiveDiagram }) {
       </div>
 
       <p className={styles.readout} role="status">
-        الحركة الحالية: <LtrIsolate>{`(${dx}, ${dy})`}</LtrIsolate>. كل نقطة وصورتها تفصل بينهما
-        الحركة نفسها، وتبقى الأطوال والزوايا محفوظة.
+        الحركة الحالية: <LtrIsolate>{`(${dx}, ${dy})`}</LtrIsolate>.{' '}
+        {isLine
+          ? lineCoincident
+            ? 'اتجاه الحركة موازٍ للمستقيم، لذلك تنطبق صورته عليه.'
+            : 'اتجاه الحركة غير موازٍ للمستقيم، لذلك تكون صورته مستقيمًا موازيًا متميزًا.'
+          : 'كل نقطة وصورتها تفصل بينهما الحركة نفسها، وتبقى الأطوال والزوايا محفوظة.'}
       </p>
     </div>
   );

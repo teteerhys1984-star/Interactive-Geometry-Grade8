@@ -116,16 +116,16 @@ Lesson 1 keeps the default palette and is untouched.
 
 Lesson 3 («صورة شكل وفق انسحاب», pages 11–16) has **22 steps**: 16 source
 steps in printed order and 6 badged platform-teaching steps. It ends with a
-new **12-question** final assessment and includes 23 teacher-derived solutions
-to every printed prompt.
+new **12-question** final assessment and includes 28 page- and branch-matched
+teacher solutions for every printed exercise branch.
 
-Its 14 textbook figures remain faithful `reference` diagrams because their
-blank-sheet geometry (and the fine grids on page 15) cannot be reconstructed
-without guessing. The decision record is
-[`docs/LESSON-03-FIGURES.md`](docs/LESSON-03-FIGURES.md). Exact platform-made
-analogues add a shape/vector laboratory, a progressive four-vertex
-construction, and three grouped challenges whose feedback appears only after
-one combined submission.
+Its **22 textbook figures** are exact crops from the six supplied page scans,
+with printed page/locator metadata and no guessed redraws. The inventory and
+provenance audit is in [`docs/LESSON-03-FIGURES.md`](docs/LESSON-03-FIGURES.md).
+Platform-authored additions include a shape/vector laboratory that handles
+lines, a progressive p.15 square construction, and a collapsed p.16 starter
+that deliberately does not show the translated answer. Teacher-only
+constructions remain behind the shared Teacher Gate.
 
 ## Source fidelity
 

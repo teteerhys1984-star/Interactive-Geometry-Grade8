@@ -29,6 +29,9 @@ describe('TranslationChallenges', () => {
       // SVG y is downward: one unit up is a difference of −1.
       expect(correctCandidate[index]![1] - point[1]).toBeCloseTo(-1, 6);
     }
+    const arrow = container.querySelector('svg line[marker-end]')!;
+    expect(Number(arrow.getAttribute('x2')) - Number(arrow.getAttribute('x1'))).toBeCloseTo(4, 6);
+    expect(Number(arrow.getAttribute('y2')) - Number(arrow.getAttribute('y1'))).toBeCloseTo(-1, 6);
   });
 
   it('does not reveal correctness after an individual click', async () => {
@@ -49,6 +52,17 @@ describe('TranslationChallenges', () => {
     await user.click(screen.getByRole('button', { name: 'تحقق من المجموعة' }));
     expect(screen.getAllByText('إجابة موفّقة.')).toHaveLength(3);
     expect(screen.getByRole('status').textContent).toContain('3 من 3');
+  });
+
+  it('explains wrong answers after the grouped submission', async () => {
+    const user = userEvent.setup();
+    render(<TranslationChallenges spec={spec} />);
+    await user.click(screen.getByLabelText('المثلث ①'));
+    await user.click(screen.getByLabelText('٣ يميناً و٢ أسفل'));
+    await user.click(screen.getByLabelText('يجب تدوير الشكل بعد نقله.'));
+    await user.click(screen.getByRole('button', { name: 'تحقق من المجموعة' }));
+    expect(screen.getAllByText('تحتاج إلى مراجعة.')).toHaveLength(3);
+    expect(screen.getByText(/الانسحاب حركة واحدة مشتركة لكل النقاط/)).toBeInTheDocument();
   });
 
   it('supports a clean retry after submission', async () => {

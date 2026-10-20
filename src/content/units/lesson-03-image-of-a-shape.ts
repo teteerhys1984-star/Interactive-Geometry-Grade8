@@ -1,4 +1,4 @@
-import type { LessonInput } from '../schema';
+import type { ContentBlock, LessonInput } from '../schema';
 import {
   teachingConstructionSequence,
   teachingGroupedChallenges,
@@ -13,9 +13,9 @@ import { lesson03TeacherResources } from './lesson-03-teacher';
 /**
  * Unit 1 — Lesson 3: «صورة شكل وفق انسحاب» (textbook pages 11–16).
  *
- * Source steps preserve the supplied scans in printed order. Unmeasured
- * textbook figures stay `reference`; exact platform-made analogues live only in
- * explicitly badged authored steps. Printed drawing tasks reveal no answers.
+ * Source steps preserve the supplied scans in printed order. Printed figures
+ * are exact crops of those scans; no unmeasured textbook geometry is redrawn.
+ * Platform-made explanations and interactions are explicitly badged.
  */
 const PAGE_11 = 11;
 const PAGE_12 = 12;
@@ -23,6 +23,29 @@ const PAGE_13 = 13;
 const PAGE_14 = 14;
 const PAGE_15 = 15;
 const PAGE_16 = 16;
+
+/** Exact crops of the supplied textbook scans; never redraw unmeasured source geometry. */
+function textbookFigure(
+  id: string,
+  page: number,
+  locator: string,
+  file: string,
+  alt: string,
+  caption: string,
+): ContentBlock {
+  return {
+    type: 'figure',
+    diagram: {
+      kind: 'image',
+      origin: 'textbook',
+      id,
+      src: `diagrams/unit-01/lesson-03/${file}`,
+      alt,
+      caption,
+      source: { page, locator },
+    },
+  };
+}
 
 export const lesson03: LessonInput = {
   id: 'lesson-03-image-of-a-shape',
@@ -49,18 +72,22 @@ export const lesson03: LessonInput = {
             },
           ],
         },
-        {
-          type: 'figure',
-          diagram: {
-            kind: 'reference',
-            id: 'fig-11-line-conjecture-two-cases',
-            alt: 'شكلان مرقّمان ① و②: في الأول المستقيم $(d)$ غير موازٍ للقطعة $[AB]$، وفي الثاني المستقيم $(d)$ موازٍ لاتجاه الانتقال من $A$ إلى $B$.',
-            caption: 'شكلا التخمين، صفحة ١١',
-            source: { page: PAGE_11, locator: 'نشاط — شكلا ① و②' },
-            reason:
-              'رسمان تخطيطيان على ورقة بيضاء بلا شبكة أو قياسات؛ العلاقة الهندسية واضحة، أما المواضع والميل والمسافات فغير محددة عددياً.',
-          },
-        },
+        textbookFigure(
+          'fig-11-line-conjecture-case-1',
+          PAGE_11,
+          'نشاط — 1. تخمين — الشكل ①',
+          'fig-11-conjecture-case-1.png',
+          'الشكل ①: المستقيم $(d)$ مائل، والقطعة المنقطة تصل $A$ بـ $B$.',
+          'الشكل ① من نشاط التخمين — الكتاب، صفحة ١١',
+        ),
+        textbookFigure(
+          'fig-11-line-conjecture-case-2',
+          PAGE_11,
+          'نشاط — 1. تخمين — الشكل ②',
+          'fig-11-conjecture-case-2.png',
+          'الشكل ②: المستقيم $(d)$ موازٍ لاتجاه السهم من $A$ إلى $B$.',
+          'الشكل ② من نشاط التخمين — الكتاب، صفحة ١١',
+        ),
         {
           type: 'questionGroup',
           items: [
@@ -88,18 +115,14 @@ export const lesson03: LessonInput = {
           type: 'paragraph',
           text: '2. إثبات: حالة $(d)$ و $(AB)$ غير متوازيين',
         },
-        {
-          type: 'figure',
-          diagram: {
-            kind: 'reference',
-            id: 'fig-11-line-proof',
-            alt: 'النقطتان $A$ و $B$ وخارجهما المستقيم $(d)$ المار بالنقطة $C$، تمهيداً لوضع نقطة تقاطعه مع المستقيم $(AB)$ وبناء الصورتين.',
-            caption: 'الشكل المرافق للبرهان، صفحة ١١',
-            source: { page: PAGE_11, locator: 'نشاط — شكل الإثبات' },
-            reason:
-              'الشكل مرسوم على ورقة بيضاء ولا يحمل قياسات أو إحداثيات؛ إعادة مواضعه تعني تقدير أطوال وزوايا غير مطبوعة.',
-          },
-        },
+        textbookFigure(
+          'fig-11-line-proof',
+          PAGE_11,
+          'نشاط — 2. إثبات — الشكل المرافق',
+          'fig-11-line-proof.png',
+          'المستقيم $(d)$ يمر بالنقطة $C$، والنقطتان $A$ و$B$ خارج المستقيم؛ ويُنشأ $E$ عند تقاطع $(d)$ و$(AB)$.',
+          'الشكل المرافق للبرهان — الكتاب، صفحة ١١',
+        ),
         {
           type: 'questionGroup',
           items: [
@@ -147,18 +170,30 @@ export const lesson03: LessonInput = {
       title: 'ارسم صور الأشكال الثلاثة',
       source: { page: PAGE_12, locator: 'النشاط — 3' },
       blocks: [
-        {
-          type: 'figure',
-          diagram: {
-            kind: 'reference',
-            id: 'fig-12-segment-ray-circle-activity',
-            alt: 'ثلاثة أشكال: القطعة المستقيمة $[MN]$ وطولها $3.4\\,cm$، ونصف المستقيم $[Dx)$، ودائرة $\\mathcal{C}$ مركزها $O$ ونصف قطرها $3.2\\,cm$، ومع كل شكل النقطتان $A$ و $B$.',
-            caption: 'الأشكال ① و② و③، صفحة ١٢',
-            source: { page: PAGE_12, locator: 'الأشكال ① و② و③' },
-            reason:
-              'الأطوال المطبوعة معلومة، لكن مواقع $A$ و$B$ واتجاه كل انتقال بالنسبة إلى الشكل مرسومة بلا شبكة أو قياسات؛ وهي جزء لازم من الإنشاء.',
-          },
-        },
+        textbookFigure(
+          'fig-12-segment-activity',
+          PAGE_12,
+          'النشاط 3 — الشكل ①',
+          'fig-12-segment-activity.png',
+          'القطعة $[MN]$ طولها $3.4\\,cm$، ومعها النقطتان $A$ و$B$.',
+          'الشكل ①: صورة قطعة مستقيمة — الكتاب، صفحة ١٢',
+        ),
+        textbookFigure(
+          'fig-12-ray-activity',
+          PAGE_12,
+          'النشاط 3 — الشكل ②',
+          'fig-12-ray-activity.png',
+          'نصف المستقيم $[Dx)$ ومعه النقطتان $A$ و$B$.',
+          'الشكل ②: صورة نصف مستقيم — الكتاب، صفحة ١٢',
+        ),
+        textbookFigure(
+          'fig-12-circle-activity',
+          PAGE_12,
+          'النشاط 3 — الشكل ③',
+          'fig-12-circle-activity.png',
+          'الدائرة $\\mathcal{C}$ مركزها $O$ ونصف قطرها $3.2\\,cm$، ومعها النقطتان $A$ و$B$.',
+          'الشكل ③: صورة دائرة — الكتاب، صفحة ١٢',
+        ),
         {
           type: 'questionGroup',
           items: [
@@ -201,18 +236,14 @@ export const lesson03: LessonInput = {
           text: 'إنشاء صورة مستقيم $(d)$ وفق الانسحاب الذي ينقل $A$ إلى $B$',
         },
         { type: 'paragraph', text: 'أولاً: حالة $(d)$ لا يوازي $(AB)$:' },
-        {
-          type: 'figure',
-          diagram: {
-            kind: 'reference',
-            id: 'fig-12-line-construction-nonparallel',
-            alt: 'المستقيم $(d)$ ونقطتان $M$ و $N$ عليه، وصورتاهما $M\\prime$ و $N\\prime$ اللتان تحددان المستقيم $(d\\prime)$، مع الانسحاب من $A$ إلى $B$.',
-            caption: 'الحالة الأولى: المستقيم غير موازٍ لاتجاه الانسحاب، صفحة ١٢',
-            source: { page: PAGE_12, locator: 'شكل الإنشاء — الحالة الأولى' },
-            reason:
-              'الشكل يشرح إنشاءً عاماً ولا يطبع إحداثيات أو أطوالاً تحدد مواضع نقاطه الدقيقة.',
-          },
-        },
+        textbookFigure(
+          'fig-12-line-construction-nonparallel',
+          PAGE_12,
+          'إنشاء صورة مستقيم — الحالة الأولى',
+          'fig-12-line-construction-oblique.png',
+          'مستقيم $(d)$ غير موازٍ لـ $(AB)$، وعليه النقطتان $M$ و$N$ وصورتاهما $M\\prime$ و$N\\prime$.',
+          'إنشاء صورة مستقيم — الحالة الأولى — الكتاب، صفحة ١٢',
+        ),
         {
           type: 'paragraph',
           text: "نختار نقطتين $M$ و $N$ من المستقيم $(d)$ ونرسم صورتيهما $M'$ و $N'$ وفق الانسحاب الذي ينقل $A$ إلى $B$. فيكون المستقيم $(d')$ المار بالنقطتين $M'$ و $N'$ صورة $(d)$.",
@@ -230,18 +261,14 @@ export const lesson03: LessonInput = {
           text: 'إنشاء صورة مستقيم $(d)$ وفق الانسحاب الذي ينقل $A$ إلى $B$',
         },
         { type: 'paragraph', text: 'ثانياً: حالة $(d)$ يوازي $(AB)$:' },
-        {
-          type: 'figure',
-          diagram: {
-            kind: 'reference',
-            id: 'fig-12-line-construction-parallel',
-            alt: 'المستقيم $(d)$ موازٍ لاتجاه الانتقال من $A$ إلى $B$، ولذلك تحمل الصورة $(d\\prime)$ الاسم نفسه والموقع نفسه.',
-            caption: 'الحالة الثانية: المستقيم موازٍ لاتجاه الانسحاب، صفحة ١٢',
-            source: { page: PAGE_12, locator: 'شكل الإنشاء — الحالة الثانية' },
-            reason:
-              'رسم تخطيطي بلا شبكة؛ العلاقة هي الانطباق، ولا توجد مواضع عددية يمكن نقلها بأمانة.',
-          },
-        },
+        textbookFigure(
+          'fig-12-line-construction-parallel',
+          PAGE_12,
+          'إنشاء صورة مستقيم — الحالة الثانية',
+          'fig-12-line-construction-parallel.png',
+          'المستقيم $(d)$ موازٍ لـ $(AB)$، وصورته $(d\\prime)$ منطبق عليه.',
+          'إنشاء صورة مستقيم — الحالة الثانية — الكتاب، صفحة ١٢',
+        ),
         {
           type: 'paragraph',
           text: "في هذه الحالة، ينطبق المستقيم $(d)$ على المستقيم $(d')$.",
@@ -271,18 +298,22 @@ export const lesson03: LessonInput = {
             },
           ],
         },
-        {
-          type: 'figure',
-          diagram: {
-            kind: 'reference',
-            id: 'fig-13-parallel-perpendicular-images',
-            alt: 'شكلان: الأول يبيّن مستقيمين متوازيين وصورتيهما المتوازيتين، والثاني يبيّن مستقيمين متعامدين وصورتيهما المتعامدتين، وفق الانسحاب من $A$ إلى $B$.',
-            caption: 'الشكلان ① و②، صفحة ١٣',
-            source: { page: PAGE_13, locator: 'الشكلان ① و②' },
-            reason:
-              'الرسوم على ورقة بيضاء ولا تحمل قياسات تحدد الفواصل والميول؛ لا حاجة إلى تخمينها لعرض الخاصية النصية.',
-          },
-        },
+        textbookFigure(
+          'fig-13-parallel-lines',
+          PAGE_13,
+          'الشكل ① — صورة مستقيمين متوازيين',
+          'fig-13-parallel-lines.png',
+          'المستقيمان المتوازيان $(d)$ و$(D)$ وصورتاهما $(d\\prime)$ و$(D\\prime)$ وفق الانتقال من $A$ إلى $B$.',
+          'الشكل ①: صورة مستقيمين متوازيين — الكتاب، صفحة ١٣',
+        ),
+        textbookFigure(
+          'fig-13-perpendicular-lines',
+          PAGE_13,
+          'الشكل ② — صورة مستقيمين متعامدين',
+          'fig-13-perpendicular-lines.png',
+          'المستقيمان المتعامدان $(d)$ و$(D)$ وصورتاهما $(d\\prime)$ و$(D\\prime)$، مع علامتي الزاوية القائمة.',
+          'الشكل ②: صورة مستقيمين متعامدين — الكتاب، صفحة ١٣',
+        ),
         {
           type: 'paragraph',
           text: "في الشكل ①: المستقيمان المتوازيان $(d')$ و $(D')$ هما على التوالي صورتا المستقيمين المتوازيين $(d)$ و $(D)$ وفق الانسحاب الذي ينقل $A$ إلى $B$.",
@@ -299,18 +330,14 @@ export const lesson03: LessonInput = {
       title: 'صورة قطعة مستقيمة',
       source: { page: PAGE_13, locator: 'صورة قطعة مستقيمة' },
       blocks: [
-        {
-          type: 'figure',
-          diagram: {
-            kind: 'reference',
-            id: 'fig-13-segment-image',
-            alt: 'القطعة $[MN]$ وصورتها $[M\\prime N\\prime]$ في وضع متوازٍ، مع أسهم الانسحاب من $A$ إلى $B$ ومن الطرفين إلى صورتيهما.',
-            caption: 'صورة القطعة المستقيمة، صفحة ١٣',
-            source: { page: PAGE_13, locator: 'شكل صورة القطعة' },
-            reason:
-              'المخطط لا يحدد إحداثيات أو مقياس رسم للقطعة ولمواضع $A$ و$B$؛ الخاصية محفوظة نصياً دون تخمين الرسم.',
-          },
-        },
+        textbookFigure(
+          'fig-13-segment-image',
+          PAGE_13,
+          'شكل صورة القطعة المستقيمة',
+          'fig-13-segment-image.png',
+          'القطعة $[MN]$ وصورتها $[M\\prime N\\prime]$، مع أسهم الانسحاب والنقاط $A$ و$B$.',
+          'صورة القطعة المستقيمة — الكتاب، صفحة ١٣',
+        ),
         {
           type: 'paragraph',
           text: "صورة قطعة مستقيمة $[MN]$ وفق الانسحاب الذي ينقل $A$ إلى $B$، هي قطعة مستقيمة $[M'N']$ توازي $[MN]$.",
@@ -331,18 +358,14 @@ export const lesson03: LessonInput = {
       title: 'صورة نصف مستقيم وصورة دائرة',
       source: { page: PAGE_14, locator: 'صورة نصف مستقيم ودائرة' },
       blocks: [
-        {
-          type: 'figure',
-          diagram: {
-            kind: 'reference',
-            id: 'fig-14-ray-image',
-            alt: 'نصف المستقيم $[Mx)$ وصورته الموازية $[M\\prime x\\prime)$، مع نقطتين $H$ و $H\\prime$ وسهمي الانسحاب من $A$ إلى $B$.',
-            caption: 'صورة نصف المستقيم، صفحة ١٤',
-            source: { page: PAGE_14, locator: 'شكل صورة نصف المستقيم' },
-            reason:
-              'الشكل تخطيطي بلا شبكة أو أطوال؛ مواضع النقاط لا يمكن استخراجها عددياً من المصدر.',
-          },
-        },
+        textbookFigure(
+          'fig-14-ray-image',
+          PAGE_14,
+          'شكل صورة نصف المستقيم',
+          'fig-14-ray-image.png',
+          'نصف المستقيم $[Mx)$ وصورته $[M\\prime x\\prime)$، والنقطتان $H$ و$H\\prime$.',
+          'صورة نصف المستقيم — الكتاب، صفحة ١٤',
+        ),
         {
           type: 'paragraph',
           text: "صورة نصف مستقيم $[Mx)$ وفق الانسحاب الذي ينقل $A$ إلى $B$، هي نصف مستقيم $[M'x')$ يوازي $[Mx)$.",
@@ -351,18 +374,14 @@ export const lesson03: LessonInput = {
           type: 'paragraph',
           text: "($M'$ هي صورة $M$ و $H'$ هي صورة $H$، حيث $H$ نقطة غير مميزة من نصف المستقيم $[Mx)$.)",
         },
-        {
-          type: 'figure',
-          diagram: {
-            kind: 'reference',
-            id: 'fig-14-circle-image',
-            alt: 'دائرتان متساويتان $\\mathcal{C}$ و $\\mathcal{C}\\prime$ مركزاهما $O$ و $O\\prime$، مع انتقال المركز وفق الانسحاب من $A$ إلى $B$.',
-            caption: 'صورة الدائرة، صفحة ١٤',
-            source: { page: PAGE_14, locator: 'شكل صورة الدائرة' },
-            reason:
-              'نصف القطر متساوٍ في الرسم لكن لا توجد قيمة أو إحداثيات تحدد موضع الدائرتين بالنسبة إلى $A$ و$B$.',
-          },
-        },
+        textbookFigure(
+          'fig-14-circle-image',
+          PAGE_14,
+          'شكل صورة الدائرة',
+          'fig-14-circle-image.png',
+          'الدائرتان $\\mathcal{C}$ و$\\mathcal{C}\\prime$ متساويتان في نصف القطر ومركزاهما $O$ و$O\\prime$.',
+          'صورة الدائرة — الكتاب، صفحة ١٤',
+        ),
         {
           type: 'paragraph',
           text: "صورة دائرة $\\mathcal{C}$ مركزها $O$ وفق الانسحاب الذي ينقل $A$ إلى $B$، هي دائرة $\\mathcal{C}'$ مركزها $O'$ هو صورة $O$ وفق هذا الانسحاب، ونصف قطرها يساوي نصف قطر $\\mathcal{C}$.",
@@ -395,18 +414,22 @@ export const lesson03: LessonInput = {
           type: 'paragraph',
           text: 'لرسم صورة مستقيم وفق انسحاب، نرسم صورتي نقطتين منه (باستعمال الفرجار)، ثم نرسم المستقيم المار بهاتين النقطتين.',
         },
-        {
-          type: 'figure',
-          diagram: {
-            kind: 'reference',
-            id: 'fig-14-line-image-example',
-            alt: 'معطيات المثال: المستقيم $(d)$ والنقطتان $A$ و $B$، ثم شكل الحل الذي يضع $M$ و $N$ على المستقيم ويرسم صورتيهما $M\\prime$ و $N\\prime$ والمستقيم $(d\\prime)$.',
-            caption: 'المثال وحلّه، صفحة ١٤',
-            source: { page: PAGE_14, locator: 'مثال — شكل المعطيات والحل' },
-            reason:
-              'المثال إنشائي على ورقة بيضاء، ولا يطبع أطوالاً أو زوايا تسمح بإعادة مواضع الشكل الأصلي بدقة.',
-          },
-        },
+        textbookFigure(
+          'fig-14-line-image-example-given',
+          PAGE_14,
+          'مثال — شكل المعطيات',
+          'fig-14-line-image-given.png',
+          'المستقيم $(d)$ والنقطتان $A$ و$B$ اللتان تحددان الانسحاب المطلوب.',
+          'معطيات المثال — الكتاب، صفحة ١٤',
+        ),
+        textbookFigure(
+          'fig-14-line-image-example-construction',
+          PAGE_14,
+          'مثال — شكل الحل',
+          'fig-14-line-image-construction.png',
+          'إنشاء النقطتين $M$ و$N$ على $(d)$، وصورتيهما $M\\prime$ و$N\\prime$، ثم رسم المستقيم $(d\\prime)$.',
+          'إنشاء صورة المستقيم في حل المثال — الكتاب، صفحة ١٤',
+        ),
         {
           type: 'callout',
           variant: 'example',
@@ -444,18 +467,14 @@ export const lesson03: LessonInput = {
       title: 'كيف نستعمل خواص الانسحاب في إنشاء هندسي؟',
       source: { page: PAGE_15, locator: 'مثال المربع' },
       blocks: [
-        {
-          type: 'figure',
-          diagram: {
-            kind: 'reference',
-            id: 'fig-15-square-application',
-            alt: 'المربع $ABCD$ طول ضلعه $3\\,cm$ وصورته المربع $BB\\prime C\\prime C$ وفق الانسحاب الذي ينقل $D$ إلى $C$، مع علامات الزوايا القائمة والأطوال.',
-            caption: 'شكل المثال، صفحة ١٥',
-            source: { page: PAGE_15, locator: 'مثال المربع — الشكل' },
-            reason:
-              'المعطيات تحدد مربّعين، لكن الشكل جزء من حل مطبوع كامل؛ أبقيناه مرجعياً كي لا يُعرض الرسم النهائي قبل قراءة تسلسل الحل الأصلي.',
-          },
-        },
+        textbookFigure(
+          'fig-15-square-application',
+          PAGE_15,
+          'مثال المربع — الشكل',
+          'fig-15-square-example.png',
+          'المربع $ABCD$ وصورته $BB\\prime C\\prime C$، مع الأطوال $3\\,cm$ وعلامات الزوايا القائمة.',
+          'مثال المربع — الكتاب، صفحة ١٥',
+        ),
         {
           type: 'callout',
           variant: 'example',
@@ -486,6 +505,84 @@ export const lesson03: LessonInput = {
           type: 'paragraph',
           text: "بهذا يكون المربع $BB'C'C$ صورة المربع $ABCD$ وفق هذا الانسحاب.",
         },
+        {
+          type: 'teaching',
+          variant: 'example',
+          title: 'إنشاء الصورة خطوةً خطوة',
+          blocks: [
+            {
+              type: 'paragraph',
+              text: "توضيح من إعداد المنصّة، لا من الكتاب: بُني الشكل بإحداثيات تحقق أن $ABCD$ مربع ضلعه $3\\,cm$، وأن الانسحاب ينقل $D$ إلى $C$. تقدّم لترى كيف تنطبق $A'$ على $B$ و$D'$ على $C$ ثم تكتمل الصورة.",
+            },
+            {
+              type: 'figure',
+              diagram: {
+                kind: 'interactive',
+                origin: 'authored',
+                id: 'auth-03-square-application-construction',
+                renderer: 'construction-figure',
+                alt: "إنشاء تدريجي من إعداد المنصّة لمربع $ABCD$ ضلعه $3\\,cm$ وصورته $BB'C'C$ وفق الانتقال من $D$ إلى $C$؛ تظهر العلاقتان $A'=B$ و$D'=C$.",
+                caption: 'توضيح من إعداد المنصّة؛ وحدات الرسم للتوضيح ولا تعيد إنتاج رسم الكتاب.',
+                params: {
+                  padding: 0.8,
+                  steps: [
+                    'المعطى: مربع ABCD طول ضلعه 3 cm.',
+                    'الانسحاب من D إلى C؛ لذلك A′=B وD′=C.',
+                    'نعيّن B′ وC′ بالمتجه نفسه.',
+                    'نصل B وB′ وC′ وC بالترتيب فنحصل على الصورة.',
+                  ],
+                  elements: [
+                    { kind: 'segment', from: [0, 3], to: [3, 3], step: 0 },
+                    { kind: 'segment', from: [3, 3], to: [3, 0], step: 0 },
+                    { kind: 'segment', from: [3, 0], to: [0, 0], step: 0 },
+                    { kind: 'segment', from: [0, 0], to: [0, 3], step: 0 },
+                    { kind: 'point', at: [0, 3], label: 'A', offset: [-0.35, -0.3], step: 0 },
+                    { kind: 'point', at: [3, 3], label: 'B', offset: [0.15, -0.3], step: 0 },
+                    { kind: 'point', at: [3, 0], label: 'C', offset: [0.15, -0.3], step: 0 },
+                    { kind: 'point', at: [0, 0], label: 'D', offset: [-0.35, -0.3], step: 0 },
+                    { kind: 'arrow', from: [0, 0], to: [3, 0], tone: 'mark', step: 1 },
+                    {
+                      kind: 'point',
+                      at: [3, 3],
+                      label: 'A′',
+                      tone: 'image',
+                      offset: [-0.5, 0.55],
+                      step: 2,
+                    },
+                    {
+                      kind: 'point',
+                      at: [6, 3],
+                      label: 'B′',
+                      tone: 'image',
+                      offset: [0.15, -0.3],
+                      step: 2,
+                    },
+                    {
+                      kind: 'point',
+                      at: [6, 0],
+                      label: 'C′',
+                      tone: 'image',
+                      offset: [0.15, -0.3],
+                      step: 2,
+                    },
+                    {
+                      kind: 'point',
+                      at: [3, 0],
+                      label: 'D′',
+                      tone: 'image',
+                      offset: [-0.5, 0.55],
+                      step: 2,
+                    },
+                    { kind: 'segment', from: [3, 3], to: [6, 3], tone: 'image', step: 3 },
+                    { kind: 'segment', from: [6, 3], to: [6, 0], tone: 'image', step: 3 },
+                    { kind: 'segment', from: [6, 0], to: [3, 0], tone: 'image', step: 3 },
+                    { kind: 'segment', from: [3, 0], to: [3, 3], tone: 'image', step: 3 },
+                  ],
+                },
+              },
+            },
+          ],
+        },
       ],
     },
 
@@ -500,18 +597,22 @@ export const lesson03: LessonInput = {
           type: 'paragraph',
           text: 'انقل الشكلين ① و ② إلى دفترك، وعلى كل منهما:',
         },
-        {
-          type: 'figure',
-          diagram: {
-            kind: 'reference',
-            id: 'fig-15-check-two-grids',
-            alt: 'شبكتان مرقمتان ① و②: الأولى فيها مستقيمان متوازيان $(d)$ و $\\Delta$ والنقطتان $M$ و $M\\prime$، والثانية فيها مستقيمان متعامدان $(d)$ و $\\Delta$ والنقطتان $M$ و $M\\prime$.',
-            caption: 'شكلا «تحقّق من فهمك»، صفحة ١٥',
-            source: { page: PAGE_15, locator: 'الشكلان ① و②' },
-            reason:
-              'مع أن الشكلين على شبكة، فإن مواضع عدة نقاط وخطوط تقع بين علامات متقاربة في المسح؛ أي قراءة غير متيقنة ستغيّر صورة المستقيم المطلوبة.',
-          },
-        },
+        textbookFigure(
+          'fig-15-check-parallel',
+          PAGE_15,
+          'تحقّق من فهمك — الشكل ①',
+          'fig-15-check-parallel.png',
+          'شبكة الشكل ①: المستقيمان $(d)$ و$\\Delta$ متوازيان، والانتقال من $M$ إلى $M\\prime$.',
+          'الشكل ①: مستقيمان متوازيان — الكتاب، صفحة ١٥',
+        ),
+        textbookFigure(
+          'fig-15-check-perpendicular',
+          PAGE_15,
+          'تحقّق من فهمك — الشكل ②',
+          'fig-15-check-perpendicular.png',
+          'شبكة الشكل ②: المستقيمان $(d)$ و$\\Delta$ متعامدان، والانتقال من $M$ إلى $M\\prime$.',
+          'الشكل ②: مستقيمان متعامدان — الكتاب، صفحة ١٥',
+        ),
         {
           type: 'questionGroup',
           items: [
@@ -542,18 +643,14 @@ export const lesson03: LessonInput = {
       source: { page: PAGE_16, locator: 'تدرّب — ①' },
       blocks: [
         { type: 'paragraph', text: 'تأمل الشكل المرسوم جانباً:' },
-        {
-          type: 'figure',
-          diagram: {
-            kind: 'reference',
-            id: 'fig-16-practice-one',
-            alt: 'القطعة الموجهة من $A$ إلى $B$ وإلى جانبها المستقيم $(d)$، تمهيداً لرسم صورته وفق انسحاب ثم وفق الانسحاب المعاكس.',
-            caption: 'شكل التمرين ①، صفحة ١٦',
-            source: { page: PAGE_16, locator: 'تدرّب ① — الشكل' },
-            reason:
-              'الشكل مرسوم على ورقة بيضاء بلا قياسات؛ يلزم الطالب نسخ الوضع المطبوع ثم إجراء إنشاء بالفرجار.',
-          },
-        },
+        textbookFigure(
+          'fig-16-practice-one',
+          PAGE_16,
+          'تدرّب ① — الشكل',
+          'fig-16-practice-one.png',
+          'القطعة الموجهة من $A$ إلى $B$ وإلى جانبها المستقيم $(d)$.',
+          'شكل التمرين ① — الكتاب، صفحة ١٦',
+        ),
         {
           type: 'questionGroup',
           items: [
@@ -611,6 +708,64 @@ export const lesson03: LessonInput = {
             },
           ],
         },
+        {
+          type: 'teaching',
+          variant: 'tip',
+          title: 'شكل البداية — توضيح من إعداد المنصّة',
+          collapsible: true,
+          revealLabel: 'افتح نموذج المعطيات بعد أن ترسم بنفسك',
+          blocks: [
+            {
+              type: 'paragraph',
+              text: "هذا نموذج تأسيسي بإحداثيات مختارة تحقق $BA=4\\,cm$ و$BC=6\\,cm$ والزاوية القائمة عند $B$، ثم تضع $E$ بحيث $BE=2\\,cm$. إنه يبيّن المعطيات فقط ولا يرسم الصورة المطلوبة $[E'B']$.",
+            },
+            {
+              type: 'figure',
+              diagram: {
+                kind: 'interactive',
+                origin: 'authored',
+                id: 'auth-03-practice-two-givens',
+                renderer: 'construction-figure',
+                alt: 'نموذج من إعداد المنصّة لمثلث قائم عند $B$: $BA=4\\,cm$ و$BC=6\\,cm$، والنقطة $E$ منتصف $[BA]$ لأن $BE=2\\,cm$؛ لا تظهر صورة القطعة.',
+                caption:
+                  'توضيح تأسيسي من إعداد المنصّة؛ لا يمثّل رسماً مطبوعاً ولا يعرض حل الانسحاب.',
+                params: {
+                  padding: 0.9,
+                  steps: [
+                    'نرسم مثلثاً قائماً عند B بطولي الضلعين BA=4 وBC=6.',
+                    'نعيّن E على [BA] بحيث BE=2؛ أي إن E منتصف [BA].',
+                  ],
+                  elements: [
+                    { kind: 'segment', from: [0, 0], to: [4, 0], step: 0 },
+                    { kind: 'segment', from: [4, 0], to: [0, 6], step: 0 },
+                    { kind: 'segment', from: [0, 6], to: [0, 0], step: 0 },
+                    { kind: 'segment', from: [0.42, 0], to: [0.42, 0.42], tone: 'mark', step: 0 },
+                    { kind: 'segment', from: [0.42, 0.42], to: [0, 0.42], tone: 'mark', step: 0 },
+                    { kind: 'point', at: [0, 0], label: 'B', offset: [-0.35, 0.55], step: 0 },
+                    { kind: 'point', at: [4, 0], label: 'A', offset: [0.15, -0.3], step: 0 },
+                    { kind: 'point', at: [0, 6], label: 'C', offset: [-0.35, -0.3], step: 0 },
+                    {
+                      kind: 'segment',
+                      from: [0, 0],
+                      to: [2, 0],
+                      dashed: true,
+                      tone: 'aux',
+                      step: 1,
+                    },
+                    {
+                      kind: 'point',
+                      at: [2, 0],
+                      label: 'E',
+                      tone: 'mark',
+                      offset: [0.12, 0.55],
+                      step: 1,
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+        },
       ],
     },
 
@@ -642,20 +797,32 @@ export const lesson03: LessonInput = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'رسم كلٌّ من عدنان وغسان وشاكر النقطة $D$، صورة النقطة $C$ وفق الانسحاب الذي ينقل $B$ إلى $A$، مستعملين الطول نفسه للقطعة $[CD]$.',
+          text: 'رسم كلٌّ من عدنان وغسان وعصام النقطة $D$، صورة النقطة $C$ وفق الانسحاب الذي ينقل $B$ إلى $A$، مستعملين الطول نفسه للقطعة $[CD]$.',
         },
-        {
-          type: 'figure',
-          diagram: {
-            kind: 'reference',
-            id: 'fig-16-practice-four-attempts',
-            alt: 'ثلاث محاولات مرقّمة ① و② و③ لوضع النقطة $D$ صورةً للنقطة $C$ وفق الانسحاب الذي ينقل $B$ إلى $A$؛ واحدة تغيّر الاتجاه، وأخرى تعكسه، والثالثة تحقق الحركة المطلوبة.',
-            caption: 'الأشكال الثلاثة للتمرين ④، صفحة ١٦',
-            source: { page: PAGE_16, locator: 'تدرّب ④ — الأشكال ① و② و③' },
-            reason:
-              'الحكم يعتمد على اتجاه الأسهم وعلامات تساوي الأطوال في الرسم المطبوع؛ إبقاء الشكل مرجعياً يمنع استبداله برسم تقريبي يكشف الجواب.',
-          },
-        },
+        textbookFigure(
+          'fig-16-attempt-1',
+          PAGE_16,
+          'تدرّب ④ — الشكل ①',
+          'fig-16-attempt-1.png',
+          'المحاولة ①: القطعة $[CD]$ لها الطول المعطى لكنها عمودية، وليست موازية لاتجاه الانسحاب $B$ إلى $A$.',
+          'المحاولة ① — الكتاب، صفحة ١٦',
+        ),
+        textbookFigure(
+          'fig-16-attempt-2',
+          PAGE_16,
+          'تدرّب ④ — الشكل ②',
+          'fig-16-attempt-2.png',
+          'المحاولة ②: اتجاه $C$ إلى $D$ يوافق $A$ إلى $B$، لا الانسحاب المطلوب من $B$ إلى $A$.',
+          'المحاولة ② — الكتاب، صفحة ١٦',
+        ),
+        textbookFigure(
+          'fig-16-attempt-3',
+          PAGE_16,
+          'تدرّب ④ — الشكل ③',
+          'fig-16-attempt-3.png',
+          'المحاولة ③: الاتجاه من $C$ إلى $D$ يوافق الانسحاب من $B$ إلى $A$، وطول $[CD]$ مساوٍ للطول المطلوب.',
+          'المحاولة ③ — الكتاب، صفحة ١٦',
+        ),
         {
           type: 'paragraph',
           text: 'فإذا كان غسان الوحيد الذي رسم $D$ بشكل صحيح:',

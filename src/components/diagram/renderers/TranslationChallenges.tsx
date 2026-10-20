@@ -166,10 +166,10 @@ function ChallengeDiagram({ kind, markerBase }: { kind: Challenge['id']; markerB
           </defs>
           <polygon points="0.7,3.7 2.5,3.6 1.2,1.6" className={styles.original} />
           <line
-            x1="2.6"
-            y1="2.8"
+            x1="1"
+            y1="1.2"
             x2="5"
-            y2="2.2"
+            y2="0.2"
             className={styles.arrow}
             markerEnd={`url(#${markerId})`}
           />
