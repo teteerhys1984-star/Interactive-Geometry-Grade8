@@ -18,14 +18,28 @@
  *  Sizes are split by role, because these are different kinds of ink. The
  *  values below are CSS pixels at the reference width:
  *
- *    vertex   19.0 px   A, B′, C…      a vertex letter is a name
+ *    vertex   16.0 px   A, B′, C…      a vertex letter is a name
  *    measure  15.5 px   14.4, 3, 8     a value printed for a side
  *    angle    15.0 px   35°, 85°       the value of one angle arc
  *    frame    14.0 px   ① ② ③         panel numbers, the quietest
  *
- *  `FigureSpec.labelScale` multiplies all four when a figure is denser or
- *  larger than usual — a deliberate per-figure decision, never a blanket
- *  shrink of "all the text".
+ *  The vertex size is deliberately the size of the page's own body text
+ *  (1 rem = 16 px; prose sits at ≈ 16.5 px), so a name is READ, not displayed.
+ *  A name larger than the sentence around it makes a diagram shout: the
+ *  previous 19 px set a name 23 % larger than the value it labels (15.5 px)
+ *  and 15 % larger than the prose. The weight does the distinguishing: vertex
+ *  letters are semi-bold (600), values are not. The roles stay separate in
+ *  size too, so a value is still quieter (15.5 px) than the name it belongs to.
+ *
+ *  `FigureSpec.labelScale` multiplies the MEASUREMENT roles (measure, angle,
+ *  frame) for a figure that is measurably denser than usual. It deliberately
+ *  does NOT touch vertex names. A name is a name: if the scale moved it too, a
+ *  dense figure would draw its names smaller than the rest of the lesson's
+ *  (at 16 px, «تدرّب ②»'s 0.82 would give 13.1 px — 0.4 px from
+ *  the 12.7 px values it labels, so the roles would read as one size again).
+ *  Crowding is a problem with the values, and that is what the scale adjusts.
+ *  The one figure that uses it is documented, with the measurements behind the
+ *  decision, in `lesson-04-figures.ts`.
  * ============================================================================
  */
 
@@ -39,8 +53,11 @@ export const REFERENCE_FIGURE_WIDTH = 750;
 
 /** Target on-screen sizes, in CSS pixels, at `REFERENCE_FIGURE_WIDTH`. */
 export const TYPOGRAPHY_PX = {
-  /** Vertex names (A, B, C, A′). */
-  vertex: 19,
+  /**
+   * Vertex names (A, B, C, A′). Body size on purpose: a name is read, not
+   * displayed, and this is the one role `labelScale` never shrinks.
+   */
+  vertex: 16,
   /** Printed values (14.4, 3, 8). */
   measure: 15.5,
   /** Values of an angle arc (35°, 85°). */
@@ -76,17 +93,21 @@ export interface FigureTypography {
 }
 
 /**
- * All sizes for one figure. `labelScale` is applied to the type sizes only:
- * line weight, dots and ticks describe the geometry, not the lettering, so a
- * reading-size override must not thicken the drawing.
+ * All sizes for one figure. `labelScale` is applied to the measurement roles
+ * only (see the header): a name keeps the lesson's one size, because a name
+ * smaller than the value beside it is a defect, not a fit. Line weight, dots
+ * and ticks describe the geometry, not the lettering, so a reading-size
+ * override must not thicken the drawing either.
  */
 export function figureTypography(spec: FigureSpec): FigureTypography {
   const unitsPerPixel = spec.viewBox.w / REFERENCE_FIGURE_WIDTH;
   const scale = spec.labelScale && spec.labelScale > 0 ? spec.labelScale : 1;
-  const type = (px: number) => px * unitsPerPixel * scale;
+  /** Size in drawing units; `scaled` roles follow `labelScale`. */
+  const type = (px: number, scaled = true) => px * unitsPerPixel * (scaled ? scale : 1);
   return {
     unitsPerPixel,
-    vertex: type(TYPOGRAPHY_PX.vertex),
+    // A name is a name whatever the drawing's density: the scale stops here.
+    vertex: type(TYPOGRAPHY_PX.vertex, false),
     measure: type(TYPOGRAPHY_PX.measure),
     angle: type(TYPOGRAPHY_PX.angle),
     frame: type(TYPOGRAPHY_PX.frame),

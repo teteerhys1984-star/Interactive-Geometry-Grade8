@@ -4,8 +4,17 @@ This document is the **pre-fix diagnosis** required before touching the drawings
 plus the record of what was changed and how it was verified. It covers the whole
 lesson (pages 17–19), not just page 17 panel ②.
 
-Scope: `src/components/diagram/renderers/lesson4/**`,
-`src/lib/geometryFigure.ts`, `src/content/units/lesson-04-figures.ts`.
+Sections 1–6 record the first revision (the one that replaced the
+`min(viewBox.w, viewBox.h)` rule with a width-based scale and gave every label a
+real, collision-checked position). **Section 7 records the second revision,
+which set the vertex size at 16 px** and limited `labelScale` to measurements.
+The measured tables in §4 and §6 have been updated in place to the numbers the
+shipped tree produces, so every figure of this document describes the same
+build.
+
+Scope: `src/components/diagram/renderers/lesson4/**`, `src/lib/figureLayout.ts`,
+`src/lib/figureTypography.ts`, `src/lib/geometryFigure.ts`,
+`src/content/units/lesson-04-figures.ts`.
 
 ## 1. Inventory — every drawing the lesson renders
 
@@ -126,25 +135,27 @@ Measured on the layout the renderer computes, at the 750 px reference width
 
 | Diagram                            | window      | vertex letter |   value | stroke | labels placed | crowded |
 | ---------------------------------- | ----------- | ------------: | ------: | -----: | ------------: | ------: |
-| `fig-17-activity-cases`            | 33.4 × 8.6  |       19.0 px | 15.5 px | 2.1 px |            23 |       0 |
-| `fig-18-example-sas`               | 15.6 × 7.5  |       19.0 px | 15.5 px | 2.1 px |             9 |       0 |
-| `fig-18-example-asa`               | 9.4 × 9.2   |       19.0 px | 15.5 px | 2.1 px |             6 |       0 |
-| `fig-18-example-sss`               | 9.4 × 4.6   |       19.0 px | 15.5 px | 2.1 px |             4 |       0 |
-| `fig-19-check-rectangle`           | 8.6 × 6.1   |       19.0 px | 15.5 px | 2.1 px |             6 |       0 |
-| `fig-19-kite`                      | 19.6 × 17.6 |       19.0 px | 15.5 px | 2.1 px |            13 |       0 |
-| `fig-19-pairs`                     | 32.7 × 7.9  |       15.6 px | 12.7 px | 2.1 px |            18 |       0 |
-| `fig-19-isosceles`                 | 10.4 × 9.2  |       19.0 px | 15.5 px | 2.1 px |             6 |       0 |
-| `auth-04-translation-intro`        | 9.4 × 5.0   |       19.0 px | 15.5 px | 2.1 px |             6 |       0 |
-| `auth-04-definition-pair`          | 10.6 × 5.6  |       19.0 px | 15.5 px | 2.1 px |             6 |       0 |
-| lab (all three cases, both stages) | 10.4 × 6.6  |       19.0 px | 15.5 px | 2.1 px |             — |       0 |
-| 4 teacher figures                  | 8.6 … 19.6  |       19.0 px | 15.5 px | 2.1 px |         4 … 8 |       0 |
+| `fig-17-activity-cases`            | 33.4 × 8.6  |       16.0 px | 15.5 px | 2.1 px |            23 |       0 |
+| `fig-18-example-sas`               | 15.6 × 7.5  |       16.0 px | 15.5 px | 2.1 px |             9 |       0 |
+| `fig-18-example-asa`               | 9.4 × 9.2   |       16.0 px | 15.5 px | 2.1 px |             6 |       0 |
+| `fig-18-example-sss`               | 9.4 × 4.6   |       16.0 px | 15.5 px | 2.1 px |             4 |       0 |
+| `fig-19-check-rectangle`           | 8.6 × 6.1   |       16.0 px | 15.5 px | 2.1 px |             6 |       0 |
+| `fig-19-kite`                      | 19.6 × 17.6 |       16.0 px | 15.5 px | 2.1 px |            13 |       0 |
+| `fig-19-pairs`                     | 32.7 × 7.9  |       16.0 px | 12.7 px | 2.1 px |            18 |       0 |
+| `fig-19-isosceles`                 | 10.4 × 9.2  |       16.0 px | 15.5 px | 2.1 px |             6 |       0 |
+| `auth-04-translation-intro`        | 9.4 × 5.0   |       16.0 px | 15.5 px | 2.1 px |             6 |       0 |
+| `auth-04-definition-pair`          | 10.6 × 5.6  |       16.0 px | 15.5 px | 2.1 px |             6 |       0 |
+| lab (all three cases, both stages) | 10.4 × 6.6  |       16.0 px | 15.5 px | 2.1 px |             — |       0 |
+| 4 teacher figures                  | 8.6 … 19.6  |       16.0 px | 15.5 px | 2.1 px |         4 … 8 |       0 |
 
-Body prose is ≈ 16.5 px, so a vertex letter is now slightly larger than the
-prose (as a name should be) and a printed value slightly smaller — everywhere.
-The only exception is `fig-19-pairs`, whose three-panel window gives each
-triangle a third of the width: it declares `labelScale: 0.82` (15.6 px / 12.7 px).
-That is the one deliberate per-figure decision, and it is visible in the data
-above rather than hidden in a CSS rule.
+Body prose is ≈ 16.5 px, so a vertex letter is now the size of the prose it
+illustrates (16 px), while still being a little larger than the values printed
+inside the drawing (15.5 px). The weight, not a large size difference, is what
+separates a name from a measurement. The one exception is `fig-19-pairs`, whose
+three-panel window gives each triangle a third of the width: it declares
+`labelScale: 0.82`, which shrinks its **values** to 12.7 px and leaves its
+vertex names — it draws none — alone. That is the one deliberate per-figure
+decision; §7 records the renders that show why it is still needed.
 
 The four teacher-only figures were re-measured in the same run and behave
 identically; their numbers are in the table above.
@@ -171,7 +182,7 @@ rescued by any amount of collision avoidance:
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `fig-18-example-sas`            | `M` sat on the median `[AM]`; values were 0.5-unit offsets from the old scale                                                                                                                  | `M` now placed north of its vertex, clear of `[AE]` and `[AM]`; each value declared on its own side, direction away from its triangle                                                                                                                                                        |
 | `fig-18-example-asa`            | `D` on `[FC]`, `B` on `[EA]` (labels pointing into the rectangle's sides)                                                                                                                      | both moved east/west outside the rectangle, off their sides                                                                                                                                                                                                                                  |
-| `fig-19-kite`                   | `12`, `8`, `6`, `8` crowded against the two diagonals at the crossing `E`; 40 px letters                                                                                                       | each value keeps its own side of the crossing, so `12`/`6` and `8`/`8` can never be confused; letters at 19 px                                                                                                                                                                               |
+| `fig-19-kite`                   | `12`, `8`, `6`, `8` crowded against the two diagonals at the crossing `E`; 40 px letters                                                                                                       | each value keeps its own side of the crossing, so `12`/`6` and `8`/`8` can never be confused; letters at 16 px                                                                                                                                                                               |
 | `fig-19-pairs`                  | `80°`/`44°`/`82°` placed from the centroid (outside the triangle, next to a side value); the shared 18 px arc radius was as wide as the triangle's waist, so no value could sit beside its arc | angle values now belong to their **arcs** in the data (`FigureAngle.label`); the arcs of this figure declare a radius in the panel's own units (`0.5`, ≈ 11 px on screen), and every value now sits **inside** its own mouth (panel ② `80°` at the incentre, 1.2 units from the side values) |
 | `fig-17-activity-cases` panel ② | `35°`/`85°` overlapped the `3` and each other                                                                                                                                                  | angle values follow their arcs; `3` moved to the outer side of `[AC]`                                                                                                                                                                                                                        |
 | activity lab                    | window was 11.8 × 8.8 for content spanning 2.4 … 10.4 — the drawing floated in empty space and was ~30 % smaller than it needed to be                                                          | window fitted to the activity's own coordinates (10.4 × 6.6), identical at every stage so switching stages never rescales the figure                                                                                                                                                         |
@@ -184,19 +195,21 @@ rescued by any amount of collision avoidance:
 | ---------------- | ------------------- | ------------------------- |
 | TypeScript       | `npm run typecheck` | pass                      |
 | ESLint           | `npm run lint`      | pass                      |
-| Full suite       | `npm test`          | 39 files, 628 tests, pass |
+| Full suite       | `npm test`          | 39 files, 630 tests, pass |
 | Production build | `npm run build`     | pass                      |
 | Combined         | `npm run verify`    | pass                      |
 
 New invariants, in `src/components/diagram/renderers/lesson4/lesson4-typography.test.tsx`
-(109 tests). They run against the layout the renderer really computes, for all
+(111 tests). They run against the layout the renderer really computes, for all
 18 drawings:
 
-1. every figure's vertex letter is within 0.5 px of its design size, and never
-   below 75 % of the standard (the `labelScale` escape hatch stays honest);
+1. every figure's vertex letter is within 0.5 px of the lesson's one design
+   size — 16 px, pinned by a test — whatever the figure's aspect ratio and
+   whatever its own `labelScale` says about its values;
 2. the four roles stay ordered — vertex > value > frame — and at least three
    distinct font sizes are emitted per lesson, i.e. the "one size for
-   everything" regression cannot come back silently;
+   everything" regression cannot come back silently; a `labelScale` may shrink
+   measure / angle / frame, never vertex;
 3. no label box touches a side, a polygon edge, an arc, an equality tick, a
    frame border or another label (0 toleranced pixels of ink);
 4. no label leaves its own panel;
@@ -210,12 +223,19 @@ New invariants, in `src/components/diagram/renderers/lesson4/lesson4-typography.
 
 The drawings were rendered to standalone SVG through the real `FigureSvg`
 (React SSR), with the real CSS module resolved into the markup and the `--fig-*`
-custom properties flattened to their palette values, then rasterised at 1 000 and
-1 500 px with `@resvg/resvg-js` (installed with `npm i --no-save`; neither the
-dependency nor the harness is committed). All 14 static drawings were
-rasterised, plus the lab in all three cases at all three stages (9 panels) —
-23 rasters at 1 000 px and a subset at 1 500 px. Six before/after pairs are
-committed under `docs/assets/lesson-04/`.
+custom properties flattened to their palette values, then rasterised with
+`@resvg/resvg-js` (installed with `npm i --no-save`; neither the dependency nor
+the harness is committed). All 14 static drawings were rasterised, plus the lab
+in all three cases at all three stages (9 panels). The comparison images are
+committed under `docs/assets/lesson-04/`:
+
+- `docs/assets/lesson-04/*.png` — six before/after pairs from the **first**
+  revision (before: the `min(w, h)` scale; after: 19 px). Kept as history; the
+  «AFTER» column there is not the current build.
+- `docs/assets/lesson-04/vertex-16/` — the **current** comparison, described in
+  §7: all 14 figures side by side (before = `main` @ `10b2c19`, vertex 19 px;
+  after = this branch, vertex 16 px) at 750 px, two three-width sheets
+  (750 / 799 / 1 000 px), and the nine lab panels before and after.
 
 **Limits of that check — stated, not glossed:**
 
@@ -250,3 +270,156 @@ committed under `docs/assets/lesson-04/`.
    that predates this PR and needs its own palette decision (per-theme ink
    tokens), not a font-size fix. The label halo is likewise the paper colour
    (`#fffdf7`).
+
+---
+
+## 7. The 16 px revision — vertex names set at the size of the prose
+
+The first revision fixed the _class_ of the defect: one width-based scale, and
+labels that are actually placed instead of nudged. It left one number
+unsettled — how big a name should be. It chose 19 px, i.e. 2.5 px larger than
+the body text around it (`1.03rem ≈ 16.5 px`), and it applied every figure's
+`labelScale` to names as well as to values, so the three-panel «تدرّب ②» drew
+its names at 15.6 px — below the page's own body size — and, had that base been
+16 px instead, would have drawn them at 13.1 px, four tenths of a pixel from
+the 12.7 px values they label.
+
+This revision settles it.
+
+### 7.1 The change
+
+| Item                                    | Before                        | After                          |
+| --------------------------------------- | ----------------------------- | ------------------------------ |
+| `TYPOGRAPHY_PX.vertex`                  | 19 px                         | **16 px**                      |
+| `TYPOGRAPHY_PX.measure / angle / frame` | 15.5 / 15 / 14 px             | unchanged                      |
+| `labelScale` applies to                 | all four roles                | **measure, angle, frame only** |
+| `fig-19-pairs` (`labelScale: 0.82`)     | names 15.6 px, values 12.7 px | names 16 px, values 12.7 px    |
+
+Nothing else moved: no coordinate, no arc radius, no stroke weight, no tick, no
+label rule, no window. `FigureSvg`, `figureLayout` and the lesson's geometry are
+untouched. The only sources changed are one type-size constant, the
+role-scoping of `labelScale`, and the comments and tests that document it.
+
+### 7.2 Why 16 px
+
+1. **It is the page's own body size.** `1rem = 16px`; the prose around the
+   figure sits at ≈ 16.5 px. A name now reads at the size of the sentence it
+   belongs to, and the semi-bold weight (600) is what distinguishes it.
+2. **The hierarchy survives on weight, not on size.** A value at 15.5 px under
+   a name at 16 px is _just_ quieter, which is the correct relationship: the
+   name labels, the value measures. At 19 px the difference was 23 % (19 vs
+   15.5 px) — a name noticeably larger than the values it labels and 15 %
+   larger than the prose — which reads as emphasis rather than as a label.
+3. **It removes the second knob.** Previously `labelScale` moved both names
+   and values, so asking for slightly smaller values in a dense figure also
+   made its names smaller than the rest of the lesson's. With the scale limited
+   to measurements, every name is 16 px and a dense figure can still print
+   smaller _values_ (12.7 px in «تدرّب ②») without its names drifting away from
+   the lesson's scale. The name/value separation is then a genuine 16 / 12.7 =
+   1.26 ratio instead of the 13.1 / 12.7 = 1.03 the unscoped scale would have
+   produced.
+
+### 7.3 Does `labelScale: 0.82` on `fig-19-pairs` stay? Yes — and here is the evidence
+
+Both variants were rasterised at 750, 799 and 1 000 px through the real
+component, and the computed label boxes were measured as well:
+
+| `fig-19-pairs`                 | smallest label↔label gap px (750 / 799 / 1000) | smallest label↔ink gap px |
+| ------------------------------ | ---------------------------------------------- | ------------------------- |
+| with `labelScale: 0.82` (kept) | **9.4 / 10.0 / 12.6**                          | 2.8 / 3.0 / 3.7           |
+| without it (removed)           | **0.0 / 0.0 / 0.0**                            | 2.5 / 2.6 / 3.3           |
+
+Without the override the `80°` of panel ② is pushed out of its own mouth and
+lands on the `2` printed under the shared side — visible in the render, and
+measured as a zero gap at every width. The override was therefore **kept**, but
+it now applies only to the measurements: this figure draws no vertex letters,
+so no name is shrunk by it, and a future one never would be. The tests
+pin both halves: `labelScale` leaves the vertex role alone, and this figure
+without its override produces a zero gap while with it the gap stays above
+4 px.
+
+### 7.4 Measurements after the change
+
+Every drawing below was rasterised through the real `FigureSvg` at the three
+widths. «ink» is the smallest distance from a label box to any line, arc, tick or
+frame edge; «label gap» the smallest distance between two label boxes; both in
+screen pixels. 207 labels in total, **0 crowded, 0 outside their panel**.
+
+| Drawing                     | window      | vertex px (750 / 799 / 1000) | values at 750 |     labels | ink px (750 / 799 / 1000) | label gap px          | crowded |
+| --------------------------- | ----------- | ---------------------------- | ------------- | ---------: | ------------------------- | --------------------- | ------: |
+| `fig-17-activity-cases`     | 33.4 × 8.6  | 16.00 / 17.05 / 21.33        | 15.5 px       |         23 | 3.8 / 4.0 / 5.0           | 8.3 / 8.9 / 11.1      |       0 |
+| `auth-04-translation-intro` | 9.4 × 5.0   | 16.00 / 17.05 / 21.33        | 15.5 px       |          6 | 7.4 / 7.8 / 9.8           | 96.6 / 102.9 / 128.8  |       0 |
+| `auth-04-definition-pair`   | 10.6 × 5.6  | 16.00 / 17.05 / 21.33        | 15.5 px       |          6 | 7.4 / 7.8 / 9.8           | 154.7 / 164.8 / 206.3 |       0 |
+| `fig-18-example-sas`        | 15.6 × 7.5  | 16.00 / 17.05 / 21.33        | 15.5 px       |          9 | 3.7 / 3.9 / 4.9           | 87.9 / 93.7 / 117.2   |       0 |
+| `fig-18-example-asa`        | 9.4 × 9.2   | 16.00 / 17.05 / 21.33        | 15.5 px       |          6 | 7.4 / 7.8 / 9.8           | 186.5 / 198.6 / 248.6 |       0 |
+| `fig-18-example-sss`        | 9.4 × 4.6   | 16.00 / 17.05 / 21.33        | 15.5 px       |          4 | 7.7 / 8.2 / 10.3          | 269.5 / 287.1 / 359.4 |       0 |
+| `fig-19-check-rectangle`    | 8.6 × 6.1   | 16.00 / 17.05 / 21.33        | 15.5 px       |          6 | 3.3 / 3.5 / 4.4           | 57.2 / 60.9 / 76.2    |       0 |
+| `fig-19-kite`               | 19.6 × 17.6 | 16.00 / 17.05 / 21.33        | 15.5 px       |         13 | 3.6 / 3.8 / 4.8           | 83.5 / 89.0 / 111.4   |       0 |
+| `fig-19-pairs`              | 32.7 × 7.9  | 16.00 / 17.05 / 21.33        | 12.7 px       |         18 | 2.8 / 3.0 / 3.7           | **9.4** / 10.0 / 12.6 |       0 |
+| `fig-19-isosceles`          | 10.4 × 9.2  | 16.00 / 17.05 / 21.33        | 15.5 px       |          6 | 7.4 / 7.8 / 9.8           | 142.7 / 152.0 / 190.2 |       0 |
+| `auth-04-teacher-activity`  | 10.4 × 6.6  | 16.00 / 17.05 / 21.33        | 15.5 px       |         11 | 3.8 / 4.0 / 5.0           | 36.3 / 38.7 / 48.4    |       0 |
+| `auth-04-teacher-check`     | 8.6 × 6.1   | 16.00 / 17.05 / 21.33        | 15.5 px       |          4 | 7.7 / 8.2 / 10.3          | 309.3 / 329.5 / 412.4 |       0 |
+| `auth-04-teacher-kite`      | 19.6 × 17.6 | 16.00 / 17.05 / 21.33        | 15.5 px       |          7 | 3.9 / 4.2 / 5.2           | 83.5 / 89.0 / 111.4   |       0 |
+| `auth-04-teacher-isosceles` | 10.4 × 9.2  | 16.00 / 17.05 / 21.33        | 15.5 px       |          8 | 3.7 / 4.0 / 5.0           | 113.6 / 121.0 / 151.4 |       0 |
+| lab SAS, stages 0 / 1 / 2   | 10.4 × 6.6  | 16.00 / 17.05 / 21.33        | 15.5 px       | 8 / 8 / 11 | 3.8 / 4.0 / 5.0           | 36.3 / 38.7 / 48.4    |       0 |
+| lab ASA, stages 0 / 1 / 2   | 10.4 × 6.6  | 16.00 / 17.05 / 21.33        | 15.5 px       | 7 / 8 / 11 | 3.9 / 4.1 / 5.2           | 30.5 / 32.5 / 40.6    |       0 |
+| lab SSS, stages 0 / 1 / 2   | 10.4 × 6.6  | 16.00 / 17.05 / 21.33        | 15.5 px       | 8 / 8 / 11 | 3.9 / 4.1 / 5.2           | 62.6 / 66.7 / 83.5    |       0 |
+
+The three widths scale in proportion (`16 × width / 750`), which is what the
+width-based rule promises: 16.00 → 17.05 → 21.33 px. Every clearance grows
+with the width, and no figure becomes crowded at any of the three.
+
+### 7.5 Comparison images
+
+`docs/assets/lesson-04/vertex-16/` (18 files, ≈ 1.4 MB):
+
+| File                                                                     | Content                                                                                                                                  |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `fig-17-activity-cases.png` … `auth-04-teacher-isosceles.png` (14 files) | Each static drawing side by side: **before** = `main` @ `10b2c19` (vertex 19 px), **after** = this branch (vertex 16 px), both at 750 px |
+| `fig-19-pairs-widths.png`, `fig-17-activity-cases-widths.png`            | The densest and the widest figure at 750, 799 and 1 000 px, before above and after below                                                 |
+| `cases-lab-before-750.png`, `cases-lab-after-750.png`                    | The nine «مختبر الحالات» panels (3 cases × 3 stages) at 750 px, before and after                                                         |
+
+### 7.6 Verification of this revision
+
+| Check            | Command             | Result                        |
+| ---------------- | ------------------- | ----------------------------- |
+| TypeScript       | `npm run typecheck` | pass                          |
+| ESLint           | `npm run lint`      | pass                          |
+| Full suite       | `npm test`          | 39 files, **630 tests**, pass |
+| Lesson 4 suite   | see below           | 6 files, **288 tests**, pass  |
+| Production build | `npm run build`     | pass                          |
+| Combined         | `npm run verify`    | pass                          |
+
+The separate Lesson 4 run is the lesson's own regression set, beside the
+whole-repo `npm test`:
+
+```bash
+npx vitest run \
+  src/components/diagram/renderers/lesson4 \
+  src/content/units/lesson-04-geometry.test.ts \
+  src/content/units/lesson-04-coverage.test.ts \
+  src/content/sourceFidelity.test.ts
+```
+
+### 7.7 Limits — stated, not glossed
+
+- **No browser was used.** There is no Chromium, Firefox or WebKit in this
+  environment and the network policy blocks downloading one (and blocks `apt`).
+  Nothing here is a browser session: no layout engine, no font shaping, no RTL
+  flow, no dark mode, no mobile width. The rasters come from `resvg`, a
+  faithful SVG renderer, but not a browser.
+- **DejaVu Sans is a stand-in.** The page stack is
+  `Noto Naskh Arabic, Amiri, Segoe UI, Tahoma`. The label boxes are estimated
+  from per-character width ratios, not from the real font's metrics, so a glyph
+  may be a little wider or narrower on the page than in these images. The
+  placement keeps a margin for that, and the 9.4 px minimum gap in
+  `fig-19-pairs` is the tightest in the lesson — that is the figure to look at
+  first in a real browser.
+- **The widths are the figure's own width, not the viewport.** 750 px is the
+  lesson article's inner width on a laptop; 799 px is the next breakpoint's
+  content width; 1 000 px is a wide desktop. The figures are `inline-size: 100%`,
+  so any other width is the same layout scaled, which is exactly what the
+  three-width sheets show.
+- **Consequently: no claim is made that the lesson was inspected in a browser.**
+  What is verified is the geometry, the type scale, the computed label boxes at
+  three widths and an offline raster of every drawing.

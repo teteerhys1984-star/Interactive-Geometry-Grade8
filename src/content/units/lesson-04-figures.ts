@@ -519,8 +519,16 @@ export const figurePairs: FigureSpec = {
    * Three panels share one window, so each triangle is only about a third as
    * wide as the drawing. A value like «2.6» at the lesson's standard size would
    * then be as wide as the side it measures, so this figure — and only this
-   * one — asks for slightly smaller lettering. It is a deliberate, measured
-   * decision recorded in docs/LESSON-04-LABEL-AUDIT.md, not a blanket shrink.
+   * one — prints its MEASUREMENTS smaller: values 12.7 px, angle values
+   * 12.3 px, panel numbers 11.5 px at the 750 px reference width, against
+   * 15.5 / 15 / 14 elsewhere.
+   *
+   * The scale stops there: vertex names keep the lesson's 16 px. This figure
+   * has no vertex letters, so nothing is shrunk today, and a future one never
+   * would be. Measured reason to keep the override at all (rasterised at 750,
+   * 799 and 1 000 px, docs/LESSON-04-LABEL-AUDIT.md §7): without it the
+   * smallest gap between two labels in panel ② is 0 px — «80°» lands on the
+   * «2» — while with it the smallest gap is 9.4 px at 750 px.
    */
   labelScale: 0.82,
   frames: PAIR_DX.map((dx, index) => ({

@@ -57,6 +57,12 @@ import { CongruenceFigure } from './index';
  *       element that it could be read as belonging to something else;
  *    4. the ink itself is drawn at one weight across the lesson.
  *
+ *  The type scale itself is pinned on purpose. A vertex name is set at 16 px —
+ *  the page's body size — and a figure's own `labelScale` may shrink its
+ *  printed values but never its names (see `figureTypography`). The numbers
+ *  behind that decision, and the rasterised comparison at 750, 799 and
+ *  1 000 px, are in docs/LESSON-04-LABEL-AUDIT.md §7.
+ *
  *  What these tests still cannot see is the final paint: font metrics are
  *  estimated (see `figureTypography`), and no browser lays the page out. That
  *  limitation is stated in docs/LESSON-04-LABEL-AUDIT.md.
@@ -109,16 +115,23 @@ describe('one type scale for the whole lesson', () => {
     '%s keeps its vertex letters at the design size',
     (_name, spec) => {
       const size = onScreenFontSize(spec, 'vertex');
-      // A letter is a letter: within half a pixel of the figure's design size,
-      // whatever its window shape. A figure may lower its own size deliberately
-      // (`labelScale`, used by the three-panel «تدرّب ②» only), and even then
-      // it never goes below three quarters of the standard.
-      const design = TYPOGRAPHY_PX.vertex * (spec.labelScale ?? 1);
-      expect(size).toBeGreaterThan(design - 0.5);
-      expect(size).toBeLessThan(design + 0.5);
-      expect(size).toBeGreaterThan(TYPOGRAPHY_PX.vertex * 0.75);
+      // A letter is a letter: within half a pixel of the lesson's one design
+      // size, whatever its window shape — and whatever the figure's own
+      // `labelScale` says about the values it prints. A name never shrinks.
+      expect(size).toBeGreaterThan(TYPOGRAPHY_PX.vertex - 0.5);
+      expect(size).toBeLessThan(TYPOGRAPHY_PX.vertex + 0.5);
     },
   );
+
+  it('sets vertex names at the page’s body size', () => {
+    // Deliberate, and pinned: 1 rem = 16 px, the size of the prose around the
+    // figure. A name larger than the sentence it illustrates makes the drawing
+    // shout and crowds the ink it names; a name smaller than the value printed
+    // beside it stops being a name.
+    expect(TYPOGRAPHY_PX.vertex).toBe(16);
+    expect(TYPOGRAPHY_PX.vertex).toBeGreaterThan(TYPOGRAPHY_PX.measure);
+    expect(TYPOGRAPHY_PX.vertex - TYPOGRAPHY_PX.measure).toBeLessThan(2);
+  });
 
   it('keeps the roles distinct: vertex > measure > frame', () => {
     for (const spec of Object.values(everySpec)) {
@@ -139,15 +152,51 @@ describe('one type scale for the whole lesson', () => {
     for (const strength of strengths) expect(strength).toBeCloseTo(TYPOGRAPHY_PX.stroke, 6);
   });
 
-  it('honours a deliberate per-figure label scale', () => {
+  it('honours a deliberate per-figure label scale — for measurements only', () => {
     const base = { viewBox: { x: 0, y: 0, w: 12, h: 8 } } as const;
     const bigger = { ...base, labelScale: 1.25 } as const;
-    expect(onScreenFontSize(bigger, 'vertex')).toBeCloseTo(
-      onScreenFontSize(base, 'vertex') * 1.25,
-      6,
-    );
+    for (const role of ['measure', 'angle', 'frame'] as const) {
+      expect(onScreenFontSize(bigger, role)).toBeCloseTo(onScreenFontSize(base, role) * 1.25, 6);
+    }
+    // A name is not a value: the per-figure scale must leave it alone, in
+    // either direction…
+    expect(onScreenFontSize(bigger, 'vertex')).toBeCloseTo(onScreenFontSize(base, 'vertex'), 6);
     // …and a label scale never thickens the drawing itself.
     expect(figureTypography(bigger).stroke).toBe(figureTypography(base).stroke);
+  });
+
+  it('keeps «تدرّب ②» values scaled, and records what happens without it', () => {
+    const spec = figures['fig-19-pairs']!;
+    expect(spec.labelScale).toBeCloseTo(0.82, 6);
+    // Its measurements are the smallest in the lesson; its names are not.
+    expect(onScreenFontSize(spec, 'measure')).toBeLessThan(
+      onScreenFontSize({ viewBox: spec.viewBox }, 'measure'),
+    );
+    expect(onScreenFontSize(spec, 'vertex')).toBeCloseTo(TYPOGRAPHY_PX.vertex, 9);
+
+    const smallestGapPx = (candidate: FigureSpec) => {
+      const { labels } = computeLabelLayout(candidate, figureTypography(candidate));
+      let smallest = Infinity;
+      for (let i = 0; i < labels.length; i += 1) {
+        for (let j = i + 1; j < labels.length; j += 1) {
+          smallest = Math.min(
+            smallest,
+            rectDistance(
+              rectFromCentre(labels[i]!.centre, labels[i]!.width, labels[i]!.height),
+              rectFromCentre(labels[j]!.centre, labels[j]!.width, labels[j]!.height),
+            ),
+          );
+        }
+      }
+      return smallest * (REFERENCE_FIGURE_WIDTH / candidate.viewBox.w);
+    };
+
+    // With the override, every label in the three panels has room at the
+    // reference width (measured: 9.4 px).
+    expect(smallestGapPx(spec)).toBeGreaterThan(4);
+    // Without it, «80°» lands on the «2» in panel ②: the smallest gap is 0 px
+    // at 750, 799 and 1 000 px. The override is load-bearing, not decoration.
+    expect(smallestGapPx({ ...spec, labelScale: undefined })).toBeLessThan(1);
   });
 
   it('renders the three families at their own font sizes, not one blanket size', () => {
