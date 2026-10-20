@@ -1,5 +1,20 @@
 import { useId } from 'react';
-import type { FigureSpec, FigureTone, LabelPlace, XY } from '@/lib/geometryFigure';
+import type { FigureSpec, FigureTone } from '@/lib/geometryFigure';
+import {
+  angleLabelCandidates,
+  angleMarkSegments,
+  collectObstacles,
+  frameInnerRect,
+  placeLabels,
+  type LabelRequest,
+  type PlacedLabel,
+} from '@/lib/figureLayout';
+import {
+  figureTypography,
+  textWidth,
+  LABEL_BOX_HEIGHT,
+  type FigureTypography,
+} from '@/lib/figureTypography';
 import styles from './figure.module.css';
 
 /**
@@ -12,8 +27,16 @@ import styles from './figure.module.css';
  *  labs, which is why a translated image in a lab is guaranteed to be the very
  *  same picture as in the printed figure — only moved.
  *
- *  Nothing here decides geometry: every coordinate arrives already computed in
- *  `lesson-04-geometry.ts`, where the tests can re-measure it.
+ *  Two things are deliberately NOT decided here:
+ *
+ *    • geometry — every coordinate arrives computed in `lesson-04-geometry.ts`,
+ *      where the tests can re-measure it;
+ *    • typography — all sizes come from `figureTypography`, which derives them
+ *      from the window WIDTH so that a letter is the same size on screen in
+ *      every figure of the lesson (see `docs/LESSON-04-LABEL-AUDIT.md`).
+ *
+ *  Labels are placed by `figureLayout`, which knows where the ink is: a letter
+ *  may never sit on a side, an arc, a tick, a frame border or another label.
  * ============================================================================
  */
 
@@ -39,35 +62,161 @@ const LABEL_CLASS: Record<FigureTone, string | undefined> = {
   mark: `${styles.label} ${styles.labelMark}`,
 };
 
-const PLACE_OFFSET: Record<LabelPlace, XY> = {
-  n: [0, 1],
-  s: [0, -1],
-  e: [1, 0],
-  w: [-1, 0],
-  ne: [0.72, 0.72],
-  nw: [-0.72, 0.72],
-  se: [0.72, -0.72],
-  sw: [-0.72, -0.72],
-};
+interface TaggedLabel extends PlacedLabel {
+  tone: FigureTone;
+  fontWeight?: 'vertex';
+}
 
-const normalise = (v: XY): XY => {
-  const len = Math.hypot(v[0], v[1]) || 1;
-  return [v[0] / len, v[1] / len];
-};
+/**
+ * Places every label of the figure at once.
+ *
+ * Priority is deliberate: vertex names first (a misplaced letter is a wrong
+ * figure), then angle values, then measurement values, then panel numbers —
+ * each later group must then avoid the earlier ones.
+ */
+export function computeLabelLayout(spec: FigureSpec, typography: FigureTypography) {
+  const points = spec.points ?? [];
+  const angles = spec.angles ?? [];
+  const texts = spec.texts ?? [];
+  const frames = spec.frames ?? [];
+
+  const vertexRequests: LabelRequest[] = points.map((point) => ({
+    text: point.label,
+    at: point.at,
+    fontSize: typography.vertex,
+    place: point.place ?? 'n',
+    clearance: typography.dotRadius,
+  }));
+
+  const angleRequests: LabelRequest[] = [];
+  const angleElements: number[] = [];
+  angles.forEach((angle, index) => {
+    if (!angle.label) return;
+    const radius = Math.min(angle.radius ?? typography.arcRadius, typography.arcRadius);
+    // The value belongs to its own arc: the candidate positions are measured
+    // from the arc, not from a free direction, so a 35° mouth and an 85° mouth
+    // both get a legible, unambiguous position.
+    const candidates = angleLabelCandidates(
+      angle,
+      radius,
+      typography.angle,
+      textWidth(angle.label, typography.angle),
+      typography.angle * LABEL_BOX_HEIGHT,
+    );
+    angleRequests.push({
+      text: angle.label,
+      at: angle.at,
+      // The value is drawn beside its own arc: that arc is not an obstacle.
+      ignore: [`angle:${index}`],
+      fontSize: typography.angle,
+      preferred: [candidateBisector(angle)[0], candidateBisector(angle)[1]],
+      clearance: 0,
+      // An angle's value must stay beside its own arc: it may nudge, not roam.
+      travel: 0.6,
+      preplaced: candidates,
+    });
+    angleElements.push(index);
+  });
+
+  const textRequests: LabelRequest[] = texts.map((text) => ({
+    text: text.text,
+    at: text.at,
+    fontSize: text.size ?? typography.measure,
+    preferred: text.away,
+    anchor: text.anchor,
+    // A value with a declared side keeps its clearance from its own side via
+    // `preplaced`; one written at a free point (a centroid) may simply stay.
+    preplaced: text.away ? undefined : [{ at: [0, 0], cost: 0 }],
+  }));
+
+  const inkClearance = Math.max(typography.stroke * 0.9, typography.unitsPerPixel * 0.6);
+  const options = {
+    inkClearance,
+    labelGap: typography.unitsPerPixel * 1.2,
+    maxTravel: 3.4,
+  };
+
+  const obstacles = collectObstacles(spec, typography.tick, typography.arcRadius);
+  const vertexLabels = placeLabels(vertexRequests, obstacles, spec, options);
+  const withVertices = [
+    ...obstacles,
+    ...vertexLabels.map((label) => ({
+      a: [label.centre[0] - label.width / 2, label.centre[1]] as const,
+      b: [label.centre[0] + label.width / 2, label.centre[1]] as const,
+    })),
+  ];
+
+  const angleLabels = placeLabels(angleRequests, withVertices, spec, options);
+  const withAngles = [
+    ...withVertices,
+    ...angleLabels.map((label) => ({
+      a: [label.centre[0] - label.width / 2, label.centre[1]] as const,
+      b: [label.centre[0] + label.width / 2, label.centre[1]] as const,
+    })),
+  ];
+
+  const textLabels = placeLabels(textRequests, withAngles, spec, options);
+
+  const tagged: TaggedLabel[] = [
+    ...vertexLabels.map((label, index) => ({
+      ...label,
+      tone: points[index]?.tone ?? 'ink',
+      fontWeight: 'vertex' as const,
+    })),
+    ...angleLabels.map((label, index) => ({
+      ...label,
+      tone: angles[angleElements[index]!]?.tone ?? 'mark',
+    })),
+    ...textLabels.map((label, index) => ({
+      ...label,
+      tone: texts[index]?.tone ?? 'mark',
+    })),
+  ];
+
+  /**
+   * Panel numbers are decorative and belong in a corner, so they keep a fixed
+   * spot rather than being searched for; they are drawn as part of the frame.
+   */
+  const frameLabels = frames
+    .filter((frame) => Boolean(frame.label))
+    .map((frame) => {
+      const inner = frameInnerRect(frame, typography.frame * 0.55);
+      const text = frame.label ?? '';
+      const width = Math.max(typography.frame * 0.95, text.length * typography.frame * 0.62);
+      const centre: [number, number] =
+        frame.labelPlace === 'left'
+          ? [inner.x1 + width / 2, inner.y2 - (typography.frame * 0.62) / 2]
+          : [inner.x2 - width / 2, inner.y2 - (typography.frame * 0.62) / 2];
+      return { text, centre, width, height: typography.frame * 1.08 } as const;
+    });
+
+  return { labels: tagged, frameLabels, typography };
+}
+
+/** Unit vector from an angle's vertex towards the middle of its mouth. */
+function candidateBisector(
+  angle: FigureSpec['angles'] extends (infer A)[] | undefined ? A : never,
+) {
+  const first = [angle.from[0] - angle.at[0], angle.from[1] - angle.at[1]];
+  const second = [angle.to[0] - angle.at[0], angle.to[1] - angle.at[1]];
+  const l1 = Math.hypot(first[0]!, first[1]!) || 1;
+  const l2 = Math.hypot(second[0]!, second[1]!) || 1;
+  const x = first[0]! / l1 + second[0]! / l2;
+  const y = first[1]! / l1 + second[1]! / l2;
+  const length = Math.hypot(x, y) || 1;
+  return [x / length, y / length] as const;
+}
 
 export function FigureSvg({ spec, ariaLabel, className }: FigureSvgProps) {
   const rawId = useId().replace(/[^a-zA-Z0-9]/g, '');
   const arrowId = `l4-arrow-${rawId}`;
   const { viewBox } = spec;
-  const unit = Math.min(viewBox.w, viewBox.h);
-  const stroke = Math.max(unit * 0.007, 0.012);
-  const fontSize = Math.max(unit * 0.06, 0.2);
-  const arcRadius = unit * 0.1;
-  const tick = unit * 0.05;
+  const { labels, frameLabels, typography } = computeLabelLayout(spec, figureTypography(spec));
+  const { stroke, dotRadius, tick, arcRadius, rightAngle } = typography;
 
   /** mathematical y (up) → SVG y (down) */
   const sy = (y: number) => 2 * viewBox.y + viewBox.h - y;
-  const P = (p: XY): string => `${p[0]},${sy(p[1])}`;
+  const P = (p: readonly [number, number]): string => `${p[0]},${sy(p[1])}`;
 
   return (
     <svg
@@ -80,44 +229,29 @@ export function FigureSvg({ spec, ariaLabel, className }: FigureSvgProps) {
       <defs>
         <marker
           id={arrowId}
-          markerWidth="6"
-          markerHeight="6"
-          refX="5"
-          refY="3"
+          markerWidth="7"
+          markerHeight="7"
+          refX="5.6"
+          refY="3.5"
           orient="auto"
           markerUnits="strokeWidth"
         >
-          <path d="M0,0 L6,3 L0,6 Z" className={styles.markLine} />
+          <path d="M0,0 L7,3.5 L0,7 Z" className={styles.markLine} />
         </marker>
       </defs>
 
       {spec.frames?.map((frame, index) => (
-        <g key={`frame-${index}`}>
-          <rect
-            x={frame.x}
-            y={sy(frame.y + frame.h)}
-            width={frame.w}
-            height={frame.h}
-            className={styles.frame}
-            strokeWidth={stroke * 0.6}
-            rx={unit * 0.03}
-          />
-          {frame.label ? (
-            <text
-              x={
-                frame.labelPlace === 'left'
-                  ? frame.x + unit * 0.035
-                  : frame.x + frame.w - unit * 0.035
-              }
-              y={sy(frame.y + frame.h) + fontSize * 0.85}
-              textAnchor={frame.labelPlace === 'left' ? 'start' : 'end'}
-              fontSize={fontSize * 0.9}
-              className={`${styles.label} ${styles.frameLabel}`}
-            >
-              {frame.label}
-            </text>
-          ) : null}
-        </g>
+        <rect
+          key={`frame-${index}`}
+          x={frame.x}
+          y={sy(frame.y + frame.h)}
+          width={frame.w}
+          height={frame.h}
+          className={styles.frame}
+          strokeWidth={Math.max(stroke * 0.55, typography.unitsPerPixel * 0.7)}
+          strokeDasharray={`${typography.unitsPerPixel * 7} ${typography.unitsPerPixel * 5}`}
+          rx={typography.unitsPerPixel * 4}
+        />
       ))}
 
       {spec.polygons?.map((polygon, index) => (
@@ -132,19 +266,23 @@ export function FigureSvg({ spec, ariaLabel, className }: FigureSvgProps) {
                 : styles.plainPolygon
           }
           strokeWidth={stroke}
-          strokeDasharray={polygon.dashed ? `${stroke * 8} ${stroke * 6}` : undefined}
+          strokeLinejoin="round"
+          strokeDasharray={polygon.dashed ? `${stroke * 6} ${stroke * 5}` : undefined}
           fill={polygon.fill === false ? 'none' : undefined}
         />
       ))}
 
       {spec.segments?.map((segment, index) => {
         const tone = segment.tone ?? 'ink';
-        const mid: XY = [
+        const mid: [number, number] = [
           (segment.from[0] + segment.to[0]) / 2,
           (segment.from[1] + segment.to[1]) / 2,
         ];
-        const along = normalise([segment.to[0] - segment.from[0], segment.to[1] - segment.from[1]]);
-        const across: XY = [-along[1], along[0]];
+        const dx = segment.to[0] - segment.from[0];
+        const dy = segment.to[1] - segment.from[1];
+        const length = Math.hypot(dx, dy) || 1;
+        const along: [number, number] = [dx / length, dy / length];
+        const across: [number, number] = [-along[1], along[0]];
         const count = segment.ticks ?? 0;
         return (
           <g key={`segment-${index}`}>
@@ -153,23 +291,30 @@ export function FigureSvg({ spec, ariaLabel, className }: FigureSvgProps) {
               y1={sy(segment.from[1])}
               x2={segment.to[0]}
               y2={sy(segment.to[1])}
-              className={`${TONE_CLASS[tone] ?? styles.inkLine ?? ''} ${segment.dashed ? styles.dashed : ''}`}
+              className={TONE_CLASS[tone] ?? styles.inkLine ?? ''}
               strokeWidth={stroke}
               strokeLinecap="round"
+              /* Dashes are sized from the stroke, not from the figure's units,
+                 so a dashed line looks the same in every figure. */
+              strokeDasharray={segment.dashed ? `${stroke * 5.5} ${stroke * 4.5}` : undefined}
               markerEnd={segment.arrow ? `url(#${arrowId})` : undefined}
             />
             {Array.from({ length: count }, (_, markIndex) => {
               const offset = (markIndex - (count - 1) / 2) * tick * 1.5;
-              const centre: XY = [mid[0] + along[0] * offset, mid[1] + along[1] * offset];
+              const centre: [number, number] = [
+                mid[0] + along[0] * offset,
+                mid[1] + along[1] * offset,
+              ];
               return (
                 <line
                   key={`tick-${markIndex}`}
-                  x1={centre[0] - across[0] * tick * 0.75}
-                  y1={sy(centre[1] - across[1] * tick * 0.75)}
-                  x2={centre[0] + across[0] * tick * 0.75}
-                  y2={sy(centre[1] + across[1] * tick * 0.75)}
+                  x1={centre[0] - across[0] * tick}
+                  y1={sy(centre[1] - across[1] * tick)}
+                  x2={centre[0] + across[0] * tick}
+                  y2={sy(centre[1] + across[1] * tick)}
                   className={styles.tick}
-                  strokeWidth={stroke * 1.15}
+                  strokeWidth={stroke * 1.1}
+                  strokeLinecap="round"
                 />
               );
             })}
@@ -178,8 +323,6 @@ export function FigureSvg({ spec, ariaLabel, className }: FigureSvgProps) {
       })}
 
       {spec.angles?.map((angle, index) => {
-        const first = normalise([angle.from[0] - angle.at[0], angle.from[1] - angle.at[1]]);
-        const second = normalise([angle.to[0] - angle.at[0], angle.to[1] - angle.at[1]]);
         const radius = angle.radius ?? arcRadius;
         const toneClass =
           angle.tone === 'given'
@@ -192,102 +335,81 @@ export function FigureSvg({ spec, ariaLabel, className }: FigureSvgProps) {
           // The right-angle mark is an OPEN square corner: from one side, through
           // the far corner, to the other side. Closing the path would draw the
           // chord between the two sides — a diagonal that is not in the figure.
-          const corner: XY = [
-            angle.at[0] + (first[0] + second[0]) * radius,
-            angle.at[1] + (first[1] + second[1]) * radius,
-          ];
+          // Its size comes from the typography, not from the figure's own units,
+          // so every right angle in the lesson has the same on-screen size.
+          const marks = angleMarkSegments({ ...angle, radius: rightAngle }, rightAngle, 1);
+          const [first, second] = marks;
+          if (!first || !second) return null;
           return (
-            <g key={`angle-${index}`}>
-              <polyline
-                points={[
-                  P([angle.at[0] + first[0] * radius, angle.at[1] + first[1] * radius]),
-                  P(corner),
-                  P([angle.at[0] + second[0] * radius, angle.at[1] + second[1] * radius]),
-                ].join(' ')}
-                className={styles.rightSquare}
-                strokeWidth={stroke * 0.9}
-              />
-            </g>
+            <polyline
+              key={`angle-${index}`}
+              points={[P(first.a), P(first.b), P(second.b)].join(' ')}
+              className={styles.rightSquare}
+              strokeWidth={Math.max(stroke * 0.85, typography.unitsPerPixel * 1.3)}
+            />
           );
         }
 
         // A short polyline is used instead of an SVG arc so the sweep direction
         // can never be mis-guessed: the points are computed on the true circle.
-        const start = Math.atan2(first[1], first[0]);
-        const end = Math.atan2(second[1], second[0]);
-        let delta = end - start;
-        while (delta > Math.PI) delta -= 2 * Math.PI;
-        while (delta < -Math.PI) delta += 2 * Math.PI;
-        const steps = 22;
-        const points = Array.from({ length: steps + 1 }, (_, step) => {
-          const angleValue = start + (delta * step) / steps;
-          return P([
-            angle.at[0] + Math.cos(angleValue) * radius,
-            angle.at[1] + Math.sin(angleValue) * radius,
-          ]);
-        }).join(' ');
-
-        const labelAt = start + delta / 2;
+        const marks = angleMarkSegments(angle, radius, 24);
+        const points = marks.map((mark) => P(mark.a));
+        if (marks.length > 0) points.push(P(marks[marks.length - 1]!.b));
         return (
-          <g key={`angle-${index}`}>
-            <polyline
-              points={points}
-              className={`${styles.angleArc} ${toneClass}`}
-              strokeWidth={stroke * 0.9}
-            />
-            {angle.label ? (
-              <text
-                x={angle.at[0] + Math.cos(labelAt) * radius * 1.55}
-                y={sy(angle.at[1] + Math.sin(labelAt) * radius * 1.55)}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fontSize={fontSize * 0.78}
-                className={`${styles.label} ${styles.labelMark}`}
-              >
-                {angle.label}
-              </text>
-            ) : null}
-          </g>
+          <polyline
+            key={`angle-${index}`}
+            points={points.join(' ')}
+            className={`${styles.angleArc} ${toneClass}`}
+            strokeWidth={Math.max(stroke * 0.85, typography.unitsPerPixel * 1.3)}
+          />
         );
       })}
 
-      {spec.points?.map((point, index) => {
-        const place = PLACE_OFFSET[point.place ?? 'n'];
-        const tone = point.tone ?? 'ink';
-        const dotClass =
-          tone === 'image' ? styles.dotImage : tone === 'given' ? styles.dotGiven : styles.dot;
-        return (
-          <g key={`point-${index}`}>
-            {point.dot === false ? null : (
-              <circle cx={point.at[0]} cy={sy(point.at[1])} r={unit * 0.014} className={dotClass} />
-            )}
-            <text
-              x={point.at[0] + place[0] * fontSize * 0.62}
-              // `place` is given in mathematical coordinates (y up); the screen
-              // y axis points down, so the vertical component is subtracted.
-              y={sy(point.at[1]) - place[1] * fontSize * 0.62}
-              textAnchor={place[0] === 0 ? 'middle' : place[0] > 0 ? 'start' : 'end'}
-              dominantBaseline="middle"
-              fontSize={fontSize}
-              className={LABEL_CLASS[tone] ?? styles.label ?? ''}
-            >
-              {point.label}
-            </text>
-          </g>
-        );
-      })}
+      {spec.points?.map((point, index) =>
+        point.dot === false ? null : (
+          <circle
+            key={`point-${index}`}
+            cx={point.at[0]}
+            cy={sy(point.at[1])}
+            r={dotRadius}
+            className={
+              point.tone === 'image'
+                ? styles.dotImage
+                : point.tone === 'given'
+                  ? styles.dotGiven
+                  : styles.dot
+            }
+          />
+        ),
+      )}
 
-      {spec.texts?.map((text, index) => (
+      {labels.map((label, index) => (
         <text
-          key={`text-${index}`}
-          x={text.at[0]}
-          y={sy(text.at[1])}
-          textAnchor={text.anchor ?? 'middle'}
+          key={`label-${index}`}
+          x={label.centre[0]}
+          y={sy(label.centre[1])}
+          textAnchor="middle"
           dominantBaseline="middle"
-          fontSize={text.size ?? fontSize * 0.9}
-          className={LABEL_CLASS[text.tone ?? 'mark'] ?? styles.label ?? ''}
+          fontSize={label.fontSize}
+          className={`${LABEL_CLASS[label.tone] ?? styles.label ?? ''} ${
+            label.fontWeight === 'vertex' ? styles.vertexLabel : ''
+          }`}
         >
-          {text.text}
+          {label.text}
+        </text>
+      ))}
+
+      {frameLabels.map((label, index) => (
+        <text
+          key={`frame-label-${index}`}
+          x={label.centre[0]}
+          y={sy(label.centre[1])}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize={typography.frame}
+          className={`${styles.label} ${styles.frameLabel}`}
+        >
+          {label.text}
         </text>
       ))}
     </svg>

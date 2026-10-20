@@ -67,22 +67,40 @@ const segment = (
   } = {},
 ): NonNullable<FigureSpec['segments']>[number] => ({ from, to, ...options });
 
-const measure = (
-  at: XY,
+/**
+ * A value printed for a side: anchored on the side itself and directed OUT of
+ * the figure (`away`). The renderer then puts the text just outside the line,
+ * at a distance measured in glyphs, so the same declaration works in every
+ * figure scale and the value can never end up lying on the side.
+ */
+function sideValue(
+  from: XY,
+  to: XY,
   text: string,
-  tone: FigureTone = 'mark',
-  anchor: 'start' | 'middle' | 'end' = 'middle',
-): NonNullable<FigureSpec['texts']>[number] => ({ at, text, tone, anchor });
-
-/** A label placed a fraction along a segment, offset perpendicular to it. */
-function alongSegment(from: XY, to: XY, fraction: number, offset: number): XY {
+  side: 1 | -1,
+  fraction = 0.5,
+): NonNullable<FigureSpec['texts']>[number] {
   const dx = to[0] - from[0];
   const dy = to[1] - from[1];
   const len = Math.hypot(dx, dy) || 1;
-  return [
-    from[0] + dx * fraction + (-dy / len) * offset,
-    from[1] + dy * fraction + (dx / len) * offset,
-  ];
+  return {
+    at: [from[0] + dx * fraction, from[1] + dy * fraction],
+    text,
+    tone: 'mark',
+    anchor: 'middle',
+    away: [(-dy / len) * side, (dx / len) * side],
+  };
+}
+
+/** Which side of `from→to` points away from `reference`. */
+function awayFrom(from: XY, to: XY, reference: XY): 1 | -1 {
+  const dx = to[0] - from[0];
+  const dy = to[1] - from[1];
+  const mid: XY = [(from[0] + to[0]) / 2, (from[1] + to[1]) / 2];
+  const nx = -dy;
+  const ny = dx;
+  const towards = (mid[0] - reference[0]) * nx + (mid[1] - reference[1]) * ny;
+  return towards >= 0 ? 1 : -1;
 }
 
 /** The four sides of a triangle plus its outline stroke. */
@@ -131,13 +149,14 @@ function caseLocalSpec(kind: CaseKind, completed: boolean): FigureSpec {
   const points = [point(A, 'A', 'sw'), point(N, 'N', 's'), point(M, 'M', 's')];
   const segments = [segment(A, C), segment(N, M)];
   const angles: NonNullable<FigureSpec['angles']> = [];
-  const texts = [measure(alongSegment(A, C, 0.45, 0.55), '3')];
+  // [AC] carries the printed 3 on every panel, outside the figure.
+  const texts = [sideValue(A, C, '3', awayFrom(A, C, B))];
 
   if (kind === 'sas') {
     points.push(point(B, 'B', 'e'), point(C, 'C', 'n'));
     segments.push(segment(A, B));
     angles.push({ at: A, from: C, to: B, label: '35°', tone: 'mark' });
-    texts.push(measure(alongSegment(A, B, 0.55, -0.5), '4'));
+    texts.push(sideValue(A, B, '4', awayFrom(A, B, C)));
     return { viewBox: { x: 0, y: 0, w: 11.4, h: 8.4 }, points, segments, angles, texts };
   }
 
@@ -165,8 +184,8 @@ function caseLocalSpec(kind: CaseKind, completed: boolean): FigureSpec {
 
   points.push(point(B, 'B', 'e'), point(C, 'C', 'n'));
   segments.push(segment(A, B), segment(B, C));
-  texts.push(measure(alongSegment(A, B, 0.55, -0.5), '4'));
-  texts.push(measure(alongSegment(B, C, 0.5, 0.55), '2'));
+  texts.push(sideValue(A, B, '4', awayFrom(A, B, C)));
+  texts.push(sideValue(B, C, '2', awayFrom(B, C, A)));
   return { viewBox: { x: 0, y: 0, w: 11.4, h: 8.4 }, points, segments, angles, texts };
 }
 
@@ -247,10 +266,12 @@ export const figureExampleSas: FigureSpec = {
     point(ex1.F, 'F', 'e'),
   ],
   texts: [
-    measure(alongSegment(ex1.A, ex1.M, 0.5, 0.5), '5'),
-    measure(alongSegment(ex1.B, ex1.M, 0.5, -0.55), '7'),
-    measure(alongSegment(ex1.M, ex1.F, 0.5, 0.55), '7'),
-    measure(alongSegment(ex1.M, ex1.E, 0.55, -0.5), '5'),
+    // Each printed length sits OUTSIDE the triangle it belongs to, so the two
+    // triangles' values never mix and never lie on a side.
+    sideValue(ex1.A, ex1.M, '5', awayFrom(ex1.A, ex1.M, ex1.B)),
+    sideValue(ex1.B, ex1.M, '7', awayFrom(ex1.B, ex1.M, ex1.A)),
+    sideValue(ex1.M, ex1.F, '7', awayFrom(ex1.M, ex1.F, ex1.E)),
+    sideValue(ex1.M, ex1.E, '5', awayFrom(ex1.M, ex1.E, ex1.F)),
   ],
 };
 
@@ -283,8 +304,8 @@ export const figureExampleAsa: FigureSpec = {
   ],
   angles: [
     // Printed: CBE = FDA = 90°.
-    { at: ex2.B, from: ex2.C, to: ex2.E, right: true, radius: 0.42 },
-    { at: ex2.D, from: ex2.F, to: ex2.A, right: true, radius: 0.42 },
+    { at: ex2.B, from: ex2.C, to: ex2.E, right: true },
+    { at: ex2.D, from: ex2.F, to: ex2.A, right: true },
   ],
 };
 
@@ -344,9 +365,10 @@ export const figureCheckRectangle: FigureSpec = {
 
 const kite = page19Kite;
 
-/** Where a printed measurement sits, as a fraction of its segment. */
-const kiteMeasure = (from: XY, to: XY, text: string, offset: number, fraction = 0.5) =>
-  measure(alongSegment(from, to, fraction, offset), text);
+const kiteCentre: XY = [
+  (kite.A[0] + kite.B[0] + kite.C[0] + kite.D[0]) / 4,
+  (kite.A[1] + kite.B[1] + kite.C[1] + kite.D[1]) / 4,
+];
 
 export const figureKite: FigureSpec = {
   viewBox: { x: -0.4, y: -7.4, w: 19.6, h: 17.6 },
@@ -362,8 +384,8 @@ export const figureKite: FigureSpec = {
   angles: [
     // Two of the four right angles at E, kept on the WEST side so the "E"
     // label on the east has clear space (all four are 90° by construction).
-    { at: kite.E, from: kite.B, to: kite.A, right: true, radius: 0.42 },
-    { at: kite.E, from: kite.A, to: kite.D, right: true, radius: 0.42 },
+    { at: kite.E, from: kite.B, to: kite.A, right: true },
+    { at: kite.E, from: kite.A, to: kite.D, right: true },
   ],
   points: [
     point(kite.A, 'A', 'sw'),
@@ -373,14 +395,17 @@ export const figureKite: FigureSpec = {
     point(kite.E, 'E', 'e'),
   ],
   texts: [
-    kiteMeasure(kite.A, kite.B, '14.4', 0.7),
-    kiteMeasure(kite.A, kite.D, '14.4', -0.7),
-    kiteMeasure(kite.B, kite.C, '10', -0.7),
-    kiteMeasure(kite.C, kite.D, '10', 0.7),
-    kiteMeasure(kite.A, kite.E, '12', 0.55, 0.45),
-    kiteMeasure(kite.E, kite.C, '6', -0.55, 0.55),
-    kiteMeasure(kite.B, kite.E, '8', 0.6, 0.55),
-    kiteMeasure(kite.E, kite.D, '8', 0.6, 0.55),
+    // Outer sides: outward, away from the centre of the kite.
+    sideValue(kite.A, kite.B, '14.4', awayFrom(kite.A, kite.B, kiteCentre)),
+    sideValue(kite.A, kite.D, '14.4', awayFrom(kite.A, kite.D, kiteCentre)),
+    sideValue(kite.B, kite.C, '10', awayFrom(kite.B, kite.C, kiteCentre)),
+    sideValue(kite.C, kite.D, '10', awayFrom(kite.C, kite.D, kiteCentre)),
+    // The four halves of the diagonals: one value on each side of the crossing
+    // E, so 12/6 and 8/8 can never be confused with each other.
+    sideValue(kite.A, kite.E, '12', awayFrom(kite.A, kite.E, kite.B), 0.55),
+    sideValue(kite.E, kite.C, '6', awayFrom(kite.E, kite.C, kite.D), 0.5),
+    sideValue(kite.B, kite.E, '8', awayFrom(kite.B, kite.E, kite.A), 0.55),
+    sideValue(kite.E, kite.D, '8', awayFrom(kite.E, kite.D, kite.C), 0.5),
   ],
 };
 
@@ -409,33 +434,14 @@ function pairPanelSpec(id: 'pair-1' | 'pair-2' | 'pair-3'): FigureSpec {
   ];
 
   /**
-   * A length label placed OUTSIDE its own triangle. The perpendicular side is
+   * A length value placed OUTSIDE its own triangle. The perpendicular side is
    * chosen against that triangle's centroid, so the two copies in a panel can
    * never share a label position (the printed figure keeps them apart too).
+   * The distance itself is decided by the renderer from the label's own glyph
+   * box, so it stays outside the side at every scale.
    */
-  const outside = (triangle: Triangle, from: XY, to: XY, text: string) => {
-    const centre = centroid(triangle);
-    const mid: XY = [(from[0] + to[0]) / 2, (from[1] + to[1]) / 2];
-    let nx = -(to[1] - from[1]);
-    let ny = to[0] - from[0];
-    const len = Math.hypot(nx, ny) || 1;
-    nx /= len;
-    ny /= len;
-    if ((mid[0] - centre[0]) * nx + (mid[1] - centre[1]) * ny < 0) {
-      nx = -nx;
-      ny = -ny;
-    }
-    return measure([mid[0] + nx * 0.45, mid[1] + ny * 0.45], text);
-  };
-
-  /** An angle label placed inside, towards the centroid of its own triangle. */
-  const inside = (triangle: Triangle, vertex: XY, text: string) => {
-    const centre = centroid(triangle);
-    const dx = centre[0] - vertex[0];
-    const dy = centre[1] - vertex[1];
-    const len = Math.hypot(dx, dy) || 1;
-    return measure([vertex[0] + (dx / len) * 0.78, vertex[1] + (dy / len) * 0.78], text);
-  };
+  const outside = (triangle: Triangle, from: XY, to: XY, text: string) =>
+    sideValue(from, to, text, awayFrom(from, to, centroid(triangle)));
 
   const measures = (triangle: Triangle) => {
     const { A, B, C } = triangle;
@@ -447,16 +453,34 @@ function pairPanelSpec(id: 'pair-1' | 'pair-2' | 'pair-3'): FigureSpec {
       ];
     }
     if (kind === 'sas') {
-      return [
-        outside(triangle, A, B, '2'),
-        outside(triangle, A, C, '4'),
-        inside(triangle, A, '80°'),
-      ];
+      return [outside(triangle, A, B, '2'), outside(triangle, A, C, '4')];
     }
-    return [outside(triangle, A, B, '4'), inside(triangle, A, '44°'), inside(triangle, B, '82°')];
+    return [outside(triangle, A, B, '4')];
   };
 
-  const arc = (at: XY, from: XY, to: XY) => ({ at, from, to, radius: 0.4, tone: 'mark' as const });
+  /**
+   * The printed angle values are carried BY THEIR ARCS, not by a free-floating
+   * text: the value then belongs to that angle in the data, and the renderer
+   * places it from the arc it annotates (inside the mouth when the mouth can
+   * hold it, just beside the arc when it cannot). The previous revision placed
+   * them from the centroid, which put «80°» outside the triangle next to the
+   * side value «2».
+   */
+  const arc = (at: XY, from: XY, to: XY, label?: string) => ({
+    at,
+    from,
+    to,
+    tone: 'mark' as const,
+    /*
+     * These triangles are a third of a panel wide: at the lesson's standard
+     * 18 px arc radius the arc alone would be as wide as the triangle's waist,
+     * leaving no room for the value beside it. The radius is therefore in the
+     * panel's own units, sized to the drawing (~11 px on screen), not the
+     * shared default.
+     */
+    radius: 0.5,
+    ...(label ? { label } : {}),
+  });
 
   return {
     viewBox: { x: 0, y: 0, w: PAGE19_PAIR_PANEL.width, h: PAGE19_PAIR_PANEL.height },
@@ -464,13 +488,13 @@ function pairPanelSpec(id: 'pair-1' | 'pair-2' | 'pair-3'): FigureSpec {
     segments: [...sides(first), ...sides(second)],
     angles:
       kind === 'sas'
-        ? [arc(first.A, first.B, first.C), arc(second.A, second.B, second.C)]
+        ? [arc(first.A, first.B, first.C, '80°'), arc(second.A, second.B, second.C, '80°')]
         : kind === 'asa'
           ? [
-              arc(first.A, first.B, first.C),
-              arc(first.B, first.A, first.C),
-              arc(second.A, second.B, second.C),
-              arc(second.B, second.A, second.C),
+              arc(first.A, first.B, first.C, '44°'),
+              arc(first.B, first.A, first.C, '82°'),
+              arc(second.A, second.B, second.C, '44°'),
+              arc(second.B, second.A, second.C, '82°'),
             ]
           : [],
     points: [],
@@ -491,6 +515,14 @@ const pairPanels = PAIR_DX.map((dx, index) =>
 
 export const figurePairs: FigureSpec = {
   viewBox: { x: 0, y: 0, w: PAIR_DX[2] + 11, h: 7.9 },
+  /*
+   * Three panels share one window, so each triangle is only about a third as
+   * wide as the drawing. A value like «2.6» at the lesson's standard size would
+   * then be as wide as the side it measures, so this figure — and only this
+   * one — asks for slightly smaller lettering. It is a deliberate, measured
+   * decision recorded in docs/LESSON-04-LABEL-AUDIT.md, not a blanket shrink.
+   */
+  labelScale: 0.82,
   frames: PAIR_DX.map((dx, index) => ({
     x: dx,
     y: 0.1,
@@ -527,8 +559,8 @@ export const figureIsosceles: FigureSpec = {
     segment(iso.M, iso.C, { ticks: 2 }),
   ],
   angles: [
-    { at: iso.E, from: iso.A, to: iso.M, right: true, radius: 0.42 },
-    { at: iso.F, from: iso.A, to: iso.M, right: true, radius: 0.42 },
+    { at: iso.E, from: iso.A, to: iso.M, right: true },
+    { at: iso.F, from: iso.A, to: iso.M, right: true },
   ],
   points: [
     point(iso.A, 'A', 'n'),
@@ -660,7 +692,7 @@ export const figureKitePairs: FigureSpec = {
     segment(kite.A, kite.C),
     segment(kite.B, kite.D),
   ],
-  angles: [{ at: kite.E, from: kite.B, to: kite.A, right: true, radius: 0.42 }],
+  angles: [{ at: kite.E, from: kite.B, to: kite.A, right: true }],
   points: [
     point(kite.A, 'A', 'sw'),
     point(kite.B, 'B', 'nw'),
@@ -669,8 +701,8 @@ export const figureKitePairs: FigureSpec = {
     point(kite.E, 'E', 'e'),
   ],
   texts: [
-    measure(alongSegment(kite.E, kite.C, 0.5, 0.5), '6'),
-    measure(alongSegment(kite.E, kite.B, 0.5, -0.5), '8'),
+    sideValue(kite.E, kite.C, '6', awayFrom(kite.E, kite.C, kite.D)),
+    sideValue(kite.E, kite.B, '8', awayFrom(kite.E, kite.B, kite.A)),
   ],
 };
 
@@ -683,8 +715,8 @@ export const figureIsoscelesPairs: FigureSpec = {
     { points: [iso.M, iso.F, iso.C], tone: 'image' },
   ],
   texts: [
-    measure(alongSegment(iso.M, iso.E, 0.5, 0.32), 'ME', 'ink'),
-    measure(alongSegment(iso.M, iso.F, 0.5, -0.32), 'MF', 'ink'),
+    sideValue(iso.M, iso.E, 'ME', awayFrom(iso.M, iso.E, iso.A), 0.5),
+    sideValue(iso.M, iso.F, 'MF', awayFrom(iso.M, iso.F, iso.A), 0.5),
   ],
 };
 
@@ -1097,7 +1129,9 @@ export const teacherActivityFigure = (() => {
   };
 
   const spec: FigureSpec = {
-    viewBox: { x: 0, y: 0, w: 11.8, h: 8.8 },
+    // Same window as the student lab that draws this activity, so the teacher's
+    // completed figure is the very same picture the class saw.
+    viewBox: { x: 1.3, y: 0.2, w: 10.4, h: 6.6 },
     polygons: [...(base.polygons ?? []), { points: [image.A, image.B, image.C], tone: 'image' }],
     segments: [
       ...(base.segments ?? []),

@@ -153,3 +153,15 @@ exactly where the rays point.
 
 **This is not browser QA.** It exercises the real component, the real CSS
 module and the real geometry, but not layout, fonts, RTL flow or dark mode.
+
+## Lettering and label placement (2026-10 revision)
+
+The first release of this lesson drew every letter at
+`min(viewBox.w, viewBox.h) × 0.06`, which made the same letter 10.9 px in
+`fig-19-pairs` and 44 px in `fig-18-example-asa`, and placed every label half a
+glyph from its vertex — on top of the ink. Both are fixed in the shared drawing
+component, and the whole audit — root cause, per-figure inventory, the new type
+scale, what each figure needed beyond the shared fix, and the explicit limits of
+the visual check — is in
+[`LESSON-04-LABEL-AUDIT.md`](LESSON-04-LABEL-AUDIT.md). Before/after rasters of
+six figures are in `docs/assets/lesson-04/`.

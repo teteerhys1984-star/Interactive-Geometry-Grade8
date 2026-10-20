@@ -33,6 +33,14 @@ import type { XY } from '@/content/units/lesson-04-geometry';
 
 const STAGES = ['المعطيات المطبوعة', 'إكمال المثلث ABC', 'الصورة وفق الانسحاب'] as const;
 
+/**
+ * Drawing window of the lab, fitted to the activity's coordinates: the printed
+ * panel sits at x 2.4…7, and the image (translated by N→M = 4 units) reaches
+ * x 10.1 with its labels. Stability across stages matters more than a
+ * per-stage fit.
+ */
+const LAB_VIEW_BOX = { x: 1.3, y: 0.2, w: 10.4, h: 6.6 } as const;
+
 /** The image triangle: same three vertices, moved by the translation N→M. */
 function imageOf(triangle: { A: XY; B: XY; C: XY }, vector: XY) {
   return {
@@ -95,7 +103,14 @@ export function CongruenceCasesLab({ spec }: { spec: InteractiveDiagram }) {
   const report = congruenceReport(current.triangle, image);
 
   const baseSpec = stage === 0 ? current.given : current.completed;
-  const viewBox = { x: 0, y: 0, w: 11.8, h: 8.8 };
+  /*
+   * The window is fitted to the lesson's own activity coordinates (the three
+   * panels of page 17, plus the image of the last stage four units to the
+   * right). It is deliberately the SAME at every stage, so switching stages
+   * never rescales the figure under the student's eyes; but it is tight enough
+   * that the drawing fills the canvas instead of floating in empty space.
+   */
+  const viewBox = LAB_VIEW_BOX;
 
   const drawing =
     stage < 2

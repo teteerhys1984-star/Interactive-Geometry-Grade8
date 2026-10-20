@@ -80,6 +80,13 @@ export interface FigureText {
   size?: number;
   /** Isolate the run LTR (labels such as A′ or 14.4). Default true. */
   ltr?: boolean;
+  /**
+   * Direction in which the text should sit *away* from `at`, if `at` is a point
+   * of the figure (the foot of a value's side, the centre of a shape…). The
+   * renderer places the text clear of that ink in this direction; omitting it
+   * keeps the text at `at` unless the drawing forces it aside.
+   */
+  away?: XY;
 }
 
 export interface FigureFrame {
@@ -95,6 +102,12 @@ export interface FigureFrame {
 export interface FigureSpec {
   /** Drawing window in mathematical coordinates. */
   viewBox: { x: number; y: number; w: number; h: number };
+  /**
+   * Typographic multiplier for this figure's labels (default 1). Labels are
+   * sized from the window WIDTH, so figures already share one scale; use this
+   * only when a drawing is measurably denser (or larger) than the rest.
+   */
+  labelScale?: number;
   frames?: FigureFrame[];
   polygons?: FigurePolygon[];
   segments?: FigureSegment[];
@@ -184,6 +197,7 @@ function readText(value: unknown): FigureText | null {
     anchor: anchor === 'start' || anchor === 'middle' || anchor === 'end' ? anchor : undefined,
     size: isNumber(record.size) ? record.size : undefined,
     ltr: record.ltr === false ? false : true,
+    away: isPoint(record.away) ? record.away : undefined,
   };
 }
 
@@ -230,6 +244,8 @@ export function readFigureSpec(value: unknown): FigureSpec | null {
 
   const spec: FigureSpec = {
     viewBox: { x: box.x, y: box.y, w: box.w, h: box.h },
+    labelScale:
+      isNumber(record.labelScale) && record.labelScale > 0 ? record.labelScale : undefined,
     frames: readArray(record.frames, readFrame),
     polygons: readArray(record.polygons, readPolygon),
     segments: readArray(record.segments, readSegment),
