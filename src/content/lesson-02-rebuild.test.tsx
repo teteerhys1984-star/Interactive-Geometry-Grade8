@@ -248,6 +248,58 @@ describe('Lesson 2 — interactive labs agree with the geometry module', () => {
     }
   });
 
+  it('never paints a solid side on top of a dashed marking', () => {
+    // The construction renderer paints elements in array order, all at the
+    // same stroke width, so a solid segment that is collinear with a dashed
+    // one and overlaps it hides the dashes completely. Counting dashed
+    // elements — as the test above does — cannot catch that: both elements
+    // are still in the spec and still in the DOM, only the paint is gone.
+    type Segment = {
+      kind: 'segment';
+      from: [number, number];
+      to: [number, number];
+      dashed?: boolean;
+    };
+
+    const covered: string[] = [];
+    for (const diagram of allLessonDiagrams()) {
+      if (diagram.kind !== 'interactive') continue;
+      const elements = paramsOf(diagram).elements;
+      if (!Array.isArray(elements)) continue;
+      const segments = (elements as Segment[]).filter((element) => element.kind === 'segment');
+      const dashed = segments.filter((segment) => segment.dashed === true);
+      const solid = segments.filter((segment) => segment.dashed !== true);
+
+      for (const mark of dashed) {
+        const dx = mark.to[0] - mark.from[0];
+        const dy = mark.to[1] - mark.from[1];
+        const length = Math.hypot(dx, dy);
+        if (length < 1e-9) continue;
+        const ux = dx / length;
+        const uy = dy / length;
+        // signed perpendicular distance from the dashed line
+        const offset = (point: [number, number]) =>
+          ux * (point[1] - mark.from[1]) - uy * (point[0] - mark.from[0]);
+        // position along the dashed line
+        const along = (point: [number, number]) =>
+          ux * (point[0] - mark.from[0]) + uy * (point[1] - mark.from[1]);
+
+        for (const ink of solid) {
+          if (Math.abs(offset(ink.from)) > 1e-9 || Math.abs(offset(ink.to)) > 1e-9) continue;
+          const positions = [along(ink.from), along(ink.to)].sort((a, b) => a - b);
+          const overlap = Math.min(length, positions[1]!) - Math.max(0, positions[0]!);
+          if (overlap > 1e-9) {
+            covered.push(
+              `${diagram.id}: solid [${ink.from}]→[${ink.to}] covers dashed [${mark.from}]→[${mark.to}]`,
+            );
+          }
+        }
+      }
+    }
+
+    expect(covered).toEqual([]);
+  });
+
   it('uses a genuinely collinear M in the two-case lab', () => {
     const params = paramsOf(figTwoCasesLab);
     const a = params.a as [number, number];

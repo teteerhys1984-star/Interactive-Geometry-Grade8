@@ -846,10 +846,13 @@ export const figCheckPqnm: InteractiveDiagram = {
     padding: 0.75,
     steps: [],
     elements: [
+      // The perimeter is P → Q → N → M. [PQ] and [MN] are the translated pair
+      // and are drawn dashed; the other two sides are solid ink. The dashed
+      // [MN] *is* the side NM — adding a solid N → M here would paint over the
+      // dashes (same width, later in paint order) and erase the marking.
       { kind: 'segment', from: checkPqnm.P, to: checkPqnm.Q, tone: 'mark', dashed: true },
       { kind: 'segment', from: checkPqnm.M, to: checkPqnmImage, tone: 'mark', dashed: true },
       { kind: 'segment', from: checkPqnm.Q, to: checkPqnmImage, tone: 'ink' },
-      { kind: 'segment', from: checkPqnmImage, to: checkPqnm.M, tone: 'ink' },
       { kind: 'segment', from: checkPqnm.M, to: checkPqnm.P, tone: 'ink' },
       { kind: 'point', at: checkPqnm.P, label: 'P', tone: 'ink', offset: [-0.52, 0.5] },
       { kind: 'point', at: checkPqnm.Q, label: 'Q', tone: 'ink', offset: [0.35, 0.5] },
@@ -880,10 +883,11 @@ export const figCheckJkrt: InteractiveDiagram = {
     padding: 0.75,
     steps: [],
     elements: [
+      // Same construction, same hazard: [JK] and [TR] are the dashed pair, so
+      // the solid R → T side must not be drawn on top of the dashed [TR].
       { kind: 'segment', from: checkJkrt.J, to: checkJkrt.K, tone: 'mark', dashed: true },
       { kind: 'segment', from: checkJkrt.T, to: checkJkrtImage, tone: 'mark', dashed: true },
       { kind: 'segment', from: checkJkrt.K, to: checkJkrtImage, tone: 'ink' },
-      { kind: 'segment', from: checkJkrtImage, to: checkJkrt.T, tone: 'ink' },
       { kind: 'segment', from: checkJkrt.T, to: checkJkrt.J, tone: 'ink' },
       { kind: 'point', at: checkJkrt.J, label: 'J', tone: 'ink', offset: [-0.5, 0.5] },
       { kind: 'point', at: checkJkrt.K, label: 'K', tone: 'ink', offset: [0.35, 0.42] },
