@@ -120,31 +120,26 @@ describe('Lesson 2 — Arabic RTL with LTR mathematical islands', () => {
 describe('Lesson 2 — interactive teaching figures', () => {
   it('lets the student step through the compass construction', async () => {
     const user = userEvent.setup();
-    const index = lesson.steps.findIndex((step) => step.id === 'teach-05-compass-step-by-step') + 1;
+    const index = lesson.steps.findIndex((step) => step.id === 'step-06-construction-method') + 1;
     renderAt(`/lesson/${lesson.id}/step/${index}`);
 
     const next = screen.getAllByRole('button', { name: 'الخطوة التالية' })[0]!;
     expect(next).toBeEnabled();
     await user.click(next);
-    expect(screen.getAllByText(/الدائرة الأولى/).length).toBeGreaterThan(0);
+    expect(screen.getByRole('status').textContent).toMatch(/نصف قطرها/);
   });
 
-  it('updates the draggable model when M is moved onto the line', async () => {
+  it('switches the draggable model between the two cases', async () => {
     const user = userEvent.setup();
-    const index = lesson.steps.findIndex((step) => step.id === 'teach-03-why-a-parallelogram') + 1;
+    const index = lesson.steps.findIndex((step) => step.id === 'teach-05-two-cases') + 1;
     renderAt(`/lesson/${lesson.id}/step/${index}`);
 
-    const status = screen.getByRole('status');
-    expect(status.textContent).toContain('الحالة العامة');
-
-    const handle = screen.getByRole('slider');
-    handle.focus();
-    // A = (2,2), B = (6,3), M starts at (3,5): three steps down puts M at (3,2)…
-    await user.keyboard('{ArrowDown}{ArrowDown}{ArrowDown}');
-    expect(screen.getByRole('status').textContent).toContain('الحالة العامة');
-    // …and (2,2) is A itself, which lies on (AB).
-    await user.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('status').textContent).toContain('متوازي أضلاع');
+    await user.click(screen.getByRole('button', { name: 'ضع M على المستقيم (AB)' }));
     expect(screen.getByRole('status').textContent).toContain('الحالة الخاصة');
+
+    await user.click(screen.getByRole('button', { name: 'الحالة العامة' }));
+    expect(screen.getByRole('status').textContent).toContain('متوازي أضلاع');
   });
 });
 

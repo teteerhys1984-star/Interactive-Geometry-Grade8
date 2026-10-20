@@ -16,6 +16,7 @@ import { ProofFlow } from './ProofFlow';
 import { UnitFinalFigure } from './UnitFinalFigure';
 import { TestGeometryFigure } from './TestGeometryFigure';
 import { TEST_FIGURE_RENDERER } from './testFigureSpec';
+import { CompassLab, LatticePlacement, PointImageLab, VectorChain } from './lesson2';
 
 /**
  * ============================================================================
@@ -57,6 +58,12 @@ registerInteractiveRenderer('proof-flow', ProofFlow);
 registerInteractiveRenderer('unit-final-figure', UnitFinalFigure);
 registerConstructedRenderer(TEST_FIGURE_RENDERER, TestGeometryFigure);
 
+/* Lesson 2 — the four labs that carry «صورة نقطة وفق انسحاب». */
+registerInteractiveRenderer('point-image-lab', PointImageLab);
+registerInteractiveRenderer('compass-lab', CompassLab);
+registerInteractiveRenderer('lattice-placement', LatticePlacement);
+registerInteractiveRenderer('vector-chain', VectorChain);
+
 export {
   TranslationFigure,
   GridFigure,
@@ -73,6 +80,10 @@ export {
   ProofFlow,
   UnitFinalFigure,
   TestGeometryFigure,
+  PointImageLab,
+  CompassLab,
+  LatticePlacement,
+  VectorChain,
 };
 
 registerInteractiveRenderer('lesson-one-lab', LessonOneLab);

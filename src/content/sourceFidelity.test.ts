@@ -574,9 +574,11 @@ describe('authored material never displaces the source', () => {
     // Lessons 1–5 contribute 43 figures. Lesson 6 adds five reference figures
     // and three reconstructions (51). Lesson 7 adds five reference figures and
     // eight reconstructions. Lesson 1 now uses authored explanatory figures,
-    // not the previous seven reference occurrences: 57 textbook figures remain.
-    expect(textbookFigures).toHaveLength(57);
-    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(57);
+    // not the previous seven reference occurrences (57). Lesson 2 follows the
+    // same policy: its five blank-sheet placeholders were replaced by authored
+    // reconstructions, leaving its two verified squared-paper sheets: 52.
+    expect(textbookFigures).toHaveLength(52);
+    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(52);
     for (const diagram of textbookFigures) {
       if (VERIFIED_TEXTBOOK_FIGURES.includes(diagram.id)) continue;
       expect(diagram.kind, `${diagram.id} must stay a reference placeholder`).toBe('reference');

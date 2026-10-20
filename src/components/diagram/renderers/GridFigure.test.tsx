@@ -139,13 +139,16 @@ describe('the reproduced textbook grids of Lesson 2', () => {
     expect(figure.kind).toBe('interactive');
     if (figure.kind !== 'interactive') return;
     const points = figure.params.points as { x: number; y: number; label: string }[];
+    // Re-read from the scan with label anchoring: M is the TOP-RIGHT corner of
+    // the 8 × 6 sheet, so every point sits one column right of the earlier,
+    // superseded reading. docs/LESSON-02-FIGURES.md records the measurement.
     expect(points.map((p) => [p.label, p.x, p.y])).toEqual([
-      ['M', 7, 6],
-      ['N', 3, 5],
-      ['A', 4, 4],
-      ['B', 2, 1],
-      ["P'", 3, 1],
-      ["Q'", 5, 1],
+      ['M', 8, 6],
+      ['N', 4, 5],
+      ['A', 5, 4],
+      ['B', 3, 1],
+      ["P'", 4, 1],
+      ["Q'", 6, 1],
     ]);
 
     // Verification that justified redrawing this figure: with v = B − A every
@@ -154,9 +157,9 @@ describe('the reproduced textbook grids of Lesson 2', () => {
     const v = { x: at('B').x - at('A').x, y: at('B').y - at('A').y };
     expect(v).toEqual({ x: -2, y: -3 });
     const image = (p: { x: number; y: number }) => ({ x: p.x + v.x, y: p.y + v.y });
-    expect(image(at('M'))).toEqual({ x: 5, y: 3 });
-    expect(image(image(at('M')))).toEqual({ x: 3, y: 0 });
-    expect(image(at('N'))).toEqual({ x: 1, y: 2 });
+    expect(image(at('M'))).toEqual({ x: 6, y: 3 });
+    expect(image(image(at('M')))).toEqual({ x: 4, y: 0 });
+    expect(image(at('N'))).toEqual({ x: 2, y: 2 });
   });
 
   it('never exposes reveal controls on a reproduced textbook figure', () => {

@@ -1,0 +1,452 @@
+/*
+ * ============================================================================
+ *  LESSON 2 LABS — shared stylesheet
+ * ============================================================================
+ *  One stylesheet for the four Lesson 2 figures so the lesson keeps a single
+ *  visual language: warm squared paper, petrol ink, burnt-coral images and
+ *  saffron construction aids. Nothing here is used by another lesson.
+ *
+ *  All colours come from the lesson theme tokens where a token exists, so the
+ *  figures follow `[data-lesson-theme='paper']` automatically.
+ * ============================================================================
+ */
+
+.lab {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  inline-size: 100%;
+  padding: var(--space-3);
+  color: var(--color-text);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(180, 71, 31, 0.07), transparent 55%),
+    radial-gradient(circle at 85% 100%, rgba(15, 76, 92, 0.08), transparent 55%),
+    var(--color-surface);
+  border: 1px solid var(--color-teaching-border);
+  border-radius: var(--radius-md);
+}
+
+.stage {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 27rem;
+  overflow: visible;
+  border-radius: calc(var(--radius-md) - 4px);
+  background: #fffdf7;
+  touch-action: none;
+}
+
+/* Keeps compass circles inside the sheet instead of spilling over the caption.
+   Declared after `.stage` on purpose: both selectors have the same specificity. */
+.stageClipped {
+  overflow: hidden;
+}
+
+/* --- squared paper ------------------------------------------------------- */
+.paper {
+  fill: #fffdf7;
+}
+.notebook {
+  fill: #f4ecdc;
+}
+.gridLine {
+  stroke: rgba(15, 76, 92, 0.16);
+  stroke-width: 0.012;
+  vector-effect: non-scaling-stroke;
+}
+.gridLineStrong {
+  stroke: rgba(15, 76, 92, 0.26);
+  stroke-width: 0.016;
+  vector-effect: non-scaling-stroke;
+}
+
+/* --- strokes ------------------------------------------------------------- */
+.segment {
+  stroke: #17313d;
+  stroke-width: 1.7;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  fill: none;
+}
+.segmentThin {
+  stroke: rgba(23, 49, 61, 0.4);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  fill: none;
+}
+.dashed {
+  stroke-dasharray: 5 4;
+}
+.diagonal {
+  stroke: #9a6a08;
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 5 4;
+  fill: none;
+  opacity: 0.95;
+}
+.vector {
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  fill: none;
+}
+.vectorDashed {
+  stroke: var(--color-accent);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 5 4;
+  fill: none;
+  opacity: 0.9;
+}
+.flow {
+  stroke: var(--color-accent);
+  stroke-width: 1.8;
+  vector-effect: non-scaling-stroke;
+  fill: none;
+  stroke-linecap: round;
+}
+.arc {
+  stroke: var(--color-primary);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  fill: none;
+  stroke-dasharray: 6 4;
+}
+.arcImage {
+  stroke: var(--color-accent);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  fill: none;
+  stroke-dasharray: 6 4;
+}
+.proof {
+  stroke: var(--color-primary);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+  fill: none;
+  opacity: 0.75;
+}
+.mark {
+  stroke: #9a6a08;
+  stroke-width: 1.6;
+  vector-effect: non-scaling-stroke;
+  fill: none;
+}
+.tick {
+  stroke: #9a6a08;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+}
+
+/* --- shapes -------------------------------------------------------------- */
+.area {
+  fill: rgba(15, 76, 92, 0.08);
+  stroke: none;
+}
+.shape {
+  fill: rgba(15, 76, 92, 0.09);
+  stroke: var(--color-primary);
+  stroke-width: 1.3;
+  vector-effect: non-scaling-stroke;
+  fill-rule: evenodd;
+}
+.shapeImage {
+  fill: rgba(180, 71, 31, 0.1);
+  stroke: var(--color-accent);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 6 4;
+  fill-rule: evenodd;
+}
+
+/* --- points and labels --------------------------------------------------- */
+.pointInk {
+  fill: #17313d;
+}
+.pointAux {
+  fill: #9a6a08;
+}
+.pointImage {
+  fill: var(--color-accent);
+}
+.pointRing {
+  fill: var(--color-surface);
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.pointGiven {
+  fill: #fffdf7;
+  stroke: #17313d;
+  stroke-width: 2.2;
+  vector-effect: non-scaling-stroke;
+}
+.pointHalo {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.55;
+}
+.node {
+  fill: transparent;
+  cursor: pointer;
+}
+.node:hover,
+.node:focus-visible {
+  fill: rgba(180, 71, 31, 0.25);
+  outline: none;
+}
+.wrong {
+  fill: none;
+  stroke: #b3261e;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+}
+
+.label {
+  font-size: 0.4px;
+  font-style: italic;
+  font-family: 'KaTeX_Math', 'Times New Roman', serif;
+  text-anchor: middle;
+  /* Latin point names stay LTR inside the RTL page. */
+  direction: ltr;
+  unicode-bidi: isolate;
+  pointer-events: none;
+}
+.labelInk {
+  fill: #17313d;
+}
+.labelAux {
+  fill: #9a6a08;
+}
+.labelImage {
+  fill: var(--color-accent);
+  font-weight: 700;
+}
+.labelWarn {
+  fill: #b3261e;
+  font-style: normal;
+  font-weight: 700;
+}
+.arrowHead {
+  fill: var(--color-accent);
+}
+.axisLabel {
+  font-size: 0.29px;
+  font-style: normal;
+  opacity: 0.75;
+}
+.arrowHeadInk {
+  fill: #17313d;
+}
+
+/* --- controls ------------------------------------------------------------ */
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-teaching-bg);
+  border: 1px dashed var(--color-teaching-border);
+  border-radius: var(--radius-md);
+}
+.controlsTitle {
+  margin: 0;
+  font-size: var(--font-xs);
+  font-weight: 700;
+  color: var(--color-teaching-accent);
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.button,
+.buttonGhost {
+  padding: var(--space-1) var(--space-3);
+  font: inherit;
+  font-size: var(--font-sm);
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease,
+    border-color 140ms ease;
+}
+.button {
+  color: var(--color-surface);
+  background: var(--color-teaching-accent);
+  border: 1px solid var(--color-teaching-accent);
+}
+.button:hover {
+  background: var(--color-primary-hover);
+}
+.buttonGhost {
+  color: var(--color-teaching-accent);
+  background: var(--color-surface);
+  border: 1px solid var(--color-teaching-border);
+}
+.buttonGhost:hover {
+  border-color: var(--color-teaching-accent);
+}
+.button:disabled,
+.buttonGhost:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+.button:focus-visible,
+.buttonGhost:focus-visible,
+.field:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.field {
+  inline-size: 4.6rem;
+  padding: var(--space-1) var(--space-2);
+  font: inherit;
+  font-size: var(--font-sm);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm, 6px);
+  text-align: center;
+}
+.fieldLabel {
+  display: inline-flex;
+  gap: var(--space-2);
+  align-items: center;
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+.slider {
+  inline-size: min(15rem, 52vw);
+  accent-color: var(--color-accent);
+}
+
+/* --- readouts and feedback ---------------------------------------------- */
+.readout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border-inline-start: 4px solid var(--color-accent);
+  border-radius: var(--radius-sm, 6px);
+}
+.readout strong {
+  color: var(--color-accent);
+}
+.mono {
+  font-variant-numeric: lining-nums;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+.status {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-sm);
+  line-height: var(--leading-relaxed);
+  border-radius: var(--radius-sm, 6px);
+}
+.statusOk {
+  color: #0f5132;
+  background: #e6f4ec;
+  border: 1px solid #b8dcc8;
+}
+.statusRetry {
+  color: #7c2d12;
+  background: #fdeee2;
+  border: 1px solid #f0c9ad;
+}
+.statusInfo {
+  color: var(--color-text);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+}
+.progress {
+  margin: 0;
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: 0;
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  list-style: none;
+  padding: 0;
+}
+.legend li {
+  display: inline-flex;
+  gap: var(--space-1);
+  align-items: center;
+}
+.dot {
+  inline-size: 0.7rem;
+  block-size: 0.7rem;
+  border-radius: 999px;
+}
+.dotInk {
+  background: #17313d;
+}
+.dotMark {
+  background: #9a6a08;
+}
+.dotImage {
+  background: var(--color-accent);
+}
+.dotAux {
+  background: #9a6a08;
+}
+.badge {
+  align-self: flex-start;
+  padding: 0 var(--space-2);
+  font-size: var(--font-xs);
+  font-weight: 700;
+  color: var(--color-surface);
+  background: var(--color-accent);
+  border-radius: 999px;
+}
+.note {
+  margin: 0;
+  font-size: var(--font-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-muted);
+}
+.toggle {
+  display: inline-flex;
+  gap: var(--space-2);
+  align-items: center;
+  font-size: var(--font-sm);
+  color: var(--color-text);
+}
+.toggle input {
+  accent-color: var(--color-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .buttonGhost {
+    transition: none;
+  }
+}

@@ -4,6 +4,16 @@
   gap: var(--space-3);
 }
 
+/*
+ * Lesson 2 only: its blank-sheet figures live inside a `[data-lesson-theme=
+ * 'paper']` step. Without this the canvas (a flex row) shrink-wraps the
+ * wrapper and the SVG falls back to its 300 px intrinsic width. Scoped so no
+ * other lesson's construction figures change size.
+ */
+:global([data-lesson-theme='paper']) .wrap {
+  inline-size: 100%;
+}
+
 .svg {
   inline-size: 100%;
   block-size: auto;
