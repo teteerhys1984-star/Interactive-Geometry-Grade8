@@ -457,6 +457,19 @@ const VERIFIED_TEXTBOOK_FIGURES = [
   'fig-ex7-q26-rhombus',
   'fig-ex7-q27-isosceles',
   'fig-ex7-q28-parallels',
+  // Lesson 4 reconstructions are derived from values printed on pages 17–19:
+  // lengths, angle measures, right angles, "diagonals bisect each other",
+  // "opposite sides of a parallelogram". Each derivation is written next to the
+  // figure in src/content/units/lesson-04-geometry.ts and recorded, with its
+  // arithmetic check, in docs/LESSON-04-FIGURES.md.
+  'fig-17-activity-cases',
+  'fig-18-example-sas',
+  'fig-18-example-asa',
+  'fig-18-example-sss',
+  'fig-19-check-rectangle',
+  'fig-19-kite',
+  'fig-19-pairs',
+  'fig-19-isosceles',
 ];
 
 /** The eleven verbatim steps of Lesson 2, in printed order (pages 8–10). */
@@ -578,10 +591,12 @@ describe('authored material never displaces the source', () => {
 
   it('keeps textbook figures either as faithful references or approved source images', () => {
     const textbookFigures = allDiagrams().filter((d) => d.origin === 'textbook');
-    // The previous 52 source figures remain unchanged outside Lesson 3. Lesson 3
-    // replaces its 14 generic references with 22 page-located scan crops: 60 total.
-    expect(textbookFigures).toHaveLength(60);
-    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(60);
+    // 60 before Lesson 4 was rebuilt. Lesson 4 replaced its ten `reference`
+    // placeholders with eight natively reconstructed textbook figures plus two
+    // badged platform drawings (page 17's unmeasured sketches), so the textbook
+    // total is now 58 — and no Lesson 4 figure is a placeholder any more.
+    expect(textbookFigures).toHaveLength(58);
+    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(58);
     for (const diagram of textbookFigures) {
       if (diagram.kind === 'image') {
         expect(diagram.source, `${diagram.id} crop needs a printed-page source`).toBeDefined();

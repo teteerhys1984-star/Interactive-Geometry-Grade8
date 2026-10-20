@@ -17,6 +17,7 @@
 const LESSON_THEMES: Record<string, string> = {
   'lesson-02-image-of-a-point': 'paper',
   'lesson-03-image-of-a-shape': 'indigo',
+  'lesson-04-triangle-congruence': 'congruence',
   'lesson-05-unit-one-exercises': 'emerald',
   'lesson-06-unit-one-exercises-continuation': 'sunset',
   'lesson-07-unit-one-exercises-final': 'plum',

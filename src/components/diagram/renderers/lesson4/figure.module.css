@@ -1,0 +1,139 @@
+/*
+ * ============================================================================
+ *  LESSON 4 — figure renderer styles
+ * ============================================================================
+ *  Ink colours are CSS variables so every Lesson 4 figure follows the lesson's
+ *  own palette (`[data-lesson-theme='congruence']`) and the shared dark-mode
+ *  tokens, without any colour being hard-coded in a component.
+ * ============================================================================
+ */
+
+.stage {
+  --fig-ink: #263248;
+  --fig-given: #0f766e;
+  --fig-image: #c2410c;
+  --fig-aux: #b45309;
+  --fig-mark: #7a1f5c;
+  --fig-soft: rgba(15, 118, 110, 0.1);
+  --fig-image-soft: rgba(194, 65, 12, 0.1);
+
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 30rem;
+  overflow: visible;
+  direction: ltr;
+}
+
+.frame {
+  fill: none;
+  stroke: rgba(38, 50, 72, 0.22);
+  stroke-dasharray: 0.6 0.5;
+}
+
+.frameLabel {
+  fill: var(--fig-mark);
+  font-weight: 600;
+}
+
+.inkPolygon {
+  fill: var(--fig-soft);
+  stroke: var(--fig-ink);
+}
+
+.imagePolygon {
+  fill: var(--fig-image-soft);
+  stroke: var(--fig-image);
+}
+
+.plainPolygon {
+  fill: none;
+  stroke: var(--fig-ink);
+}
+
+.inkLine {
+  stroke: var(--fig-ink);
+}
+
+.givenLine {
+  stroke: var(--fig-given);
+}
+
+.imageLine {
+  stroke: var(--fig-image);
+}
+
+.auxLine {
+  stroke: var(--fig-aux);
+}
+
+.markLine {
+  stroke: var(--fig-mark);
+}
+
+.dashed {
+  stroke-dasharray: 0.62 0.44;
+}
+
+.tick {
+  stroke: var(--fig-mark);
+  stroke-linecap: round;
+}
+
+.dot {
+  fill: var(--fig-ink);
+}
+
+.dotGiven {
+  fill: var(--fig-given);
+}
+
+.dotImage {
+  fill: var(--fig-image);
+}
+
+.label {
+  fill: var(--fig-ink);
+  font-family: 'Noto Naskh Arabic', 'Amiri', 'Segoe UI', 'Tahoma', sans-serif;
+  font-style: italic;
+  paint-order: stroke;
+  stroke: #fffdf7;
+  stroke-width: 0.06em;
+  stroke-linejoin: round;
+}
+
+.labelGiven {
+  fill: var(--fig-given);
+}
+
+.labelImage {
+  fill: var(--fig-image);
+}
+
+.labelMark {
+  fill: var(--fig-mark);
+}
+
+.labelAux {
+  fill: var(--fig-aux);
+}
+
+.angleArc {
+  fill: none;
+  stroke: var(--fig-mark);
+  stroke-width: 0.018;
+}
+
+.angleGiven {
+  stroke: var(--fig-given);
+}
+
+.angleImage {
+  stroke: var(--fig-image);
+}
+
+.rightSquare {
+  fill: none;
+  stroke: var(--fig-mark);
+  stroke-width: 0.018;
+}
