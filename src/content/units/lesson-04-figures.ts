@@ -5,6 +5,7 @@ import {
   authoredDefinition,
   authoredIntroTranslation,
   page17Cases,
+  page17GivenRays,
   page17VectorNM,
   page18Example1,
   page18Example2,
@@ -117,9 +118,6 @@ const page19IsoscelesSource = { page: 19, locator: 'تدرّب — ③' } as con
 
 type CaseKind = 'sas' | 'asa' | 'sss';
 
-const CASE_RAY_A = 30; // direction of the ray from A in panel ②
-const CASE_RAY_C = 330; // direction of the ray from C in panel ②
-
 /**
  * One panel, in its OWN coordinate window (origin at the bottom-left of the
  * panel). `completed` adds the third vertex, the missing sides and the second
@@ -154,15 +152,10 @@ function caseLocalSpec(kind: CaseKind, completed: boolean): FigureSpec {
       angles.push({ at: C, from: A, to: B, label: '85°', tone: 'mark' });
       return { viewBox: { x: 0, y: 0, w: 11.4, h: 8.4 }, points, segments, angles, texts };
     }
-    // Printed givens of panel ②: [AC] plus one open ray at each end.
-    const rayFromA: XY = [
-      A[0] + Math.cos((CASE_RAY_A * Math.PI) / 180) * 4.8,
-      A[1] + Math.sin((CASE_RAY_A * Math.PI) / 180) * 4.8,
-    ];
-    const rayFromC: XY = [
-      C[0] + Math.cos((CASE_RAY_C * Math.PI) / 180) * 2.6,
-      C[1] + Math.sin((CASE_RAY_C * Math.PI) / 180) * 2.6,
-    ];
+    // Printed givens of panel ②: [AC] plus one open ray at each end. The rays
+    // point at B but stop short of it (see `page17GivenRays`), so the figure
+    // shows no vertex and no crossing — it never pre-draws the construction.
+    const { fromA: rayFromA, fromC: rayFromC } = page17GivenRays;
     points.push(point(C, 'C', 'ne'));
     segments.push(segment(A, rayFromA), segment(C, rayFromC));
     angles.push({ at: A, from: C, to: rayFromA, label: '35°', tone: 'mark' });
@@ -735,7 +728,7 @@ function constructedAuthored(options: BaseOptions, construction: FigureSpec): Co
 export const fig17Cases = constructedTextbook(
   {
     id: 'fig-17-activity-cases',
-    alt: 'ثلاثة أشكال للنشاط: في ① الضلعان $AC$ و$AB$ بطولي $3$ و$4$ والزاوية عند $A$ قياسها $35°$؛ وفي ② الضلع $AC$ طوله $3$ والزاويتان عند $A$ و$C$ قياساهما $35°$ و$85°$ مع شعاعين يحدّدان $B$؛ وفي ③ المثلث $ABC$ كامل بأطوال $3$ و$4$ و$2$. وتحت كل شكل القطعة $NM$.',
+    alt: 'ثلاثة أشكال للنشاط: في ① الضلعان $AC$ و$AB$ بطولي $3$ و$4$ والزاوية عند $A$ قياسها $35°$؛ وفي ② الضلع $AC$ طوله $3$ والزاويتان عند $A$ و$C$ قياساهما $35°$ و$85°$ مع شعاعين يتجهان نحو $B$ ويتوقفان قبله؛ وفي ③ المثلث $ABC$ كامل بأطوال $3$ و$4$ و$2$. وتحت كل شكل القطعة $NM$.',
     caption: `صفحة ١٧ — ${CAPTION_TEXTBOOK}`,
     source: page17,
   },

@@ -131,13 +131,25 @@ export function triangleFromSAS(
   return { A, B: add(A, direction(angleAB, AB)), C: add(A, direction(angleAC, AC)) };
 }
 
-/** Case ② — one side `[AC]` and the two adjacent angles at `A` and `C`. */
-export function triangleFromASA(A: XY, C: XY, angleA: number, angleC: number): Triangle | null {
+/**
+ * Case ② — one side `[AC]` and the two adjacent angles at `A` and `C`.
+ *
+ * The two angles leave the side on ONE side of `(AC)`, which is the side the
+ * figure is drawn on; `side` picks which one. `+1` (the default) opens the
+ * angles above the oriented side, `-1` mirrors the triangle below it. The
+ * printed page-17 panel opens them to the right of `[AC]`, so it asks for `-1`.
+ */
+export function triangleFromASA(
+  A: XY,
+  C: XY,
+  angleA: number,
+  angleC: number,
+  side: 1 | -1 = 1,
+): Triangle | null {
   const ac = sub(C, A);
   const baseAngle = degrees(Math.atan2(ac[1], ac[0]));
-  // Interior angles open towards the same side of (AC) for a proper triangle.
-  const fromA = add(A, direction(baseAngle + angleA));
-  const fromC = add(C, direction(baseAngle + 180 - angleC));
+  const fromA = add(A, direction(baseAngle + side * angleA));
+  const fromC = add(C, direction(baseAngle + 180 - side * angleC));
   const B = lineIntersection(A, sub(fromA, A), C, sub(fromC, C));
   return B ? { A, B, C } : null;
 }
@@ -191,9 +203,29 @@ export const page17CaseSAS = triangleFromSAS([2.6, 2.6], 30, 4, 65, 3);
 /**
  * Panel ② — same side [AC] and the two adjacent angles. B is where the two
  * printed rays meet; the student completes the triangle.
+ *
+ * `side = -1` is not arbitrary: on the printed panel the 35° ray from A and the
+ * 85° ray from C open to the RIGHT of [AC] (C is above A and both rays point
+ * up-/down-right), so the vertex that closes them lies to the right of [AC].
+ * With the default side the triangle came out mirrored, and the lab's
+ * "complete the triangle" stage closed the given rays on the opposite side.
  */
 export const page17CaseASA =
-  triangleFromASA([2.4, 2.4], add([2.4, 2.4], direction(65, 3)), 35, 85) ?? page17CaseSAS;
+  triangleFromASA([2.4, 2.4], add([2.4, 2.4], direction(65, 3)), 35, 85, -1) ?? page17CaseSAS;
+
+/**
+ * The two open rays of printed panel ②, as drawn in the student figure: they
+ * point straight at B — the printed 35° and 85° sides — and each one stops
+ * short of it, exactly as the book draws them. Closing them is question 2, so
+ * a ray must never reach, pass, or cross the other one.
+ */
+export const page17GivenRays = (() => {
+  const { A, B, C } = page17CaseASA;
+  return {
+    fromA: add(A, scale(sub(B, A), 0.72)),
+    fromC: add(C, scale(sub(B, C), 0.6)),
+  };
+})();
 
 /** Panel ③ — the complete triangle printed with sides 4, 3 and 2. */
 export const page17CaseSSS = triangleFromSSS([2.4, 2.4], 4, 3, 2, 20) ?? page17CaseSAS;

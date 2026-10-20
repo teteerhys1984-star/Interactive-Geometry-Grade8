@@ -6,8 +6,13 @@ import {
   distance,
   isParallelogram,
   isRightAngle,
+  cross,
+  degrees,
+  direction,
+  lineIntersection,
   midpoint,
   page17Cases,
+  page17GivenRays,
   page17Printed,
   page18Example1,
   page18Example2,
@@ -16,6 +21,7 @@ import {
   page19Isosceles,
   page19Kite,
   page19Pairs,
+  rad,
   samePoint,
   triangleFromSSS,
   type Triangle,
@@ -61,6 +67,43 @@ describe('page 17 — the three activity panels use the printed data', () => {
     close(angleAt(A, C, B), page17Printed.asa.angleC);
     // The third angle is a consequence: 180 − 35 − 85 = 60.
     close(angleAt(A, B, C), 60);
+  });
+
+  it('panel ② closes on the printed side of [AC], where its two rays point', () => {
+    const { A, B, C } = page17Cases.asa;
+    // The printed panel puts C above A and opens both given rays to the RIGHT
+    // of [AC], so the vertex that closes them must be there too. The default
+    // `side` of `triangleFromASA` mirrors the triangle; this pins the choice.
+    expect(cross([C[0] - A[0], C[1] - A[1]], [B[0] - A[0], B[1] - A[1]])).toBeLessThan(0);
+
+    // B is exactly where the printed 35° ray from A meets the 85° ray from C.
+    const acAngle = degrees(Math.atan2(C[1] - A[1], C[0] - A[0]));
+    const meet = lineIntersection(
+      A,
+      direction(acAngle - page17Printed.asa.angleA),
+      C,
+      direction(acAngle + 180 + page17Printed.asa.angleC),
+    )!;
+    close(meet[0], B[0]);
+    close(meet[1], B[1]);
+
+    // Law of sines on AC = 3 with 35° at A, 85° at C and 60° at B.
+    close(distance(A, B), (page17Printed.asa.AC * Math.sin(rad(85))) / Math.sin(rad(60)));
+    close(distance(B, C), (page17Printed.asa.AC * Math.sin(rad(35))) / Math.sin(rad(60)));
+  });
+
+  it('draws the two given rays of panel ② short of B, so they never cross', () => {
+    const { A, B, C } = page17Cases.asa;
+    const { fromA, fromC } = page17GivenRays;
+    // Each ray stops on its side of the vertex: the printed givens must not
+    // already contain the completed triangle, nor a line past its endpoint.
+    expect(distance(A, fromA)).toBeLessThan(distance(A, B) - 0.2);
+    expect(distance(C, fromC)).toBeLessThan(distance(C, B) - 0.2);
+    // They point along the printed sides …
+    close(angleAt(C, A, fromA), page17Printed.asa.angleA);
+    close(angleAt(A, C, fromC), page17Printed.asa.angleC);
+    // … and leave a visible gap instead of meeting in a stray crossing.
+    expect(distance(fromA, fromC)).toBeGreaterThan(0.4);
   });
 
   it('panel ③ carries the three printed sides 4, 3 and 2', () => {
