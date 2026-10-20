@@ -104,9 +104,13 @@ export function FigureSvg({ spec, ariaLabel, className }: FigureSvgProps) {
           />
           {frame.label ? (
             <text
-              x={frame.x + frame.w - unit * 0.035}
+              x={
+                frame.labelPlace === 'left'
+                  ? frame.x + unit * 0.035
+                  : frame.x + frame.w - unit * 0.035
+              }
               y={sy(frame.y + frame.h) + fontSize * 0.85}
-              textAnchor="end"
+              textAnchor={frame.labelPlace === 'left' ? 'start' : 'end'}
               fontSize={fontSize * 0.9}
               className={`${styles.label} ${styles.frameLabel}`}
             >
@@ -139,10 +143,7 @@ export function FigureSvg({ spec, ariaLabel, className }: FigureSvgProps) {
           (segment.from[0] + segment.to[0]) / 2,
           (segment.from[1] + segment.to[1]) / 2,
         ];
-        const along = normalise([
-          segment.to[0] - segment.from[0],
-          segment.to[1] - segment.from[1],
-        ]);
+        const along = normalise([segment.to[0] - segment.from[0], segment.to[1] - segment.from[1]]);
         const across: XY = [-along[1], along[0]];
         const count = segment.ticks ?? 0;
         return (
@@ -188,15 +189,23 @@ export function FigureSvg({ spec, ariaLabel, className }: FigureSvgProps) {
               : '';
 
         if (angle.right) {
+          // The right-angle mark is an OPEN square corner: from one side, through
+          // the far corner, to the other side. Closing the path would draw the
+          // chord between the two sides — a diagonal that is not in the figure.
           const corner: XY = [
             angle.at[0] + (first[0] + second[0]) * radius,
             angle.at[1] + (first[1] + second[1]) * radius,
           ];
           return (
             <g key={`angle-${index}`}>
-              <polygon
-                points={[P([angle.at[0] + first[0] * radius, angle.at[1] + first[1] * radius]), P(corner), P([angle.at[0] + second[0] * radius, angle.at[1] + second[1] * radius])].join(' ')}
+              <polyline
+                points={[
+                  P([angle.at[0] + first[0] * radius, angle.at[1] + first[1] * radius]),
+                  P(corner),
+                  P([angle.at[0] + second[0] * radius, angle.at[1] + second[1] * radius]),
+                ].join(' ')}
                 className={styles.rightSquare}
+                strokeWidth={stroke * 0.9}
               />
             </g>
           );
@@ -250,16 +259,13 @@ export function FigureSvg({ spec, ariaLabel, className }: FigureSvgProps) {
         return (
           <g key={`point-${index}`}>
             {point.dot === false ? null : (
-              <circle
-                cx={point.at[0]}
-                cy={sy(point.at[1])}
-                r={unit * 0.014}
-                className={dotClass}
-              />
+              <circle cx={point.at[0]} cy={sy(point.at[1])} r={unit * 0.014} className={dotClass} />
             )}
             <text
               x={point.at[0] + place[0] * fontSize * 0.62}
-              y={sy(point.at[1]) + place[1] * fontSize * 0.62}
+              // `place` is given in mathematical coordinates (y up); the screen
+              // y axis points down, so the vertical component is subtracted.
+              y={sy(point.at[1]) - place[1] * fontSize * 0.62}
               textAnchor={place[0] === 0 ? 'middle' : place[0] > 0 ? 'start' : 'end'}
               dominantBaseline="middle"
               fontSize={fontSize}

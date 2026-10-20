@@ -19,6 +19,7 @@ import {
   teacherIsoscelesFigure,
   teacherKiteFigure,
 } from '@/content/units/lesson-04-figures';
+import type { ConstructedDiagram } from '@/content/schema';
 import {
   CaseJustifyLab,
   CongruenceCasesLab,
@@ -59,6 +60,17 @@ const constructed = {
   teacherIsoscelesFigure,
 };
 
+function constructedFixture(construction: Record<string, unknown>): ConstructedDiagram {
+  return {
+    kind: 'constructed',
+    origin: 'authored',
+    renderer: 'congruence-figure',
+    id: 'audit-fixture',
+    alt: 'شكل اختبار للتحقق من الرسم',
+    construction,
+  };
+}
+
 /** Elements that actually draw something on screen. */
 function drawnShapes(container: HTMLElement) {
   return container.querySelectorAll('svg line, svg polyline, svg polygon, svg path, svg text');
@@ -83,11 +95,91 @@ describe('every Lesson 4 figure draws visible geometry', () => {
 
   it('draws the activity panels inside labelled frames ① ② ③', () => {
     const { container, unmount } = render(<CongruenceFigure spec={fig17Cases} />);
-    const texts = Array.from(container.querySelectorAll('svg text')).map((node) => node.textContent);
+    const texts = Array.from(container.querySelectorAll('svg text')).map(
+      (node) => node.textContent,
+    );
     for (const marker of ['①', '②', '③']) expect(texts).toContain(marker);
     // N and M are printed under every panel of the activity.
     expect(texts.filter((text) => text === 'N').length).toBe(3);
     expect(texts.filter((text) => text === 'M').length).toBe(3);
+    unmount();
+  });
+
+  it('draws a right-angle mark as an open square corner, never a closed triangle', () => {
+    const spec = constructedFixture({
+      viewBox: { x: 0, y: 0, w: 4, h: 4 },
+      segments: [
+        { from: [1, 1], to: [3, 1] },
+        { from: [1, 1], to: [1, 3] },
+      ],
+      angles: [{ at: [1, 1], from: [3, 1], to: [1, 3], right: true }],
+    });
+    const { container, unmount } = render(<CongruenceFigure spec={spec} />);
+    const marks = container.querySelectorAll('svg polyline');
+    expect(marks).toHaveLength(1);
+    const points = (marks[0]!.getAttribute('points') ?? '')
+      .trim()
+      .split(/\s+/)
+      .map((pair) => pair.split(',').map(Number));
+    expect(points).toHaveLength(3);
+    // The two arms of the mark are perpendicular, and the chord between their
+    // ends is absent — that chord is what made the mark look like a triangle.
+    const [start, corner, end] = points as [number[], number[], number[]];
+    const u = [corner[0]! - start[0]!, corner[1]! - start[1]!];
+    const v = [end[0]! - corner[0]!, end[1]! - corner[1]!];
+    expect(Math.abs(u[0]! * v[0]! + u[1]! * v[1]!)).toBeLessThan(1e-6);
+    expect(container.querySelectorAll('svg polygon')).toHaveLength(0);
+    unmount();
+  });
+
+  it('places a north label above its vertex and a south label below it', () => {
+    const spec = constructedFixture({
+      viewBox: { x: 0, y: 0, w: 6, h: 4 },
+      points: [
+        { at: [1, 1], label: 'N', place: 'n' },
+        { at: [3, 1], label: 'S', place: 's' },
+      ],
+    });
+    const { container, unmount } = render(<CongruenceFigure spec={spec} />);
+    const texts = Array.from(container.querySelectorAll('svg text'));
+    const north = texts.find((node) => node.textContent === 'N')!;
+    const south = texts.find((node) => node.textContent === 'S')!;
+    const vertexY = 4 - 1; // sy(1) in a 4-unit-high window
+    expect(Number(north.getAttribute('y'))).toBeLessThan(vertexY);
+    expect(Number(south.getAttribute('y'))).toBeGreaterThan(vertexY);
+    unmount();
+  });
+
+  it('shows panel ② of the activity with its givens only, as printed', () => {
+    // The book prints two open rays and no vertex B in panel ②: completing the
+    // triangle is question 2. A stray B — or a closed side — would give away the
+    // construction the student is asked to make.
+    const { container, unmount } = render(<CongruenceFigure spec={fig17Cases} />);
+    const texts = Array.from(container.querySelectorAll('svg text')).map(
+      (node) => node.textContent,
+    );
+    expect(texts.filter((text) => text === 'B')).toHaveLength(2);
+    expect(texts.filter((text) => text === 'C')).toHaveLength(3);
+    unmount();
+  });
+
+  it('never lands two measurement labels on the same spot', () => {
+    const { container, unmount } = render(<CongruenceFigure spec={fig19Pairs} />);
+    const labels = Array.from(container.querySelectorAll('svg text'))
+      .map((node) => ({
+        text: node.textContent ?? '',
+        x: Number(node.getAttribute('x')),
+        y: Number(node.getAttribute('y')),
+      }))
+      .filter((label) => label.text.length > 0);
+    for (let i = 0; i < labels.length; i += 1) {
+      for (let j = i + 1; j < labels.length; j += 1) {
+        const a = labels[i]!;
+        const b = labels[j]!;
+        const sameSpot = Math.abs(a.x - b.x) < 0.35 && Math.abs(a.y - b.y) < 0.35;
+        expect(sameSpot, `${a.text} overlaps ${b.text}`).toBe(false);
+      }
+    }
     unmount();
   });
 
@@ -97,7 +189,10 @@ describe('every Lesson 4 figure draws visible geometry', () => {
       (node) => node.textContent ?? '',
     );
     for (const value of ['14.4', '10', '12', '8', '6']) {
-      expect(texts.some((text) => text.includes(value)), `kite: missing ${value}`).toBe(true);
+      expect(
+        texts.some((text) => text.includes(value)),
+        `kite: missing ${value}`,
+      ).toBe(true);
     }
     unmount();
   });
@@ -122,7 +217,7 @@ describe('«مختبر الحالات» walks the printed activity in order', ()
     const status = screen.getByRole('status');
     // All three side pairs agree to the printed precision.
     expect(status.textContent).toContain('AB');
-    expect(status.textContent).toContain("A′");
+    expect(status.textContent).toContain('A′');
     expect(status.textContent).not.toMatch(/✗|غير متساو/);
   });
 

@@ -88,6 +88,8 @@ export interface FigureFrame {
   w: number;
   h: number;
   label?: string;
+  /** Which inner corner carries the frame number. Default `right`. */
+  labelPlace?: 'left' | 'right';
 }
 
 export interface FigureSpec {
@@ -105,10 +107,7 @@ const isNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value);
 
 const isPoint = (value: unknown): value is XY =>
-  Array.isArray(value) &&
-  value.length === 2 &&
-  isNumber(value[0]) &&
-  isNumber(value[1]);
+  Array.isArray(value) && value.length === 2 && isNumber(value[0]) && isNumber(value[1]);
 
 const TONES: readonly FigureTone[] = ['ink', 'given', 'image', 'aux', 'mark'];
 const PLACES: readonly LabelPlace[] = ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'];
@@ -124,9 +123,7 @@ function readPoint(value: unknown): FigurePoint | null {
   return {
     at: record.at,
     label: record.label,
-    place: PLACES.includes(record.place as LabelPlace)
-      ? (record.place as LabelPlace)
-      : undefined,
+    place: PLACES.includes(record.place as LabelPlace) ? (record.place as LabelPlace) : undefined,
     tone: tone(record.tone),
     dot: typeof record.dot === 'boolean' ? record.dot : undefined,
   };
@@ -184,8 +181,7 @@ function readText(value: unknown): FigureText | null {
     at: record.at,
     text: record.text,
     tone: tone(record.tone),
-    anchor:
-      anchor === 'start' || anchor === 'middle' || anchor === 'end' ? anchor : undefined,
+    anchor: anchor === 'start' || anchor === 'middle' || anchor === 'end' ? anchor : undefined,
     size: isNumber(record.size) ? record.size : undefined,
     ltr: record.ltr === false ? false : true,
   };
@@ -194,12 +190,7 @@ function readText(value: unknown): FigureText | null {
 function readFrame(value: unknown): FigureFrame | null {
   if (!value || typeof value !== 'object') return null;
   const record = value as Record<string, unknown>;
-  if (
-    !isNumber(record.x) ||
-    !isNumber(record.y) ||
-    !isNumber(record.w) ||
-    !isNumber(record.h)
-  ) {
+  if (!isNumber(record.x) || !isNumber(record.y) || !isNumber(record.w) || !isNumber(record.h)) {
     return null;
   }
   return {
@@ -208,6 +199,7 @@ function readFrame(value: unknown): FigureFrame | null {
     w: record.w,
     h: record.h,
     label: typeof record.label === 'string' ? record.label : undefined,
+    labelPlace: record.labelPlace === 'left' ? 'left' : undefined,
   };
 }
 
@@ -263,7 +255,12 @@ export function translateFigure(spec: FigureSpec, dx: number, dy: number): Figur
       from: move(segment.from),
       to: move(segment.to),
     })),
-    angles: spec.angles?.map((angle) => ({ ...angle, at: move(angle.at), from: move(angle.from), to: move(angle.to) })),
+    angles: spec.angles?.map((angle) => ({
+      ...angle,
+      at: move(angle.at),
+      from: move(angle.from),
+      to: move(angle.to),
+    })),
     points: spec.points?.map((point) => ({ ...point, at: move(point.at) })),
     texts: spec.texts?.map((text) => ({ ...text, at: move(text.at) })),
   };

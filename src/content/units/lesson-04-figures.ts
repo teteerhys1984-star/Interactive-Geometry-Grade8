@@ -13,6 +13,7 @@ import {
   page19Isosceles,
   page19Kite,
   page19Pairs,
+  PAGE19_PAIR_PANEL,
   type Triangle,
 } from './lesson-04-geometry';
 
@@ -73,12 +74,7 @@ const measure = (
 ): NonNullable<FigureSpec['texts']>[number] => ({ at, text, tone, anchor });
 
 /** A label placed a fraction along a segment, offset perpendicular to it. */
-function alongSegment(
-  from: XY,
-  to: XY,
-  fraction: number,
-  offset: number,
-): XY {
+function alongSegment(from: XY, to: XY, fraction: number, offset: number): XY {
   const dx = to[0] - from[0];
   const dy = to[1] - from[1];
   const len = Math.hypot(dx, dy) || 1;
@@ -148,6 +144,17 @@ function caseLocalSpec(kind: CaseKind, completed: boolean): FigureSpec {
   }
 
   if (kind === 'asa') {
+    if (completed) {
+      // Question 2: the two printed rays, extended, meet at B. The finished
+      // triangle REPLACES the rays — nothing may run past a vertex, otherwise
+      // the drawing shows two stray lines crossing outside the triangle.
+      points.push(point(B, 'B', 'se'), point(C, 'C', 'n'));
+      segments.push(segment(A, B), segment(B, C));
+      angles.push({ at: A, from: C, to: B, label: '35°', tone: 'mark' });
+      angles.push({ at: C, from: A, to: B, label: '85°', tone: 'mark' });
+      return { viewBox: { x: 0, y: 0, w: 11.4, h: 8.4 }, points, segments, angles, texts };
+    }
+    // Printed givens of panel ②: [AC] plus one open ray at each end.
     const rayFromA: XY = [
       A[0] + Math.cos((CASE_RAY_A * Math.PI) / 180) * 4.8,
       A[1] + Math.sin((CASE_RAY_A * Math.PI) / 180) * 4.8,
@@ -156,15 +163,10 @@ function caseLocalSpec(kind: CaseKind, completed: boolean): FigureSpec {
       C[0] + Math.cos((CASE_RAY_C * Math.PI) / 180) * 2.6,
       C[1] + Math.sin((CASE_RAY_C * Math.PI) / 180) * 2.6,
     ];
-    points.push(point(C, 'C', completed ? 'n' : 'ne'));
+    points.push(point(C, 'C', 'ne'));
     segments.push(segment(A, rayFromA), segment(C, rayFromC));
     angles.push({ at: A, from: C, to: rayFromA, label: '35°', tone: 'mark' });
     angles.push({ at: C, from: A, to: rayFromC, label: '85°', tone: 'mark' });
-    if (completed) {
-      // Question 2: complete the figure into the triangle ABC.
-      points.push(point(B, 'B', 'se'));
-      segments.push(segment(A, B), segment(B, C));
-    }
     return { viewBox: { x: 0, y: 0, w: 11.4, h: 8.4 }, points, segments, angles, texts };
   }
 
@@ -181,8 +183,13 @@ const PANEL_OFFSETS: [number, number][] = [
   [23.3, 0.4],
 ];
 
+/**
+ * The printed figure shows ONLY the givens — panel ② is the two open rays, with
+ * no vertex B — because closing the triangle is the student's task (question 2).
+ * The completed shape is drawn by the lesson's lab, step by step.
+ */
 const casePanels = PANEL_OFFSETS.map(([dx, dy], index) =>
-  translateFigure(caseLocalSpec((['sas', 'asa', 'sss'] as const)[index]!, true), dx, dy),
+  translateFigure(caseLocalSpec((['sas', 'asa', 'sss'] as const)[index]!, false), dx, dy),
 );
 
 export const figurePage17Cases: FigureSpec = {
@@ -235,6 +242,9 @@ export const figureExampleSas: FigureSpec = {
   segments: [
     segment(ex1.B, ex1.F),
     segment(ex1.A, ex1.E),
+    // The third side of triangle MEF: without it the image polygon's own stroke
+    // shows through in the image colour, unlike its two other sides.
+    segment(ex1.E, ex1.F),
   ],
   points: [
     point(ex1.A, 'A', 'nw'),
@@ -273,10 +283,15 @@ export const figureExampleAsa: FigureSpec = {
   points: [
     point(ex2.A, 'A', 'nw'),
     point(ex2.B, 'B', 'w'),
-    point(ex2.C, 'C', 's'),
+    point(ex2.C, 'C', 'se'),
     point(ex2.D, 'D', 'e'),
     point(ex2.E, 'E', 'sw'),
     point(ex2.F, 'F', 'ne'),
+  ],
+  angles: [
+    // Printed: CBE = FDA = 90°.
+    { at: ex2.B, from: ex2.C, to: ex2.E, right: true, radius: 0.42 },
+    { at: ex2.D, from: ex2.F, to: ex2.A, right: true, radius: 0.42 },
   ],
 };
 
@@ -352,8 +367,10 @@ export const figureKite: FigureSpec = {
     segment(kite.B, kite.D),
   ],
   angles: [
-    { at: kite.E, from: kite.B, to: kite.C, right: true, radius: 0.55 },
-    { at: kite.E, from: kite.C, to: kite.D, right: true, radius: 0.55 },
+    // Two of the four right angles at E, kept on the WEST side so the "E"
+    // label on the east has clear space (all four are 90° by construction).
+    { at: kite.E, from: kite.B, to: kite.A, right: true, radius: 0.42 },
+    { at: kite.E, from: kite.A, to: kite.D, right: true, radius: 0.42 },
   ],
   points: [
     point(kite.A, 'A', 'sw'),
@@ -393,40 +410,74 @@ function pairPanelSpec(id: 'pair-1' | 'pair-2' | 'pair-3'): FigureSpec {
     segment(triangle.C, triangle.A),
   ];
 
+  const centroid = (t: Triangle): XY => [
+    (t.A[0] + t.B[0] + t.C[0]) / 3,
+    (t.A[1] + t.B[1] + t.C[1]) / 3,
+  ];
+
+  /**
+   * A length label placed OUTSIDE its own triangle. The perpendicular side is
+   * chosen against that triangle's centroid, so the two copies in a panel can
+   * never share a label position (the printed figure keeps them apart too).
+   */
+  const outside = (triangle: Triangle, from: XY, to: XY, text: string) => {
+    const centre = centroid(triangle);
+    const mid: XY = [(from[0] + to[0]) / 2, (from[1] + to[1]) / 2];
+    let nx = -(to[1] - from[1]);
+    let ny = to[0] - from[0];
+    const len = Math.hypot(nx, ny) || 1;
+    nx /= len;
+    ny /= len;
+    if ((mid[0] - centre[0]) * nx + (mid[1] - centre[1]) * ny < 0) {
+      nx = -nx;
+      ny = -ny;
+    }
+    return measure([mid[0] + nx * 0.45, mid[1] + ny * 0.45], text);
+  };
+
+  /** An angle label placed inside, towards the centroid of its own triangle. */
+  const inside = (triangle: Triangle, vertex: XY, text: string) => {
+    const centre = centroid(triangle);
+    const dx = centre[0] - vertex[0];
+    const dy = centre[1] - vertex[1];
+    const len = Math.hypot(dx, dy) || 1;
+    return measure([vertex[0] + (dx / len) * 0.78, vertex[1] + (dy / len) * 0.78], text);
+  };
+
   const measures = (triangle: Triangle) => {
     const { A, B, C } = triangle;
     if (kind === 'sss') {
       return [
-        measure(alongSegment(A, B, 0.5, -0.35), '2'),
-        measure(alongSegment(B, C, 0.5, 0.35), '3'),
-        measure(alongSegment(C, A, 0.5, 0.35), '2.6'),
+        outside(triangle, A, B, '2'),
+        outside(triangle, B, C, '3'),
+        outside(triangle, C, A, '2.6'),
       ];
     }
     if (kind === 'sas') {
       return [
-        measure(alongSegment(A, B, 0.5, -0.35), '2'),
-        measure(alongSegment(A, C, 0.5, 0.42), '4'),
-        measure([A[0] + 0.55, A[1] + 0.36], '80°'),
+        outside(triangle, A, B, '2'),
+        outside(triangle, A, C, '4'),
+        inside(triangle, A, '80°'),
       ];
     }
-    return [
-      measure(alongSegment(A, B, 0.5, -0.4), '4'),
-      measure([A[0] + 0.62, A[1] + 0.34], '44°'),
-      measure([B[0] - 0.62, B[1] + 0.3], '82°'),
-    ];
+    return [outside(triangle, A, B, '4'), inside(triangle, A, '44°'), inside(triangle, B, '82°')];
   };
 
+  const arc = (at: XY, from: XY, to: XY) => ({ at, from, to, radius: 0.4, tone: 'mark' as const });
+
   return {
-    viewBox: { x: -0.4, y: -0.4, w: 7, h: 6.2 },
+    viewBox: { x: 0, y: 0, w: PAGE19_PAIR_PANEL.width, h: PAGE19_PAIR_PANEL.height },
     polygons: [polygonFor(first, 'ink'), polygonFor(second, 'ink')],
     segments: [...sides(first), ...sides(second)],
     angles:
       kind === 'sas'
-        ? [{ at: first.A, from: first.B, to: first.C, radius: 0.42, tone: 'mark' }]
+        ? [arc(first.A, first.B, first.C), arc(second.A, second.B, second.C)]
         : kind === 'asa'
           ? [
-              { at: first.A, from: first.B, to: first.C, radius: 0.42, tone: 'mark' },
-              { at: first.B, from: first.A, to: first.C, radius: 0.42, tone: 'mark' },
+              arc(first.A, first.B, first.C),
+              arc(first.B, first.A, first.C),
+              arc(second.A, second.B, second.C),
+              arc(second.B, second.A, second.C),
             ]
           : [],
     points: [],
@@ -439,19 +490,24 @@ function placePanel(spec: FigureSpec, dx: number, dy: number): FigureSpec {
   return translateFigure(spec, dx, dy);
 }
 
-const pairPanels = [
-  placePanel(pairPanelSpec('pair-1'), 0.4, 0.4),
-  placePanel(pairPanelSpec('pair-2'), 7.6, 0.4),
-  placePanel(pairPanelSpec('pair-3'), 14.8, 0.4),
-];
+const PAIR_DX = [0.3, 11, 21.7] as const;
+
+const pairPanels = PAIR_DX.map((dx, index) =>
+  placePanel(pairPanelSpec((['pair-1', 'pair-2', 'pair-3'] as const)[index]!), dx, 0.2),
+);
 
 export const figurePairs: FigureSpec = {
-  viewBox: { x: 0, y: 0, w: 22.4, h: 7 },
-  frames: [
-    { x: 0.1, y: 0.1, w: 7.1, h: 6.7, label: '①' },
-    { x: 7.3, y: 0.1, w: 7.1, h: 6.7, label: '②' },
-    { x: 14.5, y: 0.1, w: 7.1, h: 6.7, label: '③' },
-  ],
+  viewBox: { x: 0, y: 0, w: PAIR_DX[2] + 11, h: 7.9 },
+  frames: PAIR_DX.map((dx, index) => ({
+    x: dx,
+    y: 0.1,
+    w: 10.4,
+    h: 7.6,
+    label: (['①', '②', '③'] as const)[index]!,
+    // The second triangle reaches the upper-right corner of every panel, so the
+    // panel number sits at the upper LEFT where nothing else is drawn.
+    labelPlace: 'left' as const,
+  })),
   polygons: pairPanels.flatMap((panel) => panel.polygons ?? []),
   segments: pairPanels.flatMap((panel) => panel.segments ?? []),
   angles: pairPanels.flatMap((panel) => panel.angles ?? []),
@@ -500,18 +556,42 @@ export const figureIsosceles: FigureSpec = {
 
 const introFigure = authoredIntroTranslation;
 
+/** Stop a connector short of its target, so the arrowhead points at the vertex
+ *  instead of covering its dot and label. */
+function stopShort(from: XY, to: XY, gap = 0.62): XY {
+  const dx = to[0] - from[0];
+  const dy = to[1] - from[1];
+  const len = Math.hypot(dx, dy) || 1;
+  return [to[0] - (dx / len) * gap, to[1] - (dy / len) * gap];
+}
+
 export const figureTranslationIntro: FigureSpec = {
-  viewBox: { x: 0, y: 0, w: 11.4, h: 5.6 },
-  polygons: [trianglePolygon(introFigure.triangle)],
+  viewBox: { x: 0.6, y: 0.2, w: 9.4, h: 5 },
+  polygons: [trianglePolygon(introFigure.triangle), trianglePolygon(introFigure.image, 'image')],
   segments: [
-    segment(introFigure.triangle.A, introFigure.image.A, { tone: 'aux', dashed: true }),
-    segment(introFigure.triangle.B, introFigure.image.B, { tone: 'aux', dashed: true }),
-    segment(introFigure.triangle.C, introFigure.image.C, { tone: 'aux', dashed: true }),
+    segment(introFigure.triangle.A, stopShort(introFigure.triangle.A, introFigure.image.A), {
+      tone: 'aux',
+      dashed: true,
+      arrow: true,
+    }),
+    segment(introFigure.triangle.B, stopShort(introFigure.triangle.B, introFigure.image.B), {
+      tone: 'aux',
+      dashed: true,
+      arrow: true,
+    }),
+    segment(introFigure.triangle.C, stopShort(introFigure.triangle.C, introFigure.image.C), {
+      tone: 'aux',
+      dashed: true,
+      arrow: true,
+    }),
   ],
   points: [
     point(introFigure.triangle.A, 'A', 'sw'),
     point(introFigure.triangle.B, 'B', 'se'),
     point(introFigure.triangle.C, 'C', 'n'),
+    point(introFigure.image.A, 'A′', 'sw', 'image'),
+    point(introFigure.image.B, 'B′', 'se', 'image'),
+    point(introFigure.image.C, 'C′', 'n', 'image'),
   ],
 };
 
@@ -529,10 +609,7 @@ const definition = authoredDefinition;
 
 export const figureDefinitionPair: FigureSpec = {
   viewBox: { x: 0, y: 0, w: 10.6, h: 5.6 },
-  polygons: [
-    trianglePolygon(definition.triangle),
-    trianglePolygon(definition.image, 'image'),
-  ],
+  polygons: [trianglePolygon(definition.triangle), trianglePolygon(definition.image, 'image')],
   points: [
     point(definition.triangle.A, 'A', 'sw'),
     point(definition.triangle.B, 'B', 'se'),
@@ -590,9 +667,7 @@ export const figureKitePairs: FigureSpec = {
     segment(kite.A, kite.C),
     segment(kite.B, kite.D),
   ],
-  angles: [
-    { at: kite.E, from: kite.B, to: kite.C, right: true, radius: 0.55 },
-  ],
+  angles: [{ at: kite.E, from: kite.B, to: kite.A, right: true, radius: 0.42 }],
   points: [
     point(kite.A, 'A', 'sw'),
     point(kite.B, 'B', 'nw'),
@@ -741,7 +816,8 @@ export const figTranslation = constructedAuthored(
   {
     id: 'auth-04-translation-intro',
     alt: 'مثلث وصورته وفق انسحاب، وخطوط متقطعة تصل كل رأس بصورته.',
-    caption: 'رسم تعليمي من إعداد المنصّة — يحفظ علاقة الانسحاب المطبوعة في الصفحة ١٧، والمسافات فيه ليست من الكتاب.',
+    caption:
+      'رسم تعليمي من إعداد المنصّة — يحفظ علاقة الانسحاب المطبوعة في الصفحة ١٧، والمسافات فيه ليست من الكتاب.',
   },
   figureTranslationIntro,
 );
@@ -750,7 +826,8 @@ export const figDefinitionPair = constructedAuthored(
   {
     id: 'auth-04-definition-pair',
     alt: 'مثلثان $ABC$ و$A′B′C′$ متطابقان، بحيث يقابل $A$ النقطة $A′$ و$B$ النقطة $B′$ و$C$ النقطة $C′$.',
-    caption: 'رسم تعليمي من إعداد المنصّة — الصفحة ١٧ ترسم المثلثين دون أي قياس، وهذا رسم دقيق للعلاقة نفسها.',
+    caption:
+      'رسم تعليمي من إعداد المنصّة — الصفحة ١٧ ترسم المثلثين دون أي قياس، وهذا رسم دقيق للعلاقة نفسها.',
   },
   figureDefinitionPair,
 );
@@ -796,7 +873,8 @@ export const casesLabDiagram: InteractiveDiagram = {
   id: 'auth-04-cases-lab',
   renderer: 'congruence-cases-lab',
   alt: 'مختبر حالات التطابق: تختار حالة، فتُعرض معطياتها، ثم يكتمل المثلث $ABC$، ثم تُرسم صورته وفق الانسحاب الذي ينقل $N$ إلى $M$.',
-  caption: 'مختبر من إعداد المنصّة — يبني المثلث من معطيات النشاط المطبوعة ثم ينقله بالانسحاب $N \\to M$.',
+  caption:
+    'مختبر من إعداد المنصّة — يبني المثلث من معطيات النشاط المطبوعة ثم ينقله بالانسحاب $N \\to M$.',
   params: {
     title: 'أكمل المثلث ثم انقله',
     intro:
@@ -812,11 +890,11 @@ export const practicePairsDiagram: InteractiveDiagram = {
   id: 'auth-04-practice-pairs-lab',
   renderer: 'case-justify-lab',
   alt: 'تمرين تفاعلي: ثلاثة أزواج من المثلثات، ويُطلب اختيار حالة التطابق التي تنطبق على كل زوج.',
-  caption: 'تمرين من إعداد المنصّة — يتبع التمرين ② المطبوع، ولا يظهر التصحيح قبل مراجعة الأجوبة كلها.',
+  caption:
+    'تمرين من إعداد المنصّة — يتبع التمرين ② المطبوع، ولا يظهر التصحيح قبل مراجعة الأجوبة كلها.',
   params: {
     title: 'أي حالة تطابق؟',
-    intro:
-      'لكل زوج من المثلثات معطيات مطبوعة. اختر الحالة التي تثبت التطابق، ثم راجع عملك كاملاً.',
+    intro: 'لكل زوج من المثلثات معطيات مطبوعة. اختر الحالة التي تثبت التطابق، ثم راجع عملك كاملاً.',
     figure: figurePairs as unknown as Record<string, unknown>,
     tasks: [
       {
@@ -871,8 +949,7 @@ export const kiteLabDiagram: InteractiveDiagram = {
   caption: 'تمرين من إعداد المنصّة — يتبع التمرين ① المطبوع، والتصحيح لا يظهر قبل المراجعة.',
   params: {
     title: 'أزواج المثلثات في الطائرة الورقية',
-    intro:
-      'حدّد كل زوج من المثلثات تعتقد أنه متطابق. عند المراجعة يظهر التعليل الكامل لكل اختيار.',
+    intro: 'حدّد كل زوج من المثلثات تعتقد أنه متطابق. عند المراجعة يظهر التعليل الكامل لكل اختيار.',
     figure: figureKite as unknown as Record<string, unknown>,
     options: [
       {
@@ -914,7 +991,8 @@ export const kiteLabDiagram: InteractiveDiagram = {
         id: 'aeb-cfb',
         label: 'المثلثان $AEB$ و$CFB$',
         answer: false,
-        reason: 'المثلث $AEB$ قائم في $E$ والوتر $AB$، والمثلث $CFB$ قائم في $F$ والوتر $CB$؛ الوتران مختلفان.',
+        reason:
+          'المثلث $AEB$ قائم في $E$ والوتر $AB$، والمثلث $CFB$ قائم في $F$ والوتر $CB$؛ الوتران مختلفان.',
       },
     ],
   },
@@ -939,7 +1017,8 @@ export const proofLabDiagram: InteractiveDiagram = {
         options: [
           {
             id: 'a',
-            label: '$\\widehat{MEB} = \\widehat{MFC} = 90°$، و$BM = MC$، و$\\widehat{MBE} = \\widehat{MCF}$.',
+            label:
+              '$\\widehat{MEB} = \\widehat{MFC} = 90°$، و$BM = MC$، و$\\widehat{MBE} = \\widehat{MCF}$.',
           },
           {
             id: 'b',
@@ -960,7 +1039,8 @@ export const proofLabDiagram: InteractiveDiagram = {
         options: [
           {
             id: 'a',
-            label: '$MA$ مشترك، و$ME = MF$، والزاويتان عند $E$ و$F$ قائمتان؛ حالة الوتر وضلع القائمة.',
+            label:
+              '$MA$ مشترك، و$ME = MF$، والزاويتان عند $E$ و$F$ قائمتان؛ حالة الوتر وضلع القائمة.',
           },
           { id: 'b', label: '$AE = AF$ لأنهما يبدوان كذلك في الرسم.' },
           { id: 'c', label: 'تساوي الزاويتين $\\widehat{EAM}$ و$\\widehat{MAF}$ وحده.' },
@@ -975,7 +1055,8 @@ export const proofLabDiagram: InteractiveDiagram = {
         options: [
           {
             id: 'a',
-            label: '$AE = AF$ من تطابق $MEA$ و$MFA$، و$EB = FC$ من تطابق $MEB$ و$MFC$؛ إذن $AB = AE + EB = AF + FC = AC$.',
+            label:
+              '$AE = AF$ من تطابق $MEA$ و$MFA$، و$EB = FC$ من تطابق $MEB$ و$MFC$؛ إذن $AB = AE + EB = AF + FC = AC$.',
           },
           { id: 'b', label: 'لأن $BM = MC$، وهذا يعني مباشرة أن $AB = AC$.' },
           { id: 'c', label: 'لأن الزاويتين $\\widehat{B}$ و$\\widehat{C}$ متساويتان، فيكفي ذلك.' },
@@ -990,7 +1071,8 @@ export const proofLabDiagram: InteractiveDiagram = {
         options: [
           {
             id: 'a',
-            label: 'من تطابق $MEA$ و$MFA$: $\\widehat{EAM} = \\widehat{MAF}$، فـ$(AM)$ منصّف؛ ومن التطابق نفسه $AE = AF$، وبما أن $M$ منتصف $BC$ فإن $(AM)$ عمودي على $BC$.',
+            label:
+              'من تطابق $MEA$ و$MFA$: $\\widehat{EAM} = \\widehat{MAF}$، فـ$(AM)$ منصّف؛ ومن التطابق نفسه $AE = AF$، وبما أن $M$ منتصف $BC$ فإن $(AM)$ عمودي على $BC$.',
           },
           { id: 'b', label: 'لأن الرسم يبدو متماثلاً حول $(AM)$.' },
           { id: 'c', label: 'لأن $AB = AC$ فقط.' },
@@ -1023,18 +1105,15 @@ export const teacherActivityFigure = (() => {
 
   const spec: FigureSpec = {
     viewBox: { x: 0, y: 0, w: 11.8, h: 8.8 },
-    polygons: [
-      ...(base.polygons ?? []),
-      { points: [image.A, image.B, image.C], tone: 'image' },
-    ],
+    polygons: [...(base.polygons ?? []), { points: [image.A, image.B, image.C], tone: 'image' }],
     segments: [
       ...(base.segments ?? []),
       { from: image.A, to: image.B, tone: 'image' },
       { from: image.B, to: image.C, tone: 'image' },
       { from: image.C, to: image.A, tone: 'image' },
-      { from: A, to: image.A, tone: 'aux', dashed: true, arrow: true },
-      { from: B, to: image.B, tone: 'aux', dashed: true, arrow: true },
-      { from: C, to: image.C, tone: 'aux', dashed: true, arrow: true },
+      { from: A, to: stopShort(A, image.A, 0.95), tone: 'aux', dashed: true, arrow: true },
+      { from: B, to: stopShort(B, image.B, 0.95), tone: 'aux', dashed: true, arrow: true },
+      { from: C, to: stopShort(C, image.C, 0.95), tone: 'aux', dashed: true, arrow: true },
     ],
     angles: base.angles ?? [],
     points: [

@@ -91,10 +91,7 @@ describe('page 18 — the three worked examples', () => {
     expect(areCollinear(B, M, F)).toBe(true);
     close(angleAt(A, M, B), angleAt(E, M, F));
     // The two triangles really are congruent with A↔E, B↔F, M↔M.
-    const report = congruenceReport(
-      triangle(A, B, M),
-      triangle(E, F, M),
-    );
+    const report = congruenceReport(triangle(A, B, M), triangle(E, F, M));
     expect(report.sss).toBe(true);
   });
 
@@ -143,6 +140,21 @@ describe('page 19 — check-your-understanding rectangle', () => {
     // Consequence used in the second proof: the other angle is 60°.
     close(angleAt(A, B, D), 60);
     close(angleAt(C, D, B), 60);
+  });
+
+  it('labels the sides with the lengths the derivation actually gives', () => {
+    // Regression: the first derivation called the 6-unit side [AB] and the
+    // 6·tan 30° side [AD]. The printed ticks say otherwise — [AB] and [DC]
+    // carry one tick, [AD] and [BC] carry two — and so does the drawing.
+    close(distance(A, B), 6 * Math.tan(Math.PI / 6));
+    close(distance(A, D), 6);
+    close(page19Check.AB, distance(A, B));
+    close(page19Check.AD, distance(A, D));
+    close(page19Check.BC, distance(B, C));
+    close(page19Check.DC, distance(D, C));
+    // The 30° is measured from the diagonal to the base at B, so tan 30° =
+    // CD / BC = AB / AD.
+    close(distance(A, B) / distance(A, D), Math.tan(Math.PI / 6));
   });
 
   it('has equal opposite sides and a common diagonal', () => {
@@ -244,6 +256,32 @@ describe('page 19 — the three printed pairs', () => {
     expect(congruenceReport(panel.first, panel.second).asa).toBe(true);
   });
 
+  it('keeps the two copies of a panel apart, so no label lands on the other triangle', () => {
+    const bounds = (t: {
+      A: readonly [number, number];
+      B: readonly [number, number];
+      C: readonly [number, number];
+    }) => {
+      const xs = [t.A[0], t.B[0], t.C[0]];
+      const ys = [t.A[1], t.B[1], t.C[1]];
+      return {
+        minX: Math.min(...xs),
+        maxX: Math.max(...xs),
+        minY: Math.min(...ys),
+        maxY: Math.max(...ys),
+      };
+    };
+    for (const panel of page19Pairs) {
+      const first = bounds(panel.first);
+      const second = bounds(panel.second);
+      const overlapX = Math.min(first.maxX, second.maxX) - Math.max(first.minX, second.minX);
+      const overlapY = Math.min(first.maxY, second.maxY) - Math.max(first.minY, second.minY);
+      // Regression: a hand-tuned shift used to put pair ③'s copies on top of
+      // each other, which collided their measurement labels.
+      expect(overlapX <= 0 || overlapY <= 0, panel.id).toBe(true);
+    }
+  });
+
   it('draws the second triangle of every pair as a rigid copy', () => {
     for (const panel of page19Pairs) {
       const first = [
@@ -282,16 +320,10 @@ describe('page 19 — the isosceles-triangle configuration', () => {
   });
 
   it('makes MEB ≅ MFC and MEA ≅ MFA hold, as the exercise asserts', () => {
-    const first = congruenceReport(
-      triangle(M, E, B),
-      triangle(M, F, C),
-    );
+    const first = congruenceReport(triangle(M, E, B), triangle(M, F, C));
     expect(first.asa).toBe(true);
 
-    const second = congruenceReport(
-      triangle(M, E, A),
-      triangle(M, F, A),
-    );
+    const second = congruenceReport(triangle(M, E, A), triangle(M, F, A));
     expect(second.asa).toBe(true);
   });
 

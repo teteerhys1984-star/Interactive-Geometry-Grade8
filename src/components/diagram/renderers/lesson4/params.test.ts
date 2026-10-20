@@ -31,7 +31,14 @@ import {
   teacherKiteFigure,
 } from '@/content/units/lesson-04-figures';
 import type { InteractiveDiagram } from '@/content/schema';
-import { readCases, readChoiceTasks, readFigure, readPairOptions, readPoint, readText } from './params';
+import {
+  readCases,
+  readChoiceTasks,
+  readFigure,
+  readPairOptions,
+  readPoint,
+  readText,
+} from './params';
 
 /**
  * ============================================================================
@@ -71,7 +78,16 @@ describe('readFigureSpec — accepts well-formed figures', () => {
   it('keeps polygons, angle arcs, right angles and free text', () => {
     const figure: FigureSpec = {
       ...minimal,
-      polygons: [{ points: [[0, 0], [4, 0], [0, 3]], fill: true }],
+      polygons: [
+        {
+          points: [
+            [0, 0],
+            [4, 0],
+            [0, 3],
+          ],
+          fill: true,
+        },
+      ],
       angles: [
         { at: [0, 0], from: [4, 0], to: [0, 3], label: '35°' },
         { at: [0, 3], from: [0, 0], to: [4, 0], right: true },
@@ -106,11 +122,27 @@ describe('readFigureSpec — rejects malformed figures', () => {
     ['a partial viewBox', { viewBox: { x: 0, y: 0, w: 6 } }],
     ['a zero-width viewBox', { viewBox: { x: 0, y: 0, w: 0, h: 5 } }],
     ['a point with one coordinate', { ...minimal, points: [{ at: [0], label: 'A' }] }],
-    ['a point with a NaN coordinate', { ...minimal, points: [{ at: [0, Number.NaN], label: 'A' }] }],
+    [
+      'a point with a NaN coordinate',
+      { ...minimal, points: [{ at: [0, Number.NaN], label: 'A' }] },
+    ],
     ['a point without a label', { ...minimal, points: [{ at: [0, 0] }] }],
     ['a segment without endpoints', { ...minimal, segments: [{}] }],
     ['a segment string', { ...minimal, segments: 'AB' }],
-    ['a polygon with two vertices', { ...minimal, polygons: [{ points: [[0, 0], [1, 1]] }] }],
+    [
+      'a polygon with two vertices',
+      {
+        ...minimal,
+        polygons: [
+          {
+            points: [
+              [0, 0],
+              [1, 1],
+            ],
+          },
+        ],
+      },
+    ],
     ['an angle missing a side', { ...minimal, angles: [{ at: [0, 0], from: [1, 0] }] }],
   ])('returns null for %s', (_label, value) => {
     expect(readFigureSpec(value)).toBeNull();
@@ -121,7 +153,10 @@ describe('readFigureSpec — rejects malformed figures', () => {
     // than no drawing: the reader is deliberately all-or-nothing.
     const figure = {
       ...minimal,
-      segments: [{ from: [0, 0], to: [4, 0] }, { from: [0, 0], to: 'B' }],
+      segments: [
+        { from: [0, 0], to: [4, 0] },
+        { from: [0, 0], to: 'B' },
+      ],
     };
     expect(readFigureSpec(figure)).toBeNull();
   });
@@ -244,19 +279,13 @@ describe('every Lesson 4 figure and lab survives its reader', () => {
     figureDefinitionPair,
   };
 
-  it.each(Object.entries(textbookFigures))(
-    'reads the textbook spec of %s',
-    (_name, spec) => {
-      expect(readFigure(spec.construction)).not.toBeNull();
-    },
-  );
+  it.each(Object.entries(textbookFigures))('reads the textbook spec of %s', (_name, spec) => {
+    expect(readFigure(spec.construction)).not.toBeNull();
+  });
 
-  it.each(Object.entries(authoredFigures))(
-    'reads the authored overlay %s',
-    (_name, spec) => {
-      expect(readFigure(spec.construction)).not.toBeNull();
-    },
-  );
+  it.each(Object.entries(authoredFigures))('reads the authored overlay %s', (_name, spec) => {
+    expect(readFigure(spec.construction)).not.toBeNull();
+  });
 
   it.each(Object.entries(rawFigures))('reads the raw figure %s', (_name, spec) => {
     expect(readFigure(spec)).not.toBeNull();
@@ -267,20 +296,22 @@ describe('every Lesson 4 figure and lab survives its reader', () => {
     expect(cases).toHaveLength(3);
     expect(cases.map((item) => item.id)).toEqual(['sas', 'asa', 'sss']);
     // Only case ② is handed to the student unfinished — that is the panel the
-    // book asks them to complete.
-    const unfinished = cases.filter(
-      (item) => item.completed.segments!.length > item.given.segments!.length,
-    );
+    // book asks them to complete: its givens carry no vertex B, while the
+    // completed figure closes the two printed rays at B.
+    const hasB = (figure: { points?: { label: string }[] }) =>
+      (figure.points ?? []).some((point) => point.label === 'B');
+    const unfinished = cases.filter((item) => !hasB(item.given) && hasB(item.completed));
     expect(unfinished.map((item) => item.id)).toEqual(['asa']);
     for (const item of cases) {
       expect(item.name.length).toBeGreaterThan(0);
       expect(item.note.length).toBeGreaterThan(0);
-      // Panels ① and ③ are already printed as complete triangles, so the
-      // "completed" figure only matters for ②, whose two printed rays must be
-      // closed into ABC. Every completed figure is a superset of its given one.
-      expect(item.completed.segments!.length).toBeGreaterThanOrEqual(
-        item.given.segments!.length,
-      );
+      expect(item.completed.points!.length).toBeGreaterThanOrEqual(item.given.points!.length);
+      // A completed drawing may never keep the open rays: they used to run past
+      // B and cross outside the triangle.
+      if (item.id === 'asa') {
+        expect(item.given.segments).toHaveLength(4);
+        expect(item.completed.segments).toHaveLength(4);
+      }
     }
   });
 
@@ -293,7 +324,10 @@ describe('every Lesson 4 figure and lab survives its reader', () => {
       expect(tasks, name).not.toBeNull();
       expect(tasks.length, name).toBeGreaterThanOrEqual(3);
       for (const task of tasks) {
-        expect(task.options.map((option) => option.id), name).toContain(task.answer);
+        expect(
+          task.options.map((option) => option.id),
+          name,
+        ).toContain(task.answer);
       }
     }
     expect(readFigure(practicePairsDiagram.params!.figure)).not.toBeNull();

@@ -132,12 +132,7 @@ export function triangleFromSAS(
 }
 
 /** Case ② — one side `[AC]` and the two adjacent angles at `A` and `C`. */
-export function triangleFromASA(
-  A: XY,
-  C: XY,
-  angleA: number,
-  angleC: number,
-): Triangle | null {
+export function triangleFromASA(A: XY, C: XY, angleA: number, angleC: number): Triangle | null {
   const ac = sub(C, A);
   const baseAngle = degrees(Math.atan2(ac[1], ac[0]));
   // Interior angles open towards the same side of (AC) for a proper triangle.
@@ -198,12 +193,7 @@ export const page17CaseSAS = triangleFromSAS([2.6, 2.6], 30, 4, 65, 3);
  * printed rays meet; the student completes the triangle.
  */
 export const page17CaseASA =
-  triangleFromASA(
-    [2.4, 2.4],
-    add([2.4, 2.4], direction(65, 3)),
-    35,
-    85,
-  ) ?? page17CaseSAS;
+  triangleFromASA([2.4, 2.4], add([2.4, 2.4], direction(65, 3)), 35, 85) ?? page17CaseSAS;
 
 /** Panel ③ — the complete triangle printed with sides 4, 3 and 2. */
 export const page17CaseSSS = triangleFromSSS([2.4, 2.4], 4, 3, 2, 20) ?? page17CaseSAS;
@@ -277,19 +267,31 @@ export const page18Example3 = (() => {
  * ==========================================================================
  *
  *  The printed rectangle is marked with right angles at A and C, one tick on
- *  [AB] and [DC], two ticks on [AD] and [BC], and 30° at D and at B. In a
- *  rectangle those two 30° angles are the alternate interior angles made by
- *  the diagonal [BD], so the rectangle's aspect ratio is fixed:
- *      tan 30° = AD / AB  ⇒  AD = AB·tan 30°.
+ *  [AB] and [DC], two ticks on [AD] and [BC], and 30° at D and at B. Looking at
+ *  the print, the 30° at B is CBD — between the base [BC] and the diagonal [BD]
+ *  — and the 30° at D is ADB — between the top side [DA] and the diagonal. Those
+ *  are the alternate interior angles made by [BD] between AD ∥ BC, so one of
+ *  them is all the figure needs:
+ *
+ *      in the right triangle BCD,  tan 30° = CD / BC.
+ *
+ *  The printed rectangle has no scale, so the width is fixed at 6 for drawing
+ *  purposes and the height follows:
+ *
+ *      BC = AD = 6        (the two-tick sides)
+ *      AB = DC = 6·tan 30° = 3.4641…   (the one-tick sides)
+ *
+ *  Naming matters here: [AB] is the SHORT side and [AD] the long one — the
+ *  earlier derivation had them swapped.
  * ========================================================================== */
 export const page19Check = (() => {
-  const AB = 6;
-  const AD = AB * Math.tan(rad(30));
+  const width = 6; // BC = AD — the sides carrying two ticks
+  const height = width * Math.tan(rad(30)); // AB = DC — the sides carrying one tick
   const B: XY = [0, 0];
-  const C: XY = [AB, 0];
-  const A: XY = [0, AD];
-  const D: XY = [AB, AD];
-  return { A, B, C, D, AB, AD, angle: 30 };
+  const C: XY = [width, 0];
+  const A: XY = [0, height];
+  const D: XY = [width, height];
+  return { A, B, C, D, AB: height, AD: width, BC: width, DC: height, angle: 30 };
 })();
 
 /* ==========================================================================
@@ -352,45 +354,77 @@ export interface PairPanel {
   printed: { sides?: number[]; angle?: number; angles?: number[]; side?: number };
 }
 
-function copyTriangle(t: Triangle, angle: number, shift: XY): Triangle {
-  const spin = (p: XY) => add(rotate(p, angle, [0, 0]), shift);
-  return { A: spin(t.A), B: spin(t.B), C: spin(t.C) };
+/**
+ * A panel's two triangles are placed by their bounding boxes, never by a
+ * hand-tuned offset: the first copy sits in the panel's upper-left corner, the
+ * second (a rigid rotation) in its lower-right corner. That keeps the two
+ * drawings — and every measurement label — apart, as they are on the page.
+ *
+ * Placement is a rigid motion, so it cannot change any printed length or angle;
+ * `lesson-04-geometry.test.ts` re-measures both copies of every pair.
+ */
+const PANEL_W = 10.6;
+const PANEL_H = 7.7;
+const FIRST_CORNER: XY = [1.0, 2.95];
+const SECOND_CORNER: XY = [5.35, 0.5];
+
+function triangleBounds(t: Triangle) {
+  const xs = [t.A[0], t.B[0], t.C[0]];
+  const ys = [t.A[1], t.B[1], t.C[1]];
+  return {
+    minX: Math.min(...xs),
+    minY: Math.min(...ys),
+    maxX: Math.max(...xs),
+    maxY: Math.max(...ys),
+  };
 }
 
+const mapTriangle = (t: Triangle, f: (p: XY) => XY): Triangle => ({
+  A: f(t.A),
+  B: f(t.B),
+  C: f(t.C),
+});
+
+/** Rotate about the centroid, then translate so the bbox sits on `corner`. */
+function placeTriangle(t: Triangle, angle: number, corner: XY): Triangle {
+  const centre: XY = [(t.A[0] + t.B[0] + t.C[0]) / 3, (t.A[1] + t.B[1] + t.C[1]) / 3];
+  const spun = mapTriangle(t, (p) => add(rotate(sub(p, centre), angle), corner));
+  const bounds = triangleBounds(spun);
+  return mapTriangle(spun, (p) => add(p, [corner[0] - bounds.minX, corner[1] - bounds.minY]));
+}
+
+function pairPanel(
+  id: string,
+  label: string,
+  kind: PairKind,
+  base: Triangle,
+  spin: number,
+  printed: PairPanel['printed'],
+): PairPanel {
+  return {
+    id,
+    label,
+    kind,
+    first: placeTriangle(base, 0, FIRST_CORNER),
+    second: placeTriangle(base, spin, SECOND_CORNER),
+    printed,
+  };
+}
+
+export const PAGE19_PAIR_PANEL = { width: PANEL_W, height: PANEL_H } as const;
+
 export const page19Pairs: PairPanel[] = [
-  (() => {
-    const first = triangleFromSSS([0, 0], 2, 2.6, 3, 0)!;
-    return {
-      id: 'pair-1',
-      label: '①',
-      kind: 'sss' as const,
-      first,
-      second: copyTriangle(first, 205, [4.6, 4.3]),
-      printed: { sides: [2, 3, 2.6] },
-    };
-  })(),
-  (() => {
-    const first = triangleFromSAS([0, 0], 0, 2, 80, 4);
-    return {
-      id: 'pair-2',
-      label: '②',
-      kind: 'sas' as const,
-      first,
-      second: copyTriangle(first, 200, [4.2, 4.2]),
-      printed: { sides: [2, 4], angle: 80 },
-    };
-  })(),
-  (() => {
-    const first = triangleFromASA([0, 0], [4, 0], 44, 82)!;
-    return {
-      id: 'pair-3',
-      label: '③',
-      kind: 'asa' as const,
-      first,
-      second: copyTriangle(first, 200, [4.5, 3.9]),
-      printed: { angles: [44, 82], side: 4 },
-    };
-  })(),
+  pairPanel('pair-1', '①', 'sss', triangleFromSSS([0, 0], 2, 2.6, 3, 0)!, 200, {
+    sides: [2, 3, 2.6],
+  }),
+  pairPanel('pair-2', '②', 'sas', triangleFromSAS([0, 0], 0, 2, 80, 4), 195, {
+    sides: [2, 4],
+    angle: 80,
+  }),
+  pairPanel('pair-3', '③', 'asa', triangleFromASA([0, 0], [4, 0], 44, 82)!, 205, {
+    angles: [44, 82],
+    side: 4,
+  }),
 ];
 
 /* ==========================================================================
@@ -492,7 +526,6 @@ export function congruenceReport(first: Triangle, second: Triangle): CongruenceR
 
   const sss = sidesEqual.every((value) => value === 1);
   const sas = sidesEqual[0] === 1 && sidesEqual[2] === 1 && anglesEqual[0] === 1;
-  const asa =
-    sidesEqual[0] === 1 && anglesEqual[0] === 1 && anglesEqual[1] === 1;
+  const asa = sidesEqual[0] === 1 && anglesEqual[0] === 1 && anglesEqual[1] === 1;
   return { sss, sas, asa, sidesEqual, anglesEqual };
 }
