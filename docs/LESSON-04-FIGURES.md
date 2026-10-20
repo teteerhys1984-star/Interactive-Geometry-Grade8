@@ -164,4 +164,13 @@ component, and the whole audit — root cause, per-figure inventory, the new typ
 scale, what each figure needed beyond the shared fix, and the explicit limits of
 the visual check — is in
 [`LESSON-04-LABEL-AUDIT.md`](LESSON-04-LABEL-AUDIT.md). Before/after rasters of
-six figures are in `docs/assets/lesson-04/`.
+six figures from that first revision are in `docs/assets/lesson-04/`.
+
+**Second revision (vertex names at 16 px).** A name is now set at the page's
+body size — 16 px, against 15.5 px for a printed value — and the per-figure
+`labelScale` is limited to measurements, so it can no longer shrink a name
+below the values beside it. The reasoning, the three-width measurements
+(750 / 799 / 1 000 px) for all 14 drawings and the nine lab panels, and the
+renders that justify keeping `fig-19-pairs`' `labelScale: 0.82`, are in
+[§7 of the audit](LESSON-04-LABEL-AUDIT.md#7-the-16-px-revision--vertex-names-set-at-the-size-of-the-prose);
+the comparison images are in `docs/assets/lesson-04/vertex-16/`.

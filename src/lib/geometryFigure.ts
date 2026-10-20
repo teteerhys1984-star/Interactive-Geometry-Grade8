@@ -103,9 +103,12 @@ export interface FigureSpec {
   /** Drawing window in mathematical coordinates. */
   viewBox: { x: number; y: number; w: number; h: number };
   /**
-   * Typographic multiplier for this figure's labels (default 1). Labels are
-   * sized from the window WIDTH, so figures already share one scale; use this
-   * only when a drawing is measurably denser (or larger) than the rest.
+   * Typographic multiplier for this figure's MEASUREMENTS (default 1): printed
+   * values, angle values and panel numbers. Labels are sized from the window
+   * WIDTH, so figures already share one scale; use this only when a drawing is
+   * measurably denser (or larger) than the rest. Vertex names are not scaled:
+   * their size is the lesson's, so a dense figure cannot drag its names below
+   * the values they label.
    */
   labelScale?: number;
   frames?: FigureFrame[];
