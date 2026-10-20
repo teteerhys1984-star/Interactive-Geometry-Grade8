@@ -17,10 +17,16 @@
   --fig-soft: rgba(15, 118, 110, 0.1);
   --fig-image-soft: rgba(194, 65, 12, 0.1);
 
+  /*
+   * The figure is laid out by its WIDTH only. A `max-block-size` cap used to be
+   * here, and it silently rescaled every tall figure inside a full-width box
+   * (leaving side margins and shrinking the lettering nobody had asked to
+   * shrink). Height now follows the viewBox, and the lettering follows the
+   * width — the one scale the page actually controls.
+   */
   display: block;
   inline-size: 100%;
   block-size: auto;
-  max-block-size: 30rem;
   overflow: visible;
   direction: ltr;
 }
@@ -28,7 +34,6 @@
 .frame {
   fill: none;
   stroke: rgba(38, 50, 72, 0.22);
-  stroke-dasharray: 0.6 0.5;
 }
 
 .frameLabel {
@@ -71,10 +76,6 @@
   stroke: var(--fig-mark);
 }
 
-.dashed {
-  stroke-dasharray: 0.62 0.44;
-}
-
 .tick {
   stroke: var(--fig-mark);
   stroke-linecap: round;
@@ -92,14 +93,25 @@
   fill: var(--fig-image);
 }
 
+.vertexLabel {
+  font-weight: 600;
+}
+
+/*
+ * Every label is haloed in the paper colour. The stroke is expressed in `em`,
+ * so it scales with the letter: at 0.16em it is slightly wider than the side
+ * stroke, which is what actually separates a letter from a line running
+ * behind it. At the old 0.06em the line was drawn straight through the glyph.
+ */
 .label {
   fill: var(--fig-ink);
   font-family: 'Noto Naskh Arabic', 'Amiri', 'Segoe UI', 'Tahoma', sans-serif;
   font-style: italic;
   paint-order: stroke;
   stroke: #fffdf7;
-  stroke-width: 0.06em;
+  stroke-width: 0.16em;
   stroke-linejoin: round;
+  stroke-linecap: round;
 }
 
 .labelGiven {
