@@ -38,4 +38,14 @@ describe('ShapeTranslationLab', () => {
     fireEvent.change(horizontal, { target: { value: '4' } });
     expect(screen.getByRole('status').textContent).toContain('(4, 1)');
   });
+
+  it('distinguishes a line image that coincides from a distinct parallel image', async () => {
+    const user = userEvent.setup();
+    render(<ShapeTranslationLab spec={spec} />);
+    await user.click(screen.getByRole('button', { name: 'مستقيم' }));
+    expect(screen.getByRole('status').textContent).toContain('تنطبق صورته عليه');
+
+    fireEvent.change(screen.getByLabelText(/الحركة الشاقولية/), { target: { value: '0' } });
+    expect(screen.getByRole('status').textContent).toContain('موازيًا متميزًا');
+  });
 });

@@ -343,8 +343,14 @@ describe('diagram contracts', () => {
     }
   });
 
-  it('ships no `image` diagrams — no source image has been approved for publication', () => {
-    expect(allDiagrams().filter((diagram) => diagram.kind === 'image')).toHaveLength(0);
+  it('ships only the 22 approved, page-located Lesson 3 source crops as images', () => {
+    const images = allDiagrams().filter((diagram) => diagram.kind === 'image');
+    expect(images).toHaveLength(22);
+    for (const diagram of images) {
+      expect(diagram.origin).toBe('textbook');
+      expect(diagram.src).toMatch(/^diagrams\/unit-01\/lesson-03\/[^/]+\.png$/);
+      expect([11, 12, 13, 14, 15, 16]).toContain(diagram.source?.page);
+    }
   });
 
   it('gives every `reference` figure a textbook page number', () => {
@@ -519,6 +525,7 @@ const LESSON_3_VERBATIM_CORPUS = [
   "ما يمكنك قوله بما يتعلق بالمستقيمين $(d')$ و $(d'')$؟",
   "ما طول القطعة $[E'B']$؟ اشرح إجابتك.",
   'أي الأشكال الثلاثة هو رسمه؟',
+  'رسم كلٌّ من عدنان وغسان وعصام النقطة $D$، صورة النقطة $C$ وفق الانسحاب الذي ينقل $B$ إلى $A$، مستعملين الطول نفسه للقطعة $[CD]$.',
 ];
 
 describe('authored material never displaces the source', () => {
@@ -569,17 +576,17 @@ describe('authored material never displaces the source', () => {
     }
   });
 
-  it('keeps every unverified textbook figure as a faithful `reference` placeholder', () => {
+  it('keeps textbook figures either as faithful references or approved source images', () => {
     const textbookFigures = allDiagrams().filter((d) => d.origin === 'textbook');
-    // Lessons 1–5 contribute 43 figures. Lesson 6 adds five reference figures
-    // and three reconstructions (51). Lesson 7 adds five reference figures and
-    // eight reconstructions. Lesson 1 now uses authored explanatory figures,
-    // not the previous seven reference occurrences (57). Lesson 2 follows the
-    // same policy: its five blank-sheet placeholders were replaced by authored
-    // reconstructions, leaving its two verified squared-paper sheets: 52.
-    expect(textbookFigures).toHaveLength(52);
-    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(52);
+    // The previous 52 source figures remain unchanged outside Lesson 3. Lesson 3
+    // replaces its 14 generic references with 22 page-located scan crops: 60 total.
+    expect(textbookFigures).toHaveLength(60);
+    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(60);
     for (const diagram of textbookFigures) {
+      if (diagram.kind === 'image') {
+        expect(diagram.source, `${diagram.id} crop needs a printed-page source`).toBeDefined();
+        continue;
+      }
       if (VERIFIED_TEXTBOOK_FIGURES.includes(diagram.id)) continue;
       expect(diagram.kind, `${diagram.id} must stay a reference placeholder`).toBe('reference');
     }
@@ -678,12 +685,92 @@ describe('Lesson 3 — authored material never displaces the source', () => {
     }
   });
 
-  it('keeps every Lesson 3 textbook figure as a reference, never an approximation', () => {
+  it('uses the 22 source-crop figures with page metadata and per-page coverage', () => {
     const figures = lesson.steps
       .flatMap((step) => collectDiagrams(step.blocks))
       .filter((diagram) => diagram.origin === 'textbook');
-    expect(figures).toHaveLength(14);
-    for (const figure of figures) expect(figure.kind, figure.id).toBe('reference');
+    expect(figures).toHaveLength(22);
+
+    const perPage = new Map<number, number>();
+    for (const figure of figures) {
+      expect(figure.kind, figure.id).toBe('image');
+      if (figure.kind !== 'image') continue;
+      expect(figure.source, figure.id).toBeDefined();
+      expect(figure.src).toMatch(/^diagrams\/unit-01\/lesson-03\/[^/]+\.png$/);
+      const page = figure.source?.page;
+      expect(typeof page, `${figure.id} page metadata`).toBe('number');
+      if (typeof page !== 'number') continue;
+      perPage.set(page, (perPage.get(page) ?? 0) + 1);
+    }
+    expect([...perPage.entries()].sort(([a], [b]) => a - b)).toEqual([
+      [11, 3],
+      [12, 5],
+      [13, 3],
+      [14, 4],
+      [15, 3],
+      [16, 4],
+    ]);
+  });
+
+  it('keeps the p.15 square model geometrically consistent with the printed translation', () => {
+    const step = lesson.steps.find((candidate) => candidate.id === 'step-11-square-application')!;
+    const figure = collectDiagrams(step.blocks).find(
+      (diagram) => diagram.id === 'auth-03-square-application-construction',
+    );
+    expect(figure?.kind).toBe('interactive');
+    if (!figure || figure.kind !== 'interactive') return;
+    const elements = figure.params.elements as {
+      kind: string;
+      at?: [number, number];
+      label?: string;
+    }[];
+    const point = (label: string) =>
+      elements.find((element) => element.kind === 'point' && element.label === label)?.at;
+    expect(point('A′')).toEqual(point('B'));
+    expect(point('D′')).toEqual(point('C'));
+    const pairs: [string, string][] = [
+      ['A', 'A′'],
+      ['B', 'B′'],
+      ['C', 'C′'],
+      ['D', 'D′'],
+    ];
+    for (const [source, image] of pairs) {
+      const original = point(source)!;
+      const translated = point(image)!;
+      expect(translated[0] - original[0]).toBe(3);
+      expect(translated[1] - original[1]).toBe(0);
+    }
+  });
+
+  it('follows the p.16 scan for Practice ④ names, direction, and correct attempt', () => {
+    const step = lesson.steps.find((candidate) => candidate.id === 'step-16-practice-four')!;
+    const sourceText = collectStrings(step.blocks).join(' ');
+    expect(sourceText).toContain('عدنان وغسان وعصام');
+    expect(sourceText).toContain('ينقل $B$ إلى $A$');
+    expect(sourceText).not.toContain('شاكر');
+
+    const answer = lesson.teacherResources!.textbookSolutions.find(
+      (item) => item.id === 'l3-sol-p16-ex4-1',
+    )!;
+    expect(collectStrings(answer.blocks).join(' ')).toContain('رسم غسان هو الشكل ③');
+  });
+
+  it('keeps the p.16 student starter at the givens, with no translated answer points', () => {
+    const step = lesson.steps.find((candidate) => candidate.id === 'step-14-practice-two')!;
+    const figure = collectDiagrams(step.blocks).find(
+      (diagram) => diagram.id === 'auth-03-practice-two-givens',
+    );
+    expect(figure?.origin).toBe('authored');
+    expect(figure?.kind).toBe('interactive');
+    if (!figure || figure.kind !== 'interactive') return;
+    const elements = figure.params.elements as { kind: string; label?: string }[];
+    const labels = elements
+      .filter((element) => element.kind === 'point')
+      .map((element) => element.label);
+    expect(labels).toEqual(expect.arrayContaining(['A', 'B', 'C', 'E']));
+    expect(labels).not.toContain('B′');
+    expect(labels).not.toContain('E′');
+    expect(elements.some((element) => element.kind === 'arrow')).toBe(false);
   });
 });
 
@@ -774,10 +861,41 @@ describe('teacher resources', () => {
     expect(lesson02Resources!.textbookSolutions.length).toBe(17);
   });
 
-  it('solves every printed question of Lesson 3', () => {
+  it('solves every printed branch of Lesson 3 with page-matched teacher records', () => {
     expect(lesson03Resources).toBeDefined();
-    // 2 + 5 + 1 + 3 + 4 + 5 + 1 + 2 = 23 prompts across pages 11–16.
-    expect(lesson03Resources!.textbookSolutions.length).toBe(23);
+    // Split the p.11 figures, p.12 shapes, and p.15 grids into branch-matched
+    // records: 9 on p.11, 3 on p.12, 4 on p.15, and 12 on p.16 (28 total).
+    const solutions = lesson03Resources!.textbookSolutions;
+    expect(solutions).toHaveLength(28);
+    const perPage = new Map<number, number>();
+    for (const item of solutions) {
+      const page = Number(item.reference.match(/صفحة (\d+)/)?.[1]);
+      perPage.set(page, (perPage.get(page) ?? 0) + 1);
+    }
+    expect([...perPage.entries()].sort(([a], [b]) => a - b)).toEqual([
+      [11, 9],
+      [12, 3],
+      [15, 4],
+      [16, 12],
+    ]);
+    const ids = new Set(solutions.map((item) => item.id));
+    for (const id of [
+      'l3-sol-p11-conjecture-q1-fig1',
+      'l3-sol-p11-conjecture-q1-fig2',
+      'l3-sol-p11-conjecture-q2-fig1',
+      'l3-sol-p11-conjecture-q2-fig2',
+      'l3-sol-p12-shape-segment',
+      'l3-sol-p12-shape-ray',
+      'l3-sol-p12-shape-circle',
+      'l3-sol-p15-check-draw-parallel',
+      'l3-sol-p15-check-draw-perpendicular',
+      'l3-sol-p15-check-parallel-fill',
+      'l3-sol-p15-check-perpendicular-fill',
+      'l3-sol-p16-ex4-1',
+      'l3-sol-p16-ex4-2',
+    ]) {
+      expect(ids, `missing branch solution ${id}`).toContain(id);
+    }
   });
 
   it('reproduces each printed question verbatim inside its solution', () => {
