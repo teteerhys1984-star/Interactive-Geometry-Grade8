@@ -94,6 +94,9 @@ function Q6Source() {
   const x = 80;
   const y = 48;
   const cell = 52;
+  // Verified source nodes, bottom-left origin, then converted to this top-left
+  // canvas: A = (7,4) -> (7,1) and C = (4,2) -> (4,3). The translation A -> C
+  // is therefore three cells left and two cells down.
   return (
     <>
       <GridLines columns={8} rows={5} x={x} y={y} cell={cell} />
@@ -118,8 +121,8 @@ function Q6Source() {
       <text x={x + 7 * cell + 10} y={y + cell - 10} className={styles.redLabel}>
         A
       </text>
-      <circle cx={x + 4 * cell} cy={y + 4 * cell} r="6" className={styles.redDot} />
-      <text x={x + 4 * cell + 10} y={y + 4 * cell - 10} className={styles.redLabel}>
+      <circle cx={x + 4 * cell} cy={y + 3 * cell} r="6" className={styles.redDot} />
+      <text x={x + 4 * cell + 10} y={y + 3 * cell - 10} className={styles.redLabel}>
         C
       </text>
       <circle cx={x + 3.55 * cell} cy={y + 1.55 * cell} r="18" className={styles.exerciseBubble} />

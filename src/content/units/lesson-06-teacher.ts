@@ -1,10 +1,12 @@
 import type { TeacherResourcesInput } from '../schema';
+import { branchSolutionBlocks } from './lesson-06-branch-solutions';
 import type { ContinuationExercise } from './lesson-06-unit-exercises-continuation';
 
 /**
  * One detailed teacher solution per MAIN printed question. Branches remain
  * grouped under their source question and are solved in printed order.
- * Generated from the learner records so the verbatim prompt cannot drift.
+ * Generated from the learner records so the verbatim prompt cannot drift and
+ * the teacher sees the same branch reasoning the student reveals.
  */
 export function buildLesson06TeacherResources(
   exercises: ContinuationExercise[],
@@ -32,10 +34,12 @@ export function buildLesson06TeacherResources(
             ordered: true,
             items: [
               'اطلب من الطالب قراءة النص المطبوع كاملاً قبل فتح الشرح.',
+              'كل حل معلم مقسّم إلى فروع بعدد التعليمات المطبوعة للسؤال (46 فرعاً في الأسئلة 3–15)؛ قيّم الفرع الذي يعمل عليه الطالب ثم انتقل إلى الذي يليه بالترتيب المطبوع.',
               'استخدم مختبر التفكير لتسجيل السلسلة كلها؛ لا تناقش صحة قرار منفرد قبل الإرسال المجمع.',
               'في مسائل الإنشاء، قيّم العلامات الهندسية وخطوات الفرجار والمسطرة، لا التشابه البصري وحده.',
               'في السؤالين 7 و13، اطلب فحص اتجاه المتجه قبل الحساب أو عدّ الخانات.',
               'في الأسئلة 3 و11، لا تعتمد نتيجة التطابق ما لم يكتب الطالب التناظر الصحيح بين الرؤوس.',
+              'في السؤال 6، تأكد من أن الانتقال من $A$ إلى $C$ هو ثلاث خانات يساراً وخانتان أسفل، لا ثلاث خانات في كل محور.',
             ],
           },
         ],
@@ -53,7 +57,20 @@ export function buildLesson06TeacherResources(
               'نسيان نقل جميع رؤوس الشكل بالمتجه نفسه.',
               'إثبات متوازي الأضلاع من زوج واحد من الأضلاع من دون شرط كافٍ.',
               'الخلط بين صورة نقطة وسابق صورة نقطة في السؤال 13.',
+              'استعمال ترتيب رؤوس مطبوع كما هو في كتابة التطابق بدل ترتيب التناظر (السؤالان 3 و11).',
+              'تسمية متوازي الأضلاع الناتج عن إنشاء صورة نقطة بترتيب خاطئ في السؤال 10.',
             ],
+          },
+        ],
+      },
+      {
+        type: 'teaching',
+        variant: 'summary',
+        title: 'تغطية الفروع المطبوعة',
+        blocks: [
+          {
+            type: 'paragraph',
+            text: `حل واحد لكل سؤال رئيسي (${exercises.length} حلاً)، ويضمّ كل حل ${exercises.reduce((sum, exercise) => sum + exercise.branches.length, 0)} فرعاً مطبوعاً موزعة على الأسئلة بالترتيب نفسه. كل فرع يعرض القاعدة عند الحاجة، وسبب انطباقها، وخطوات الاستدلال المبرَّرة، والنتيجة، والتحقق، وخطأً شائعاً حيث يلزم.`,
           },
         ],
       },
@@ -79,7 +96,7 @@ export function buildLesson06TeacherResources(
           type: 'teaching',
           variant: 'example',
           title: 'الخطوات حسب ترتيب فروع السؤال',
-          blocks: [{ type: 'list', ordered: true, items: exercise.steps }],
+          blocks: branchSolutionBlocks(exercise.branches),
         },
         {
           type: 'callout',
@@ -100,6 +117,7 @@ export function buildLesson06TeacherResources(
           blocks: [{ type: 'paragraph', text: exercise.warning }],
         },
       ],
+      ...(exercise.limitation ? { limitation: exercise.limitation } : {}),
     })),
   };
 }

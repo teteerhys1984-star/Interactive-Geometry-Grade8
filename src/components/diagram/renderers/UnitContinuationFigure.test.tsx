@@ -35,6 +35,18 @@ describe('UnitContinuationFigure source reconstructions', () => {
     expect(container.textContent).not.toContain('③');
   });
 
+  it('draws Q6 at the verified source nodes and the printed 3-left / 2-down vector', () => {
+    const { container } = render(<UnitContinuationFigure spec={spec('q6-source-grid')} />);
+    const dots = [...container.querySelectorAll('circle[r="6"]')].map(coordinates);
+    expect(dots).toHaveLength(2);
+    const [a, c] = dots as { x: number; y: number }[];
+    // Renderer grid origin (80, 48), 52 px cells, top-left origin.
+    expect(a).toEqual({ x: 80 + 7 * 52, y: 48 + 1 * 52 }); // A = (7,4) bottom-left
+    expect(c).toEqual({ x: 80 + 4 * 52, y: 48 + 3 * 52 }); // C = (4,2) bottom-left
+    expect((a!.x - c!.x) / 52).toBe(3); // three cells left
+    expect((c!.y - a!.y) / 52).toBe(2); // two cells down
+  });
+
   it('places every Q13 grid label once and draws no answer arrows', () => {
     const { container } = render(<UnitContinuationFigure spec={spec('q13-source-grid')} />);
     for (const label of ['F', 'L', 'A', 'G', 'H', 'B', 'I', 'J', 'K', 'C', 'D', 'E', 'M', 'N']) {

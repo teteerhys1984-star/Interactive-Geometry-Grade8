@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { getLesson, lessonDiagrams } from './registry';
+import type { ContentBlock } from './schema';
 import { lesson06Exercises } from './units/lesson-06-unit-exercises-continuation';
 
 const lesson = getLesson('lesson-06-unit-one-exercises-continuation')!.lesson;
@@ -20,6 +21,41 @@ const PRINTED_PROMPTS = [
   '1. ارسم، باللون الأسود، مستطيلاً $ABCD$ بعداه $AB=2\\,cm$ و $AD=4\\,cm$.\n2. ارسم:\n① باللون الأزرق، صورة المستطيل $ABCD$ وفق الانسحاب الذي ينقل $A$ إلى $B$.\n② باللون الأحمر، صورة المستطيل $ABCD$ وفق الانسحاب الذي ينقل $D$ إلى $A$.\n③ باللون الأخضر، صورة المستطيل $ABCD$ وفق الانسحاب الذي ينقل $B$ إلى $D$.',
   'المثلث $ABC$ المرسوم جانباً، قائمٌ في $A$ و $AB=3\\,cm$ و $AC=2\\,cm$. $E$ نقطة من وتره $[BC]$، $CE=1\\,cm$.\nارسم هذا المثلث على دفترك، ثم ارسم صورته وفق الانسحاب الذي ينقل $C$ إلى $E$.',
 ] as const;
+
+/** Printed sub-part labels, per main question, exactly as the source prints them. */
+const BRANCH_LABELS: Record<number, string[]> = {
+  3: ['1.', '2.'],
+  4: ['①', '②'],
+  5: ['1.', '2.'],
+  6: ['1.', '2.', '3.', '4.'],
+  7: ['1.', '2.①', '2.②'],
+  8: ['1.', '2.', '3.'],
+  9: ['(1)-①', '(1)-②', '(1)-③', '(2)-①', '(2)-②', '(2)-③'],
+  10: ['1.', '2.', '3.'],
+  11: ['1.', '2.', '3.'],
+  12: ['التمهيد', '1.', '2.', '3.'],
+  13: ['1.①', '1.②', '1.③', '1.④', '2.①', '2.②', '2.③', 'البند الثالث'],
+  14: ['1.', '2.①', '2.②', '2.③'],
+  15: ['رسم المثلث', 'رسم الصورة'],
+};
+
+/** Every callout title inside a block tree, in reading order. */
+function calloutTitles(blocks: ContentBlock[]): string[] {
+  const titles: string[] = [];
+  for (const block of blocks) {
+    if (block.type === 'callout') {
+      if (block.title) titles.push(block.title);
+      titles.push(...calloutTitles(block.blocks));
+    } else if (block.type === 'teaching') {
+      titles.push(...calloutTitles(block.blocks));
+    }
+  }
+  return titles;
+}
+
+function branchTitlesOf(blocks: ContentBlock[]): string[] {
+  return calloutTitles(blocks).filter((title) => title.startsWith('الفرع '));
+}
 
 describe('Lesson 6 — Q3–Q15 source fidelity', () => {
   it('is a separate 13-step lesson in exact question order', () => {
@@ -91,5 +127,141 @@ describe('Lesson 6 — Q3–Q15 source fidelity', () => {
       expect(diagram.params).not.toHaveProperty('answers');
       expect(diagram.params).not.toHaveProperty('reveals');
     }
+  });
+
+  /* ------------------------------------------------------------------ depth */
+
+  it('solves every printed sub-part once, in printed order, with its own record', () => {
+    expect(lesson06Exercises.flatMap((exercise) => exercise.branches)).toHaveLength(46);
+    for (const exercise of lesson06Exercises) {
+      const expected = BRANCH_LABELS[exercise.number];
+      expect(expected, `missing label pin for Q${exercise.number}`).toBeDefined();
+      expect(
+        exercise.branches.map((branch) => branch.label),
+        `Q${exercise.number}`,
+      ).toEqual(expected);
+      expect(exercise.branches).toHaveLength(exercise.printedTaskCount);
+      for (const branch of exercise.branches) {
+        expect(branch.aim.length, `Q${exercise.number} ${branch.label} aim`).toBeGreaterThan(0);
+        expect(branch.steps.length, `Q${exercise.number} ${branch.label} steps`).toBeGreaterThan(0);
+        expect(branch.result.length, `Q${exercise.number} ${branch.label} result`).toBeGreaterThan(
+          0,
+        );
+        // A branch describes the task; it must not re-quote the printed prompt.
+        expect(branch.aim).not.toBe(exercise.prompt);
+        expect(branch.steps.join(' ')).not.toBe(exercise.prompt);
+      }
+    }
+  });
+
+  it('reveals every branch to the learner with the same labels and order', () => {
+    lesson06Exercises.forEach((exercise, index) => {
+      const step = lesson.steps[index]!;
+      expect(step.id).toBe(`exercise-q${exercise.number}`);
+      expect(branchTitlesOf(step.blocks)).toEqual(
+        exercise.branches.map((branch) => `الفرع ${branch.label}`),
+      );
+    });
+    // The branches stay inside the collapsible solution, never in the question card.
+    for (const step of lesson.steps) {
+      const first = step.blocks[0];
+      expect(first?.type).toBe('questionGroup');
+      if (first?.type !== 'questionGroup') continue;
+      expect(JSON.stringify(first.items)).not.toContain('الفرع ');
+    }
+  });
+
+  it('renders every branch inside its main-question teacher solution, in order', () => {
+    const solutions = lesson.teacherResources?.textbookSolutions ?? [];
+    expect(solutions).toHaveLength(13);
+    lesson06Exercises.forEach((exercise, index) => {
+      const solution = solutions[index]!;
+      expect(solution.id).toBe(`teacher-sol-q${exercise.number}`);
+      expect(solution.reference).toContain(`السؤال ${exercise.number}`);
+      expect(branchTitlesOf(solution.blocks)).toEqual(
+        exercise.branches.map((branch) => `الفرع ${branch.label}`),
+      );
+      expect(solution.question).toBe(exercise.prompt);
+    });
+  });
+
+  it('flags the solutions whose answer depends on a reference figure or a documented reading', () => {
+    const solutions = lesson.teacherResources?.textbookSolutions ?? [];
+    const flagged = solutions.filter((solution) => solution.limitation).map((s) => s.id);
+    expect(flagged).toEqual([
+      'teacher-sol-q3',
+      'teacher-sol-q4',
+      'teacher-sol-q5',
+      'teacher-sol-q6',
+      'teacher-sol-q9',
+      'teacher-sol-q10',
+      'teacher-sol-q11',
+    ]);
+  });
+
+  it('keeps typographic apostrophes out of the authored solution maths', () => {
+    // The printed prompts keep the source's U+2019 verbatim; authored blocks use
+    // ASCII primes so KaTeX typesets a real prime (′) instead of a text glyph.
+    const solutions = lesson.teacherResources?.textbookSolutions ?? [];
+    for (const solution of solutions) {
+      const serialized = JSON.stringify(solution.blocks);
+      expect(serialized, solution.id).not.toMatch(/\$[^$]*’[^$]*\$/);
+    }
+  });
+
+  it('keeps the six-case Q9 figure a reference and accounts for every case', () => {
+    const q9 = lesson06Exercises.find((exercise) => exercise.number === 9)!;
+    expect(q9.sourceFigure?.type).toBe('reference');
+    expect(q9.sourceFigure?.alt).toContain('ست حالات');
+    expect(q9.branches.map((branch) => branch.label)).toEqual([
+      '(1)-①',
+      '(1)-②',
+      '(1)-③',
+      '(2)-①',
+      '(2)-②',
+      '(2)-③',
+    ]);
+    expect(q9.printedTaskCount).toBe(q9.branches.length);
+  });
+
+  it('preserves both verified Q4 box layouts without inventing coordinates', () => {
+    const q4 = lesson06Exercises.find((exercise) => exercise.number === 4)!;
+    const alt = q4.sourceFigure?.alt ?? '';
+    expect(alt).toContain('$A$ أعلى اليسار');
+    expect(alt).toContain('$C$ وسط اليمين');
+    expect(alt).toContain('$B$ أسفل الوسط');
+    expect(alt).toContain('$B$ أسفل اليسار الأوسط');
+    expect(alt).toContain('$C$ أسفل اليمين');
+    expect(q4.sourceFigure?.type).toBe('reference');
+    expect(q4.branches.map((branch) => branch.label)).toEqual(['①', '②']);
+  });
+
+  it('keeps the verified Q6 figure data and the 3-left / 2-down movement', () => {
+    const q6 = lesson06Exercises.find((exercise) => exercise.number === 6)!;
+    expect(q6.sourceFigure?.scenario).toBe('q6-source-grid');
+    expect(q6.sourceFigure?.alt).toContain('الصف الرابع من أعلى الشبكة');
+    expect(q6.branches[1]!.steps.join(' ')).toContain('ثلاث خانات إلى اليسار');
+    expect(q6.branches[1]!.steps.join(' ')).toContain('خانتان إلى الأسفل');
+    expect(q6.tasks[0]!.choices[0]!.label).toBe('3 خانات يساراً و2 إلى الأسفل');
+    expect(q6.limitation).toContain('(4;2)');
+  });
+
+  it('leaves the documented Q6 item-4 transcription exactly as pinned', () => {
+    const q6 = lesson06Exercises.find((exercise) => exercise.number === 6)!;
+    expect(q6.prompt).toContain('4. ممّ تكون قد تحققت؟');
+    // The alternative detailed-audit transcription is NOT silently adopted.
+    expect(q6.prompt).not.toContain('مَ تكون');
+    expect(q6.limitation).toContain('بنسختين');
+  });
+
+  it('keeps Q13’s third item without a leading numeral and Q14 immediately after it', () => {
+    const q13 = lesson06Exercises.find((exercise) => exercise.number === 13)!;
+    expect(q13.prompt.endsWith('حدّد وفق الانسحاب الذي ينقل $A$ إلى $B$، مثلثين طبوقين')).toBe(
+      true,
+    );
+    expect(q13.prompt).not.toContain('3. حدّد');
+    expect(q13.branches.at(-1)?.label).toBe('البند الثالث');
+    const q13Index = lesson.steps.findIndex((step) => step.id === 'exercise-q13');
+    expect(lesson.steps[q13Index + 1]?.id).toBe('exercise-q14');
   });
 });

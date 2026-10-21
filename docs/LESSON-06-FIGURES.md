@@ -10,6 +10,16 @@ This independent lesson follows the repository's figure decision tree:
 
 No supplied scan is shipped as an `image` diagram.
 
+## Source evidence used for this pass
+
+The scans themselves are not stored in the repository (they are only read while
+authoring). This pass therefore re-verified every figure against the Phase-1B
+source-audit record already embedded in the repository — the pinned prompts in
+`src/content/lesson-06-source-fidelity.test.ts`, the reconstruction records
+below, and the printed marks quoted in each question's `given`/`alt` text. No
+figure relation was invented or "tidied up"; the one correction applied is the
+Q6 point `C` described below, which the audit record fixes exactly.
+
 ## Counts
 
 | Classification                          |  Count |
@@ -23,30 +33,70 @@ The 18 authored records consist of 13 grouped reasoning labs (one per main quest
 
 ## Textbook figures
 
-| ID                               | Question | Classification | Verification / reason                                                                                                      |
-| -------------------------------- | -------: | -------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `fig-ex6-q3-angle-bisector`      |        3 | `reference`    | Perpendicular and equal-angle marks are readable, but no numeric coordinates or angles are printed.                        |
-| `fig-ex6-q4-three-points`        |        4 | `reference`    | The two point layouts have no grid or measurements; their positions are the construction task.                             |
-| `fig-ex6-q6-grid-shape`          |        6 | reconstructed  | Every boundary lies on the visible square grid; see lattice record below.                                                  |
-| `fig-ex6-q9-six-lines`           |        9 | `reference`    | Six ungridded line/point layouts; approximating a slope or incidence could change the required construction.               |
-| `fig-ex6-q10-line-construction`  |       10 | `reference`    | The line slope and point distances are unmeasured.                                                                         |
-| `fig-ex6-q11-isosceles-altitude` |       11 | `reference`    | Equality and right-angle marks are readable, but the unmeasured figure is not assigned invented coordinates.               |
-| `fig-ex6-q13-point-grid`         |       13 | reconstructed  | All labelled points lie on visible dashed-grid intersections; see lattice record below.                                    |
-| `fig-ex6-q15-right-triangle`     |       15 | reconstructed  | The right angle and all geometry-bearing measurements are printed: `AB = 3 cm`, `AC = 2 cm`, `CE = 1 cm`, with `E ∈ [BC]`. |
+| ID                               | Question | Classification | Verification / reason                                                                                                          |
+| -------------------------------- | -------: | -------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `fig-ex6-q3-angle-bisector`      |        3 | `reference`    | Perpendicular and equal-angle marks are readable, but no numeric coordinates or angles are printed.                            |
+| `fig-ex6-q4-three-points`        |        4 | `reference`    | The two point layouts have no grid or measurements; their relative positions are recorded below and are the construction task. |
+| `fig-ex6-q6-grid-shape`          |        6 | reconstructed  | Every boundary lies on the visible square grid; see lattice record below.                                                      |
+| `fig-ex6-q9-six-lines`           |        9 | `reference`    | Six ungridded line/point layouts; approximating a slope or incidence could change the required construction.                   |
+| `fig-ex6-q10-line-construction`  |       10 | `reference`    | The line slope and point distances are unmeasured.                                                                             |
+| `fig-ex6-q11-isosceles-altitude` |       11 | `reference`    | Equality and right-angle marks are readable, but the unmeasured figure is not assigned invented coordinates.                   |
+| `fig-ex6-q13-point-grid`         |       13 | reconstructed  | All labelled points lie on visible dashed-grid intersections; see lattice record below.                                        |
+| `fig-ex6-q15-right-triangle`     |       15 | reconstructed  | The right angle and all geometry-bearing measurements are printed: `AB = 3 cm`, `AC = 2 cm`, `CE = 1 cm`, with `E ∈ [BC]`.     |
+
+## Reference-layout records
+
+### Question 4 — both printed boxes
+
+The two boxes carry no grid and no measurements, so they remain `reference`.
+Their **relative** point positions are nevertheless verified and preserved; they
+are quoted in the figure `alt` text and in the per-case teacher solution.
+
+- Box ①: `A` upper-left, `C` middle-right, `B` lower-middle.
+- Box ②: `A` upper-left, `B` lower-middle-left, `C` lower-right.
+- In both boxes the required vertex order is `A, B, C, D`; `D` is the
+  intersection of the line through `A` parallel to `(BC)` with the line through
+  `C` parallel to `(AB)`.
+
+No coordinates are invented for `A`, `B` or `C`: any such numbers would be a
+geometry-bearing approximation of a figure whose whole purpose is construction.
+
+### Question 9 — the six printed cases
+
+The six ungridded cases remain `reference`. Only the relations already recorded
+in the Phase-1B audit are stated, one per case, and no slope or distance is
+invented:
+
+| Case  | Verified relation used by the solution                  |
+| ----- | ------------------------------------------------------- |
+| (1)-① | direction `AB` is parallel to `(d)`                     |
+| (1)-② | no labelled point of `(d)` is the start of the movement |
+| (1)-③ | `A ∈ (d)`                                               |
+| (2)-① | `B ∈ (d)` while `A ∉ (d)`                               |
+| (2)-② | segment `[AB]` meets `(d)` at an unlabelled point       |
+| (2)-③ | general case                                            |
 
 ## Reconstruction records
 
 ### Question 6
 
-Use visual grid coordinates with the top-left grid intersection as `(0,0)`, increasing rightward and downward.
+The audit fixes the printed nodes in a **bottom-left** origin system. The
+renderer draws with a top-left origin, so `y_top = 5 − y_bottom`:
 
 - Grid: 8 columns × 5 rows.
-- Yellow unit cells: `(1,1)`, `(2,1)`, `(3,1)`, `(3,2)`, `(4,2)`.
-- `A = (7,1)`.
-- `C = (4,4)`.
-- Therefore the printed movement `A → C` is exactly 3 grid units left and 3 grid units down.
+- Yellow unit cells (bottom-left origin): `[1,4]×[3,4] ∪ [3,5]×[2,3]`, i.e.
+  three cells in the upper row and two shifted-right cells in the second row.
+- Label ① in cell `[3,4]×[3,4]`.
+- `A = (7,4)` bottom-left → `(7,1)` in the renderer.
+- `C = (4,2)` bottom-left → `(4,3)` in the renderer.
+- Therefore the printed movement `A → C` is exactly **3 grid units left and 2
+  grid units down**.
 
-The renderer shows only the printed starting figure. It does not draw shapes ② or ③ and therefore does not reveal the exercise answer.
+An earlier draft of this record placed `C` at renderer `(4,4)` and described the
+movement as 3 left and 3 down. That contradicted the verified audit node and the
+alt text ("the fourth node from the left"): the renderer has been corrected to
+`(4,3)` and the movement to 3 left + 2 down. The reconstruction still draws
+neither ② nor ③.
 
 ### Question 13
 
