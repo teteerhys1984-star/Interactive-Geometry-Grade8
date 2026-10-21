@@ -246,12 +246,27 @@ describe('Lesson 6 — Q3–Q15 source fidelity', () => {
     expect(q6.limitation).toContain('(4;2)');
   });
 
-  it('leaves the documented Q6 item-4 transcription exactly as pinned', () => {
+  it('keeps the Q6 item-4 transcription that the supplied scan confirms', () => {
     const q6 = lesson06Exercises.find((exercise) => exercise.number === 6)!;
+    // Supplied crop: «4. ممّ تكون قد تحققت؟» — two joined meems, shadda + fatha
+    // over the final meem, no alif. The alternative «مَ تكون» is not the source.
     expect(q6.prompt).toContain('4. ممّ تكون قد تحققت؟');
-    // The alternative detailed-audit transcription is NOT silently adopted.
     expect(q6.prompt).not.toContain('مَ تكون');
-    expect(q6.limitation).toContain('بنسختين');
+    expect(q6.prompt).not.toContain('ممّا');
+    expect(q6.limitation).toContain('ممّ');
+    expect(q6.limitation).toContain('بقصّة صورة المصدر');
+  });
+
+  it('matches the second supplied crop, which prints Q12 item 3 rather than Q13 item 3', () => {
+    // The crop reads «3. هل المستقيمان (Δ) و (d) متوازيان؟ اشرح إجابتك.» — that is
+    // this lesson's Q12 item 3 verbatim. It contains neither «طبوقين» nor
+    // «متطابقين», so it settles no part of Q13.
+    const q12 = lesson06Exercises.find((exercise) => exercise.number === 12)!;
+    expect(q12.prompt.split('\n').at(-1)).toBe(
+      '3. هل المستقيمان $(\\Delta)$ و $(d)$ متوازيان؟ اشرح إجابتك.',
+    );
+    const q13 = lesson06Exercises.find((exercise) => exercise.number === 13)!;
+    expect(q12.prompt).not.toBe(q13.prompt);
   });
 
   it('keeps Q13’s third item without a leading numeral and Q14 immediately after it', () => {

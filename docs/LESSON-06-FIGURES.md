@@ -20,6 +20,20 @@ below, and the printed marks quoted in each question's `given`/`alt` text. No
 figure relation was invented or "tidied up"; the one correction applied is the
 Q6 point `C` described below, which the audit record fixes exactly.
 
+### Later supplied crops
+
+Two question crops were supplied after the first pass and were read directly:
+
+- **Q6 (whole question)** confirms item 4 as «4. ممّ تكون قد تحققت؟»: the word is
+  drawn with two joined meems, a shadda with a fatha above it sits on the final
+  meem, and there is no alif. The alternative «مَ تكون …» reading is not in the
+  source, so the pinned prompt stands and the teacher `limitation` now records
+  the resolution instead of an open discrepancy.
+- **The second crop is Q12 item 3**, not Q13: it reads «3. هل المستقيمان (Δ) و (d)
+  متوازيان؟ اشرح إجابتك.» exactly as pinned for Q12. It contains neither
+  «طبوقين» nor «متطابقين», so it does **not** settle Q13's third item; that
+  wording stays as pinned («مثلثين طبوقين») and still needs a crop of Q13.
+
 ## Counts
 
 | Classification                          |  Count |
