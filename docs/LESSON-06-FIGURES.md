@@ -31,8 +31,17 @@ Two question crops were supplied after the first pass and were read directly:
   the resolution instead of an open discrepancy.
 - **The second crop is Q12 item 3**, not Q13: it reads «3. هل المستقيمان (Δ) و (d)
   متوازيان؟ اشرح إجابتك.» exactly as pinned for Q12. It contains neither
-  «طبوقين» nor «متطابقين», so it does **not** settle Q13's third item; that
-  wording stays as pinned («مثلثين طبوقين») and still needs a crop of Q13.
+  «طبوقين» nor «متطابقين», so it did **not** settle Q13's third item.
+- **The third crop is the Q13 grid question.** Its unnumbered closing line reads
+  «حدد وفق الانسحاب الذي ينقل A إلى B، مثلثين طبوقين»: the adjective is
+  «طبوقين» (ط + ب, one dot below), never «متطابقين», and the line has no leading
+  numeral and no closing period. The pinned prompt already carried exactly that
+  wording, so no content changed; the fidelity test now pins the whole line.
+  The same line's leading verb appears in the crop **without** a visible shadda
+  (the mark band above the two dal bodies is blank, while the hamza below «إلى»
+  in the same line is clearly printed). The pinned «حدّد» was left untouched:
+  one crop cannot prove the typesetting omits shadda rather than the scan losing
+  it, and that diacritic is outside the ambiguity this crop was supplied for.
 
 ## Counts
 

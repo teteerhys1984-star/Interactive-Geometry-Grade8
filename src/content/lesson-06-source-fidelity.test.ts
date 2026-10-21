@@ -269,11 +269,25 @@ describe('Lesson 6 — Q3–Q15 source fidelity', () => {
     expect(q12.prompt).not.toBe(q13.prompt);
   });
 
+  it('keeps Q13’s unnumbered closing item exactly as the supplied crop prints it', () => {
+    const q13 = lesson06Exercises.find((exercise) => exercise.number === 13)!;
+    const closing = q13.prompt.split('\n').at(-1) ?? '';
+    // Supplied Q13 crop, last line:
+    //   «حدد وفق الانسحاب الذي ينقل A إلى B، مثلثين طبوقين»
+    // The adjective is «طبوقين» (ط + ب with one dot below), not «متطابقين»; the
+    // item carries no leading numeral and the line ends without a period. The
+    // crop shows no shadda over the leading verb, but a single crop cannot prove
+    // the typesetting drops it, so the pinned «حدّد» is deliberately kept and the
+    // observation is recorded in docs/LESSON-06-FIGURES.md.
+    expect(closing).toBe('حدّد وفق الانسحاب الذي ينقل $A$ إلى $B$، مثلثين طبوقين');
+    expect(closing).toContain('مثلثين طبوقين');
+    expect(closing).not.toContain('متطابقين');
+    expect(closing).not.toMatch(/^\d/);
+    expect(closing.endsWith('.')).toBe(false);
+  });
+
   it('keeps Q13’s third item without a leading numeral and Q14 immediately after it', () => {
     const q13 = lesson06Exercises.find((exercise) => exercise.number === 13)!;
-    expect(q13.prompt.endsWith('حدّد وفق الانسحاب الذي ينقل $A$ إلى $B$، مثلثين طبوقين')).toBe(
-      true,
-    );
     expect(q13.prompt).not.toContain('3. حدّد');
     expect(q13.branches.at(-1)?.label).toBe('البند الثالث');
     const q13Index = lesson.steps.findIndex((step) => step.id === 'exercise-q13');
