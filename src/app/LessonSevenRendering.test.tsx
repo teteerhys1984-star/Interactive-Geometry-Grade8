@@ -26,7 +26,11 @@ describe('Lesson 7 — independent Q16–Q28 exercise lab', () => {
     expect(allLessons.at(-2)?.lesson.id).toBe(lessonSix.id);
     expect(lessonSix.steps).toHaveLength(13);
     expect(lessonSix.teacherResources?.textbookSolutions).toHaveLength(13);
-    expect(lessonFive.steps.filter((step) => step.origin === 'source')).toHaveLength(19);
+    // Lesson 5 presents its two printed questions as two source steps,
+    // still carrying all nineteen printed parts and nineteen solutions.
+    expect(
+      lessonFive.steps.filter((step) => step.origin === 'source').map((step) => step.id),
+    ).toEqual(['exercise-q1', 'exercise-q2']);
     expect(lessonFive.teacherResources?.textbookSolutions).toHaveLength(19);
     expect(lesson.steps.some((step) => step.kicker?.includes('السؤال 15'))).toBe(false);
     expect(lessonSix.steps.some((step) => step.kicker?.includes('السؤال 16'))).toBe(false);

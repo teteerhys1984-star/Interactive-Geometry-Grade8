@@ -4,14 +4,29 @@ import { buildLesson05TeacherResources } from './lesson-05-teacher';
 /**
  * تمرينات الوحدة الأولى — الدفعة الأولى فقط.
  * الصور المرفقة لا تعرض أرقام الصفحات المطبوعة، لذلك تُنسب المواد إلى أرقام
- * صور المصدر بدل اختراع أرقام صفحات. السؤال 1 ممتد عبر الصور 1–3، والسؤال 2
+ * صور المصدر بدل اختلاق أرقام صفحات. السؤال 1 ممتد عبر الصور 1–3، والسؤال 2
  * ممتد عبر الصورتين 4–5.
+ *
+ * بنية الدرس (بعد توحيد العرض): خطوتان مصدريتان فقط، واحدة لكل سؤال مطبوع،
+ * تُعرض داخل كلٍّ منهما الفقرات المطبوعة بترتيبها وبتسمياتها الأصلية في بطاقة
+ * واحدة، تليها لكل فقرة رسمها (إن وُجد) ثم تحليلها وحلّها. معرّفات الفروع
+ * (q1-1 … q2-9) محفوظة كما هي لأنها تغذّي منطقة المعلم واختبارات الولاء للمصدر.
  */
 const SOURCE_1 = { page: 'صورة المصدر 1', locator: 'تمرينات الوحدة الأولى — السؤال 1 (1–4)' };
 const SOURCE_2 = { page: 'صورة المصدر 2', locator: 'تمرينات الوحدة الأولى — السؤال 1 (5–7)' };
 const SOURCE_3 = { page: 'صورة المصدر 3', locator: 'تمرينات الوحدة الأولى — السؤال 1 (8–10)' };
 const SOURCE_4 = { page: 'صورة المصدر 4', locator: 'تمرينات الوحدة الأولى — السؤال 2 (1–6)' };
 const SOURCE_5 = { page: 'صورة المصدر 5', locator: 'تمرينات الوحدة الأولى — السؤال 2 (7–9)' };
+
+/** Printed stem of each main question, verbatim. */
+const Q1_STEM = 'لكل حالة من الحالات الآتية، إجابة صحيحة واحدة من بين ثلاث إجابات. أشر إليها.';
+const Q2_STEM = 'هل أنت موافق أم لا على ما يرد في النصوص الآتية؟ اشرح إجابتك.';
+
+/** Printed sub-part labels of each main question, in source order. */
+const PRINTED_LABELS = ['١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩', '١٠'];
+
+/** Shared reveal control label — the rendering test relies on it. */
+const REVEAL_LABEL = 'حاول أولاً، ثم اكشف التحليل والحل';
 
 type Source = typeof SOURCE_1;
 interface Exercise {
@@ -122,6 +137,7 @@ export const lesson05ExerciseOne: Exercise[] = [
     ],
     result: 'الإجابة الصحيحة هي ③: $15\\,cm^2$.',
     verify: 'لو أعدنا الشكل بالانسحاب المعاكس لانطبق $F’$ على $F$ تماماً.',
+    warning: 'وجود «شكلين» في المسألة لا يعني جمع مساحتيهما؛ الصورة هي الأصل نفسه منزاحاً.',
   },
   {
     id: 'q1-5',
@@ -217,7 +233,7 @@ export const lesson05ExerciseOne: Exercise[] = [
     title: 'الزوايا المتناظرة في مثلثين طبوقين',
     source: SOURCE_3,
     question:
-      'في الشكل المجاور، $DEF$، $ABC$ مثلثان طبوقان، عندئذٍ: ① $\\widehat{A} \\cong \\widehat{E}$. ② $\\widehat{A} \\cong \\widehat{F}$. ③ $\\widehat{A} \\cong \\widehat{D}$.',
+      'في الشكل المجاور، $DEF$، $ABC$ مثلثان طبوقان، عندئذٍ: ① $\\widehat{A} = \\widehat{E}$. ② $\\widehat{A} = \\widehat{F}$. ③ $\\widehat{A} = \\widehat{D}$.',
     figure: {
       id: 'fig-ex5-q1-9',
       scenario: 'congruent-triangles',
@@ -234,9 +250,8 @@ export const lesson05ExerciseOne: Exercise[] = [
       '$BC$ ذو علامتين ويناظره $EF$، فينتج $B \\leftrightarrow E$ و$C \\leftrightarrow F$.',
       'يبقى الرأس $A$ مناظراً للرأس $D$.',
     ],
-    result: 'الإجابة الصحيحة هي ③: $\\widehat{A} \\cong \\widehat{D}$.',
-    verify:
-      'اكتب التناظر الكامل: $A \\leftrightarrow D$، $B \\leftrightarrow E$، $C \\leftrightarrow F$.',
+    result: 'الإجابة الصحيحة هي ③: $\\widehat{A} = \\widehat{D}$.',
+    verify: 'اكتب التناظر الكامل: $A \\leftrightarrow D$، $B \\leftrightarrow E$، $C \\leftrightarrow F$.',
     warning: 'لا تعتمد على اتجاه المثلث في الصفحة؛ علامات الأضلاع هي الدليل.',
   },
   {
@@ -354,6 +369,8 @@ export const lesson05ExerciseTwo: Exercise[] = [
     result: 'غير موافق؛ ليست هناك حركة واحدة فقط بل عدد غير محدود من الانسحابات.',
     verify:
       'جرّب نقطتين مختلفتين على $(d’)$؛ تحصل على متجهين مختلفين وكلاهما ينقل المستقيم إلى $(d’)$.',
+    warning:
+      'الخطأ الشائع هو حصر الانسحاب بالمتجه العمودي بين المستقيمين؛ أي متجه يصل نقطة بصورةٍ لها على المستقيم الآخر يكفي.',
   },
   {
     id: 'q2-5',
@@ -422,7 +439,7 @@ export const lesson05ExerciseTwo: Exercise[] = [
     number: '8',
     title: 'الانسحاب بين دائرتين متساويتين',
     source: SOURCE_5,
-    question: '$C$ و$C’$ دائرتان نصفا قطريهما متساويان. انسحاب واحد فقط ينقل $C$ إلى $C’$.',
+    question: '$C$ و$C’$ دائرتان متساويتان. انسحاب واحد فقط ينقل $C$ إلى $C’$.',
     given: 'دائرتان متساويتان في نصف القطر.',
     required: 'تحديد عدد الانسحابات التي تنقل الأولى إلى الثانية.',
     idea: 'الانسحاب الذي ينقل دائرة يجب أن ينقل مركزها إلى مركز الصورة.',
@@ -435,14 +452,15 @@ export const lesson05ExerciseTwo: Exercise[] = [
     ],
     result: 'موافق؛ العبارة صحيحة.',
     verify: 'أي متجه مختلف لا يرسل المركز إلى $O’$، فلا يمكن أن يعطي الدائرة $C’$.',
+    warning:
+      'لو لم تتساوَ نصفا القطر لما وُجد أي انسحاب ينقل إحدى الدائرتين إلى الأخرى؛ المساواة شرط وجود، والمركزان شرطا الوحدانية.',
   },
   {
     id: 'q2-9',
     number: '9',
     title: 'التناظر المركزي من انسحاب متكرر',
     source: SOURCE_5,
-    question:
-      '$B$ هي صورة $A$ وفق الانسحاب الذي ينقل $C$ إلى $A$، إذن $B$ هي نظيرة $C$ بالنسبة إلى $A$.',
+    question: '$B$ هي صورة $A$ وفق الانسحاب الذي ينقل $C$ إلى $A$، إذن $B$ هي نظيرة $C$ بالنسبة إلى $A$.',
     given: '$C \\mapsto A$ يحدد الانسحاب، وتحت الحركة نفسها $A \\mapsto B$.',
     required: 'إثبات أن $A$ مركز تناظر بين $C$ و$B$.',
     idea: 'حوّل عبارتي الانسحاب إلى مساواة متجهين.',
@@ -458,12 +476,12 @@ export const lesson05ExerciseTwo: Exercise[] = [
   },
 ];
 
-function teachingBlocks(ex: Exercise): ContentBlock[] {
-  const blocks: ContentBlock[] = [
+function teachingBlocks(ex: Exercise, label: string): ContentBlock[] {
+  return [
     {
       type: 'teaching',
       variant: 'concept',
-      title: 'حلّل قبل أن تختار',
+      title: `تحليل الفقرة ${label} — ${ex.title}`,
       blocks: [
         { type: 'paragraph', text: `المعطيات: ${ex.given}` },
         { type: 'paragraph', text: `المطلوب: ${ex.required}` },
@@ -473,9 +491,9 @@ function teachingBlocks(ex: Exercise): ContentBlock[] {
     {
       type: 'teaching',
       variant: 'why',
-      title: 'اكشف الحل خطوة بخطوة',
+      title: `حل الفقرة ${label} خطوة بخطوة`,
       collapsible: true,
-      revealLabel: 'حاول أولاً، ثم اكشف التحليل والحل',
+      revealLabel: REVEAL_LABEL,
       blocks: [
         { type: 'paragraph', text: `القاعدة: ${ex.rule}` },
         { type: 'paragraph', text: `لماذا تنطبق؟ ${ex.why}` },
@@ -505,42 +523,58 @@ function teachingBlocks(ex: Exercise): ContentBlock[] {
       ],
     },
   ];
-  return blocks;
 }
 
-function exerciseStep(ex: Exercise, main: 1 | 2): LessonStepInput {
+function figureBlock(ex: Exercise, label: string): ContentBlock {
+  const figure = ex.figure!;
   return {
-    id: `exercise-${ex.id}`,
-    kicker: `السؤال ${main} — الفقرة ${ex.number}`,
-    title: ex.title,
-    source: ex.source,
+    type: 'figure',
+    diagram: {
+      kind: 'interactive',
+      origin: 'textbook',
+      id: figure.id,
+      renderer: 'unit-exercise-figure',
+      alt: figure.alt,
+      caption: `رسم الفقرة ${label}: ${figure.caption}`,
+      source: ex.source,
+      params: { scenario: figure.scenario },
+    },
+  };
+}
+
+/** The printed card of one main question: verbatim stem + its printed parts. */
+function printedCard(main: 1 | 2, exercises: Exercise[]): ContentBlock {
+  return {
+    type: 'questionGroup',
+    title: main === 1 ? Q1_STEM : Q2_STEM,
+    items: exercises.map((ex, index) => ({ label: PRINTED_LABELS[index], text: ex.question })),
+  };
+}
+
+/** One student-facing source step per printed main question (A′ structure). */
+function mainQuestionStep(options: {
+  main: 1 | 2;
+  stepId: string;
+  title: string;
+  source: Source;
+  exercises: Exercise[];
+}): LessonStepInput {
+  const { main, stepId, title, source, exercises } = options;
+  return {
+    id: stepId,
+    origin: 'source',
+    kicker: `تمرينات الوحدة الأولى — السؤال ${main}`,
+    title,
+    source,
     blocks: [
-      {
-        type: 'questionGroup',
-        title:
-          main === 1
-            ? 'لكل حالة من الحالات الآتية، إجابة صحيحة واحدة من بين ثلاث إجابات. أشر إليها.'
-            : 'هل أنت موافق أم لا على ما يرد في النصوص الآتية؟ اشرح إجابتك.',
-        items: [{ label: ex.number, text: ex.question }],
-      },
-      ...(ex.figure
-        ? [
-            {
-              type: 'figure' as const,
-              diagram: {
-                kind: 'interactive' as const,
-                origin: 'textbook' as const,
-                id: ex.figure.id,
-                renderer: 'unit-exercise-figure',
-                alt: ex.figure.alt,
-                caption: ex.figure.caption,
-                source: ex.source,
-                params: { scenario: ex.figure.scenario },
-              },
-            },
-          ]
-        : []),
-      ...teachingBlocks(ex),
+      printedCard(main, exercises),
+      ...exercises.flatMap((ex, index): ContentBlock[] => {
+        const label = PRINTED_LABELS[index] ?? ex.number;
+        return [
+          ...(ex.figure ? [figureBlock(ex, label)] : []),
+          ...teachingBlocks(ex, label),
+        ];
+      }),
     ],
   };
 }
@@ -558,7 +592,7 @@ const intro: LessonStepInput = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'تتضمن هذه الدفعة السؤالين 1 و2 فقط: عشر فقرات اختيار من متعدد، وتسع عبارات تحتاج موافقة أو رفضاً مع شرح السبب.',
+          text: 'تتضمن هذه الدفعة السؤالين 1 و2 فقط: عشر فقرات اختيار من متعدد، وتسع عبارات تحتاج موافقة أو رفضاً مع شرح السبب. يُعرض كل سؤال مطبوع في صفحة واحدة بفقراته مرتّبة كما في الكتاب، ثم يأتي لكل فقرة رسمها إن وُجد، ثم تحليلها وحلّها، مباشرة تحت بطاقة السؤال.',
         },
         {
           type: 'list',
@@ -641,9 +675,21 @@ export const lesson05: LessonInput = {
   source: { page: 'صور المصدر 1–5', locator: 'السؤالان 1 و2 — الدفعة الأولى' },
   steps: [
     intro,
-    ...lesson05ExerciseOne.map((e) => exerciseStep(e, 1)),
+    mainQuestionStep({
+      main: 1,
+      stepId: 'exercise-q1',
+      title: 'السؤال 1 — عشر حالات: إجابة صحيحة واحدة من ثلاث',
+      source: { page: 'صور المصدر 1–3', locator: 'السؤال 1 — الفقرات ١–١٠' },
+      exercises: lesson05ExerciseOne,
+    }),
     q1Lab,
-    ...lesson05ExerciseTwo.map((e) => exerciseStep(e, 2)),
+    mainQuestionStep({
+      main: 2,
+      stepId: 'exercise-q2',
+      title: 'السؤال 2 — تسع عبارات: موافق أم لا، مع الشرح',
+      source: { page: 'صور المصدر 4–5', locator: 'السؤال 2 — الفقرات ١–٩' },
+      exercises: lesson05ExerciseTwo,
+    }),
     q2Lab,
   ],
   teacherResources: buildLesson05TeacherResources(lesson05ExerciseOne, lesson05ExerciseTwo),

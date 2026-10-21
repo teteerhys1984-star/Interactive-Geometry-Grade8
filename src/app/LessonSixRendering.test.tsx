@@ -23,7 +23,11 @@ describe('Lesson 6 — independent Q3–Q15 exercise lab', () => {
   it('follows Lesson 5 in the registry without changing the Q1–Q2 lesson', () => {
     expect(allLessons.at(-3)?.lesson.id).toBe(lessonFive.id);
     expect(allLessons.at(-2)?.lesson.id).toBe(lesson.id);
-    expect(lessonFive.steps.filter((step) => step.origin === 'source')).toHaveLength(19);
+    // Lesson 5 presents its two printed questions as two source steps,
+    // still carrying all nineteen printed parts and nineteen solutions.
+    expect(
+      lessonFive.steps.filter((step) => step.origin === 'source').map((step) => step.id),
+    ).toEqual(['exercise-q1', 'exercise-q2']);
     expect(lessonFive.teacherResources?.textbookSolutions).toHaveLength(19);
     expect(lessonFive.steps.some((step) => step.kicker?.includes('السؤال 3'))).toBe(false);
   });

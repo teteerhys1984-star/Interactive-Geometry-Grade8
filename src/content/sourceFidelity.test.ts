@@ -171,6 +171,10 @@ describe('implementation boundary — Lessons 1–7 (Lessons 6 and 7 are the ind
           'صورة المصدر 3',
           'صورة المصدر 4',
           'صورة المصدر 5',
+          // Range labels of the two grouped Lesson-5 source steps; they point
+          // at the same supplied exercise images 1–5, not at new sources.
+          'صور المصدر 1–3',
+          'صور المصدر 4–5',
           ...Array.from({ length: 26 }, (_, index) => `صورة المصدر — السؤال ${index + 3}`),
         ],
         `unexpected source page: ${page}`,
