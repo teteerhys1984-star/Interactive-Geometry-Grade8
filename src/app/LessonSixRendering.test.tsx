@@ -85,6 +85,50 @@ describe('Lesson 6 — independent Q3–Q15 exercise lab', () => {
     expect(document.body.textContent).toContain('الصورة مثلث قائم مطابق للأصل');
   });
 
+  it('reveals one solved branch per printed sub-part, in printed order', async () => {
+    const user = userEvent.setup();
+    const { unmount } = renderAt(`/lesson/${lesson.id}/step/1`);
+    await user.click(screen.getByRole('button', { name: 'حاول أولاً، ثم اكشف الحل والتحقق' }));
+    const revealed = document.body.textContent ?? '';
+    expect(revealed).toContain('الفرع 1.');
+    expect(revealed).toContain('الفرع 2.');
+    expect(revealed.indexOf('الفرع 1.')).toBeLessThan(revealed.indexOf('الفرع 2.'));
+    expect(revealed.match(/المطلوب في هذا الفرع/g)).toHaveLength(2);
+    unmount();
+  });
+
+  it('reveals every branch with isolated maths on all thirteen questions', async () => {
+    const user = userEvent.setup();
+    for (const [index, step] of lesson.steps.entries()) {
+      const { container, unmount } = renderAt(`/lesson/${lesson.id}/step/${index + 1}`);
+      await user.click(screen.getByRole('button', { name: 'حاول أولاً، ثم اكشف الحل والتحقق' }));
+      expect(container.textContent, step.id).not.toContain('$');
+      for (const node of container.querySelectorAll('.katex')) {
+        expect(node.closest('[dir="ltr"]')).not.toBeNull();
+      }
+      unmount();
+    }
+  });
+
+  it('keeps the corrected Q6 vector in the revealed solution', async () => {
+    const user = userEvent.setup();
+    renderAt(`/lesson/${lesson.id}/step/4`);
+    await user.click(screen.getByRole('button', { name: 'حاول أولاً، ثم اكشف الحل والتحقق' }));
+    const revealed = document.body.textContent ?? '';
+    expect(revealed).toContain('ثلاث خانات إلى اليسار');
+    expect(revealed).toContain('خانتان إلى الأسفل');
+    expect(revealed).not.toContain('وثلاث خانات إلى الأسفل');
+    expect(revealed.match(/المطلوب في هذا الفرع/g)).toHaveLength(4);
+  });
+
+  it('keeps every one of the 46 branches out of the DOM until the solution is opened', async () => {
+    const user = userEvent.setup();
+    const { container } = renderAt(`/lesson/${lesson.id}/step/7`);
+    expect(container.textContent).not.toContain('الفرع ');
+    await user.click(screen.getByRole('button', { name: 'حاول أولاً، ثم اكشف الحل والتحقق' }));
+    expect((container.textContent ?? '').match(/الفرع /g)).toHaveLength(6);
+  });
+
   it('routes the final exercise directly to completion, not a duplicate final test', () => {
     renderAt(`/lesson/${lesson.id}/step/13`);
     const nav = screen.getByRole('navigation', { name: 'التنقّل بين الخطوات' });
@@ -103,5 +147,13 @@ describe('Lesson 6 — independent Q3–Q15 exercise lab', () => {
     await user.click(screen.getByRole('button', { name: 'دخول' }));
     expect(container.querySelectorAll('details')).toHaveLength(13);
     expect(document.body.textContent).toContain('الخطوات حسب ترتيب فروع السؤال');
+    // One branch block per printed sub-part, all 46 of them, in printed order.
+    expect((document.body.textContent ?? '').match(/المطلوب في هذا الفرع/g)).toHaveLength(46);
+    const branchAsides = [...container.querySelectorAll('aside')].filter((node) =>
+      (node.textContent ?? '').includes('الفرع '),
+    );
+    expect(branchAsides).toHaveLength(46);
+    // The solutions panel itself must never leak raw math delimiters.
+    expect(container.querySelector('#teacher-panel-solutions')?.textContent).not.toContain('$');
   });
 });
