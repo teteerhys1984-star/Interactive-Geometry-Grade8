@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { App } from './App';
 import { allLessons, getLesson } from '@/content/registry';
+import { lesson06Exercises } from '@/content/units/lesson-06-unit-exercises-continuation';
 import { lockTeacherArea } from '@/lib/teacherAccess';
 
 const lesson = getLesson('lesson-06-unit-one-exercises-continuation')!.lesson;
@@ -155,5 +156,42 @@ describe('Lesson 6 — independent Q3–Q15 exercise lab', () => {
     expect(branchAsides).toHaveLength(46);
     // The solutions panel itself must never leak raw math delimiters.
     expect(container.querySelector('#teacher-panel-solutions')?.textContent).not.toContain('$');
+  });
+
+  /* ------------------------------------------------- placeholders */
+
+  it('never renders a «راجع الكتاب» placeholder on any student step', () => {
+    // Regression guard for the corrective pass: every Lesson 06 figure is now a
+    // real SVG or an authored lab, so the faithful-placeholder card must never
+    // reach a learner on this lesson.
+    for (const [index, step] of lesson.steps.entries()) {
+      const { container, unmount } = renderAt(`/lesson/${lesson.id}/step/${index + 1}`);
+      expect(container.textContent, step.id).not.toContain('يوجد رسم هنا');
+      expect(container.textContent, step.id).not.toContain('راجع الكتاب');
+      unmount();
+    }
+  });
+
+  it('keeps the placeholder out of the fully revealed solutions too', async () => {
+    const user = userEvent.setup();
+    const { container } = renderAt(`/lesson/${lesson.id}/step/1`);
+    await user.click(screen.getByRole('button', { name: 'حاول أولاً، ثم اكشف الحل والتحقق' }));
+    expect(container.textContent).not.toContain('يوجد رسم هنا');
+    expect(container.textContent).not.toContain('راجع الكتاب');
+  });
+
+  it('draws every printed textbook figure as a real SVG, not a message', () => {
+    // Questions 3, 4, 6, 9, 10, 11, 13 and 15 each print a figure; all eight
+    // are now drawn in-platform. Questions 5, 7, 8, 12, 14 print no figure.
+    const withFigure = lesson06Exercises.filter((exercise) => exercise.sourceFigure);
+    expect(withFigure.map((exercise) => exercise.number)).toEqual([3, 4, 6, 9, 10, 11, 13, 15]);
+    for (const exercise of withFigure) {
+      const { container, unmount } = renderAt(`/lesson/${lesson.id}/step/${exercise.number - 2}`);
+      const svg = container.querySelector('svg[role="img"]');
+      expect(svg, `Q${exercise.number}`).not.toBeNull();
+      // A real drawing, not an empty frame.
+      expect(svg!.querySelectorAll('line, path, circle, rect, polygon').length).toBeGreaterThan(3);
+      unmount();
+    }
   });
 });
