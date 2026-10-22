@@ -132,6 +132,29 @@ export function TestSolutionDetailPage() {
                       </strong>
                     </div>
 
+                    {sol.given.length > 0 ? (
+                      <div className={styles.metaRow}>
+                        <span className={styles.metaLabel}>المعطيات أو المقروء من الشكل:</span>
+                        <div className={styles.metaText}>
+                          <Blocks blocks={sol.given} />
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {sol.provenance.sourceVerified.length > 0 ? (
+                      <div className={styles.provenanceRow}>
+                        <span className={styles.metaLabel}>بيان موثّق من المصدر:</span>
+                        <Blocks blocks={sol.provenance.sourceVerified} />
+                      </div>
+                    ) : null}
+
+                    {sol.provenance.platformAuthored.length > 0 ? (
+                      <div className={styles.authoredRow}>
+                        <span className={styles.metaLabel}>الشرح التحليلي من المنصّة:</span>
+                        <Blocks blocks={sol.provenance.platformAuthored} />
+                      </div>
+                    ) : null}
+
                     <div className={styles.stepsSection}>
                       <span className={styles.sectionLabel}>التعليل وخطوات الحل:</span>
                       <div className={styles.stepsContent}>
@@ -163,6 +186,60 @@ export function TestSolutionDetailPage() {
                         <span className={styles.metaText}>
                           <RichText text={sol.commonError} />
                         </span>
+                      </div>
+                    ) : null}
+
+                    {sol.diagramNotes.length > 0 ? (
+                      <div className={styles.diagramNotesRow}>
+                        <span className={styles.metaLabel}>قراءة الشكل والعلاقات المعلّمة:</span>
+                        <Blocks blocks={sol.diagramNotes} />
+                      </div>
+                    ) : null}
+
+                    {sol.scoringCriteria.length > 0 ? (
+                      <div className={styles.criteriaRow}>
+                        <span className={styles.metaLabel}>معايير احتساب الدرجة:</span>
+                        <ul className={styles.criteriaList}>
+                          {sol.scoringCriteria.map((criterion, index) => (
+                            <li key={`${criterion.description}-${index}`}>
+                              <span dir="ltr">{criterion.points}</span> — {criterion.description}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+
+                    {sol.parts.length > 0 ? (
+                      <div className={styles.solutionParts}>
+                        <h3 className={styles.partsHeading}>تفصيل الأجزاء والدرجات</h3>
+                        {sol.parts.map((part) => (
+                          <section key={part.id} className={styles.solutionPart}>
+                            <div className={styles.partAnswerRow}>
+                              <strong>{part.id}</strong>
+                              <RichText text={part.answerSummary} />
+                            </div>
+                            {part.given.length > 0 ? <Blocks blocks={part.given} /> : null}
+                            <div className={styles.stepsContent}>
+                              <Blocks blocks={part.steps} />
+                            </div>
+                            {part.rule ? (
+                              <div className={styles.metaRow}>
+                                <span className={styles.metaLabel}>قاعدة الجزء:</span>
+                                <RichText text={part.rule} />
+                              </div>
+                            ) : null}
+                            {part.scoringCriteria.length > 0 ? (
+                              <ul className={styles.criteriaList}>
+                                {part.scoringCriteria.map((criterion, index) => (
+                                  <li key={`${criterion.description}-${index}`}>
+                                    <span dir="ltr">{criterion.points}</span> —{' '}
+                                    {criterion.description}
+                                  </li>
+                                ))}
+                              </ul>
+                            ) : null}
+                          </section>
+                        ))}
                       </div>
                     ) : null}
 

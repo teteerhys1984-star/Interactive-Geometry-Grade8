@@ -14,7 +14,7 @@ import {
   visualAuditByQuestion,
   visualAuditCounts,
 } from './visualAudit';
-import type { TestQuestion } from './schema';
+import type { MultiPartItem, TestQuestion } from './schema';
 
 const EXPECTED_AUDIT_COUNTS = { A: 11, B: 3, C: 186 } as const;
 
@@ -57,6 +57,31 @@ function auditedFigures(): AuditedFigure[] {
   );
 }
 
+function multiPartVisualAnswerText(part: MultiPartItem): string[] {
+  switch (part.type) {
+    case 'single-choice':
+      return [part.choices.find((choice) => choice.id === part.answerId)?.text ?? ''];
+    case 'multi-select':
+      return part.choices
+        .filter((choice) => part.answerIds.includes(choice.id))
+        .map((choice) => choice.text);
+    case 'true-false':
+      return [part.answer ? 'صحيح' : 'خطأ'];
+    case 'short-answer':
+      return part.acceptedAnswers;
+    case 'fill-in':
+      return part.blanks.flatMap((blank) => blank.acceptedAnswers);
+    case 'numeric':
+      return [String(part.answer)];
+    case 'exact':
+      return [String(part.answer.numerator), `${part.answer.numerator}/${part.answer.denominator}`];
+    case 'ordering':
+      return [part.answerOrder.join(' ')];
+    case 'matching':
+      return [];
+  }
+}
+
 function visualAnswerText(question: TestQuestion): string[] {
   switch (question.type) {
     case 'single-choice':
@@ -68,6 +93,20 @@ function visualAnswerText(question: TestQuestion): string[] {
         .map((choice) => choice.text);
     case 'true-false':
       return [question.answer ? 'صحيح' : 'خطأ'];
+    case 'true-false-justify':
+      return [
+        question.answer ? 'صحيح' : 'خطأ',
+        ...(question.correction?.choices
+          .filter((choice) => choice.id === question.correction?.answerId)
+          .map((choice) => choice.text) ?? []),
+        ...(question.justification?.choices
+          .filter((choice) => choice.id === question.justification?.answerId)
+          .map((choice) => choice.text) ?? []),
+      ];
+    case 'short-answer':
+      return question.acceptedAnswers;
+    case 'fill-in':
+      return question.blanks.flatMap((blank) => blank.acceptedAnswers);
     case 'numeric':
       return [String(question.answer)];
     case 'exact':
@@ -80,6 +119,14 @@ function visualAnswerText(question: TestQuestion): string[] {
     case 'matching':
     case 'classification':
       return [];
+    case 'justification':
+      return question.steps.flatMap((step) =>
+        step.choices.filter((choice) => choice.id === step.answerId).map((choice) => choice.text),
+      );
+    case 'multi-part':
+    case 'diagram-reading':
+    case 'transformation-application':
+      return question.parts.flatMap(multiPartVisualAnswerText);
   }
 }
 

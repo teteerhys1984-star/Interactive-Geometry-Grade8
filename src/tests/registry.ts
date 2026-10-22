@@ -14,6 +14,7 @@ import {
   type TestQuestion,
   type TestQuestionInput,
 } from './schema';
+import { solutionSetCompletenessIssues } from './solutionAudit';
 
 /**
  * ============================================================================
@@ -355,6 +356,17 @@ export async function loadSolutionSet(testId: string): Promise<SolutionSet | und
     throw new Error(
       `Solution set ${testId} declares testId «${parsed.data.testId}» — file name and testId must match.`,
     );
+  }
+
+  // Detailed future tests are rejected at the boundary if a solution is
+  // missing, incomplete, or attached to an unrelated question. Current
+  // authored sets remain on the explicitly supported legacy policy.
+  const entry = getTestEntry(testId);
+  if (entry) {
+    const issues = solutionSetCompletenessIssues(entry.definition, entry.questions, parsed.data);
+    if (issues.length > 0) {
+      throw new Error(`Incomplete solution set for ${testId}: ${issues[0]?.message ?? ''}`);
+    }
   }
   return parsed.data;
 }

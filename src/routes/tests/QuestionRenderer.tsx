@@ -1,7 +1,13 @@
 import type { ChangeEvent } from 'react';
 import { Blocks } from '@/components/content';
 import { RichText } from '@/components/math';
-import type { AnswerValue, TestQuestion } from '@/tests/schema';
+import type {
+  AnswerValue,
+  ChoicePart,
+  MultiPartItem,
+  PartAnswerValue,
+  TestQuestion,
+} from '@/tests/schema';
 import { answers } from '@/tests/scoring';
 import styles from './QuestionRenderer.module.css';
 
@@ -16,13 +22,10 @@ interface QuestionRendererProps {
  *  TEST QUESTION RENDERER
  * ============================================================================
  *
- *  Renders one question during the active test.
- *
- *  SECURITY & INTEGRITY:
- *  - Correct answers are NEVER rendered here.
- *  - No `data-correct` attributes are written to the DOM.
- *  - Feedback (green/red) is strictly forbidden while solving.
- *  - Fully accessible: native radio/checkbox/inputs with labels, keyboard support.
+ *  Renders one question during the active test. All new answer types are
+ *  structured controls: authored choices, controlled terms, numeric/rational
+ *  fields, or independently scored sub-parts. No correct answer is rendered in
+ *  the active runner and no feedback is emitted before submission.
  * ============================================================================
  */
 export function QuestionRenderer({ question, value, onChange }: QuestionRendererProps) {
@@ -33,7 +36,7 @@ export function QuestionRenderer({ question, value, onChange }: QuestionRenderer
       </div>
 
       <div className={styles.inputArea}>
-        {question.type === 'single-choice' || question.type === 'error-analysis' ? (
+        {question.type === 'single-choice' ? (
           <SingleChoiceInput
             questionId={question.id}
             choices={question.choices}
@@ -62,6 +65,29 @@ export function QuestionRenderer({ question, value, onChange }: QuestionRenderer
             questionId={question.id}
             selected={value?.kind === 'boolean' ? value.value : undefined}
             onSelect={(val) => onChange(answers.boolean(val))}
+          />
+        ) : null}
+
+        {question.type === 'true-false-justify' ? (
+          <TrueFalseJustifyInput
+            question={question}
+            value={value?.kind === 'true-false-justify' ? value : undefined}
+            onChange={onChange}
+          />
+        ) : null}
+
+        {question.type === 'short-answer' ? (
+          <ShortAnswerInput
+            raw={value?.kind === 'short-answer' ? value.raw : ''}
+            onChange={(raw) => onChange(answers.shortAnswer(raw))}
+          />
+        ) : null}
+
+        {question.type === 'fill-in' ? (
+          <FillInInput
+            blanks={question.blanks}
+            values={value?.kind === 'fill-in' ? value.values : {}}
+            onChange={(values) => onChange(answers.fillIn(values))}
           />
         ) : null}
 
@@ -108,13 +134,356 @@ export function QuestionRenderer({ question, value, onChange }: QuestionRenderer
             onChange={(assignments) => onChange(answers.classification(assignments))}
           />
         ) : null}
+
+        {question.type === 'justification' ? (
+          <JustificationInput
+            questionId={question.id}
+            steps={question.steps}
+            selections={value?.kind === 'justification' ? value.selections : {}}
+            onChange={(selections) => onChange(answers.justification(selections))}
+          />
+        ) : null}
+
+        {question.type === 'multi-part' ||
+        question.type === 'diagram-reading' ||
+        question.type === 'transformation-application' ? (
+          <MultiPartInput
+            questionId={question.id}
+            parts={question.parts}
+            values={value?.kind === 'multi-part' ? value.parts : {}}
+            onChange={(parts) => onChange(answers.multiPart(parts))}
+          />
+        ) : null}
+
+        {question.type === 'error-analysis' ? (
+          <ErrorAnalysisInput question={question} value={value} onChange={onChange} />
+        ) : null}
       </div>
     </article>
   );
 }
 
 /* ------------------------------------------------------------------------ */
-/*  Inputs implementations                                                  */
+/*  Shared structured inputs                                                 */
+/* ------------------------------------------------------------------------ */
+
+function ChoicePartInput({
+  part,
+  selectedId,
+  onSelect,
+  namePrefix,
+  disabled = false,
+}: {
+  part: ChoicePart;
+  selectedId: string | undefined;
+  onSelect: (id: string) => void;
+  namePrefix: string;
+  disabled?: boolean;
+}) {
+  return (
+    <section className={styles.structuredPart} aria-label={part.id}>
+      <div className={styles.partPrompt}>
+        <Blocks blocks={part.prompt} />
+      </div>
+      <SingleChoiceInput
+        questionId={`${namePrefix}-${part.id}`}
+        choices={part.choices}
+        selectedId={selectedId}
+        onSelect={onSelect}
+        disabled={disabled}
+      />
+    </section>
+  );
+}
+
+function TrueFalseJustifyInput({
+  question,
+  value,
+  onChange,
+}: {
+  question: Extract<TestQuestion, { type: 'true-false-justify' }>;
+  value: Extract<AnswerValue, { kind: 'true-false-justify' }> | undefined;
+  onChange: (value: AnswerValue) => void;
+}) {
+  const update = (patch: { value?: boolean; correctionId?: string; justificationId?: string }) =>
+    onChange(
+      answers.trueFalseJustify(
+        patch.value ?? value?.value ?? false,
+        patch.correctionId ?? value?.correctionId,
+        patch.justificationId ?? value?.justificationId,
+      ),
+    );
+
+  return (
+    <div className={styles.structuredParts}>
+      <TrueFalseInput
+        questionId={`${question.id}-verdict`}
+        selected={value?.value}
+        onSelect={(next) => update({ value: next })}
+      />
+      {question.answer === false && question.correction ? (
+        <ChoicePartInput
+          part={question.correction}
+          selectedId={value?.correctionId}
+          namePrefix={question.id}
+          disabled={value?.value !== false}
+          onSelect={(id) => update({ correctionId: id })}
+        />
+      ) : null}
+      {question.justification ? (
+        <ChoicePartInput
+          part={question.justification}
+          selectedId={value?.justificationId}
+          namePrefix={question.id}
+          onSelect={(id) => update({ justificationId: id })}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function ErrorAnalysisInput({
+  question,
+  value,
+  onChange,
+}: {
+  question: Extract<TestQuestion, { type: 'error-analysis' }>;
+  value: AnswerValue | undefined;
+  onChange: (value: AnswerValue) => void;
+}) {
+  const selectedStepId =
+    value?.kind === 'error-analysis'
+      ? value.stepId
+      : value?.kind === 'single'
+        ? value.optionId
+        : undefined;
+  const selectedCorrectionId = value?.kind === 'error-analysis' ? value.correctionId : undefined;
+  const selectedJustificationId =
+    value?.kind === 'error-analysis' ? value.justificationId : undefined;
+
+  return (
+    <div className={styles.errorAnalysisWrapper}>
+      <div className={styles.errorSteps} aria-label="خطوات الحل المعروض">
+        <h3 className={styles.subsectionHeading}>الحل المعروض للتحليل</h3>
+        <ol className={styles.errorStepList}>
+          {question.steps.map((step, index) => (
+            <li key={step.id} className={styles.errorStep}>
+              <span className={styles.errorStepNumber} dir="ltr">
+                {index + 1}
+              </span>
+              <span className={styles.errorStepText}>
+                <RichText text={step.text} />
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div className={styles.structuredPart}>
+        <h3 className={styles.subsectionHeading}>أي خطوة تحتوي على الخطأ؟</h3>
+        <SingleChoiceInput
+          questionId={`${question.id}-error-step`}
+          choices={question.choices}
+          selectedId={selectedStepId}
+          onSelect={(stepId) => onChange(answers.errorAnalysis(stepId))}
+        />
+      </div>
+      {question.correction ? (
+        <ChoicePartInput
+          part={question.correction}
+          selectedId={selectedCorrectionId}
+          namePrefix={question.id}
+          disabled={!selectedStepId}
+          onSelect={(id) =>
+            onChange(answers.errorAnalysis(selectedStepId ?? '', id, selectedJustificationId))
+          }
+        />
+      ) : null}
+      {question.justification ? (
+        <ChoicePartInput
+          part={question.justification}
+          selectedId={selectedJustificationId}
+          namePrefix={question.id}
+          disabled={!selectedStepId}
+          onSelect={(id) =>
+            onChange(answers.errorAnalysis(selectedStepId ?? '', selectedCorrectionId, id))
+          }
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function JustificationInput({
+  questionId,
+  steps,
+  selections,
+  onChange,
+}: {
+  questionId: string;
+  steps: ChoicePart[];
+  selections: Record<string, string>;
+  onChange: (selections: Record<string, string>) => void;
+}) {
+  return (
+    <div className={styles.structuredParts}>
+      {steps.map((step, index) => (
+        <div key={step.id} className={styles.partCard}>
+          <div className={styles.partHeading}>
+            <span className={styles.partNumber} dir="ltr">
+              {index + 1}
+            </span>
+            <span>خطوة التبرير</span>
+          </div>
+          <ChoicePartInput
+            part={step}
+            selectedId={selections[step.id]}
+            namePrefix={questionId}
+            onSelect={(id) => onChange({ ...selections, [step.id]: id })}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function MultiPartInput({
+  questionId,
+  parts,
+  values,
+  onChange,
+}: {
+  questionId: string;
+  parts: MultiPartItem[];
+  values: Record<string, PartAnswerValue>;
+  onChange: (values: Record<string, PartAnswerValue>) => void;
+}) {
+  return (
+    <div className={styles.multiPartList}>
+      {parts.map((part, index) => (
+        <section key={part.id} className={styles.partCard}>
+          <div className={styles.partHeading}>
+            <span className={styles.partNumber} dir="ltr">
+              {index + 1}
+            </span>
+            <span>الجزء {index + 1}</span>
+            <span className={styles.partPoints} dir="ltr">
+              {part.points} {part.points === 1 ? 'درجة' : 'درجات'}
+            </span>
+          </div>
+          <div className={styles.partPrompt}>
+            <Blocks blocks={part.prompt} />
+          </div>
+          <PartInput
+            questionId={questionId}
+            part={part}
+            value={values[part.id]}
+            onChange={(next) => onChange({ ...values, [part.id]: next })}
+          />
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function PartInput({
+  questionId,
+  part,
+  value,
+  onChange,
+}: {
+  questionId: string;
+  part: MultiPartItem;
+  value: PartAnswerValue | undefined;
+  onChange: (value: PartAnswerValue) => void;
+}) {
+  const nestedId = `${questionId}-${part.id}`;
+  switch (part.type) {
+    case 'single-choice':
+      return (
+        <SingleChoiceInput
+          questionId={nestedId}
+          choices={part.choices}
+          selectedId={value?.kind === 'single' ? value.optionId : undefined}
+          onSelect={(id) => onChange(answers.single(id))}
+        />
+      );
+    case 'multi-select':
+      return (
+        <MultiSelectInput
+          questionId={nestedId}
+          choices={part.choices}
+          selectedIds={value?.kind === 'multi' ? value.optionIds : []}
+          onToggle={(id) => {
+            const current = value?.kind === 'multi' ? value.optionIds : [];
+            onChange(
+              answers.multi(
+                current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
+              ),
+            );
+          }}
+        />
+      );
+    case 'true-false':
+      return (
+        <TrueFalseInput
+          questionId={nestedId}
+          selected={value?.kind === 'boolean' ? value.value : undefined}
+          onSelect={(next) => onChange(answers.boolean(next))}
+        />
+      );
+    case 'numeric':
+      return (
+        <NumericInput
+          raw={value?.kind === 'numeric' ? value.raw : ''}
+          unit={part.unit}
+          onChange={(raw) => onChange(answers.numeric(raw))}
+        />
+      );
+    case 'exact':
+      return (
+        <ExactInput
+          raw={value?.kind === 'exact' ? value.raw : ''}
+          unit={part.unit}
+          onChange={(raw) => onChange(answers.exact(raw))}
+        />
+      );
+    case 'ordering':
+      return (
+        <OrderingInput
+          items={part.items}
+          currentOrder={value?.kind === 'order' ? value.itemIds : part.items.map((item) => item.id)}
+          onChange={(next) => onChange(answers.order(next))}
+        />
+      );
+    case 'matching':
+      return (
+        <MatchingInput
+          left={part.left}
+          right={part.right}
+          pairs={value?.kind === 'matching' ? value.pairs : {}}
+          onChange={(next) => onChange(answers.matching(next))}
+        />
+      );
+    case 'fill-in':
+      return (
+        <FillInInput
+          blanks={part.blanks}
+          values={value?.kind === 'fill-in' ? value.values : {}}
+          onChange={(next) => onChange(answers.fillIn(next))}
+        />
+      );
+    case 'short-answer':
+      return (
+        <ShortAnswerInput
+          raw={value?.kind === 'short-answer' ? value.raw : ''}
+          onChange={(raw) => onChange(answers.shortAnswer(raw))}
+        />
+      );
+  }
+}
+
+/* ------------------------------------------------------------------------ */
+/*  Basic inputs                                                             */
 /* ------------------------------------------------------------------------ */
 
 function SingleChoiceInput({
@@ -122,11 +491,13 @@ function SingleChoiceInput({
   choices,
   selectedId,
   onSelect,
+  disabled = false,
 }: {
   questionId: string;
   choices: { id: string; text: string }[];
   selectedId: string | undefined;
   onSelect: (id: string) => void;
+  disabled?: boolean;
 }) {
   return (
     <ul className={styles.optionsList} role="radiogroup">
@@ -140,6 +511,7 @@ function SingleChoiceInput({
                 name={`q-${questionId}`}
                 value={choice.id}
                 checked={isChecked}
+                disabled={disabled}
                 onChange={() => onSelect(choice.id)}
                 className={styles.radioInput}
               />
@@ -221,6 +593,53 @@ function TrueFalseInput({
         />
         <span>خطأ</span>
       </label>
+    </div>
+  );
+}
+
+function ShortAnswerInput({ raw, onChange }: { raw: string; onChange: (value: string) => void }) {
+  return (
+    <input
+      type="text"
+      dir="auto"
+      className={styles.shortAnswerField}
+      value={raw}
+      placeholder="اكتب المصطلح أو العبارة المقبولة"
+      onChange={(event: ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
+    />
+  );
+}
+
+function FillInInput({
+  blanks,
+  values,
+  onChange,
+}: {
+  blanks: { id: string; label: string }[];
+  values: Record<string, string>;
+  onChange: (values: Record<string, string>) => void;
+}) {
+  return (
+    <div className={styles.fillInList}>
+      {blanks.map((blank, index) => (
+        <label key={blank.id} className={styles.fillInRow}>
+          <span className={styles.fillInLabel}>
+            <span className={styles.partNumber} dir="ltr">
+              {index + 1}
+            </span>
+            <RichText text={blank.label} />
+          </span>
+          <input
+            type="text"
+            dir="auto"
+            className={styles.shortAnswerField}
+            value={values[blank.id] ?? ''}
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              onChange({ ...values, [blank.id]: event.target.value })
+            }
+          />
+        </label>
+      ))}
     </div>
   );
 }

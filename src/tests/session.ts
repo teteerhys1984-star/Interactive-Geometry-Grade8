@@ -1,4 +1,4 @@
-import type { AnswerMap, AnswerValue } from './schema';
+import { answerValueSchema, type AnswerMap, type AnswerValue } from './schema';
 
 /**
  * ============================================================================
@@ -33,26 +33,13 @@ export function testSessionKey(testId: string): string {
   return `${TEST_SESSION_PREFIX}${testId}`;
 }
 
-const VALID_KINDS: ReadonlySet<string> = new Set<AnswerValue['kind']>([
-  'single',
-  'multi',
-  'boolean',
-  'numeric',
-  'exact',
-  'order',
-  'matching',
-  'classification',
-]);
-
-/** Keep only entries that at least LOOK like typed answers. */
+/** Keep only entries that satisfy the serializable typed answer contract. */
 function sanitiseAnswers(raw: unknown): AnswerMap {
   if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) return {};
   const output: AnswerMap = {};
   for (const [questionId, value] of Object.entries(raw as Record<string, unknown>)) {
-    if (typeof value !== 'object' || value === null) continue;
-    const kind = (value as { kind?: unknown }).kind;
-    if (typeof kind !== 'string' || !VALID_KINDS.has(kind)) continue;
-    output[questionId] = value as AnswerValue;
+    const parsed = answerValueSchema.safeParse(value);
+    if (parsed.success) output[questionId] = parsed.data as AnswerValue;
   }
   return output;
 }

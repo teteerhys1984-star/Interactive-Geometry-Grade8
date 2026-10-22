@@ -51,6 +51,11 @@
   border-color: var(--color-primary);
 }
 
+.optionLabel:has(input:disabled) {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .radioInput,
 .checkboxInput {
   margin-block-start: 0.25rem;
@@ -98,7 +103,7 @@
   color: var(--color-primary);
 }
 
-/* Numeric / Exact */
+/* Controlled text */
 .textInputRow {
   display: flex;
   align-items: center;
@@ -106,7 +111,8 @@
   max-width: 20rem;
 }
 
-.numericField {
+.numericField,
+.shortAnswerField {
   flex: 1;
   padding: var(--space-3);
   font-size: var(--font-lg);
@@ -118,15 +124,139 @@
   font-family: inherit;
 }
 
-.numericField:focus {
+.numericField:focus,
+.shortAnswerField:focus,
+.matchingSelect:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px var(--color-primary-soft);
+}
+
+.shortAnswerField {
+  max-inline-size: 28rem;
 }
 
 .unitBadge {
   font-size: var(--font-base);
   color: var(--color-text-muted);
   font-weight: 600;
+}
+
+.fillInList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.fillInRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.fillInLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1 1 14rem;
+}
+
+/* Structured correction, justification and multi-part sections */
+.structuredParts,
+.multiPartList,
+.errorAnalysisWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.structuredPart,
+.partCard {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background: var(--color-surface-alt);
+}
+
+.partCard {
+  background: var(--color-surface);
+}
+
+.partPrompt {
+  margin-block-end: var(--space-3);
+  line-height: var(--leading-relaxed);
+}
+
+.partHeading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-block-end: var(--space-3);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.partNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.7rem;
+  block-size: 1.7rem;
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+.partPoints {
+  margin-inline-start: auto;
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.subsectionHeading {
+  font-size: var(--font-base);
+  margin-block-end: var(--space-3);
+  color: var(--color-text);
+}
+
+/* Error analysis */
+.errorSteps {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background: #fffbeb;
+}
+
+.errorStepList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.errorStep {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.errorStepNumber {
+  color: #92400e;
+  font-weight: 700;
+  min-inline-size: 1.5rem;
+}
+
+.errorStepText {
+  flex: 1;
 }
 
 /* Ordering */
