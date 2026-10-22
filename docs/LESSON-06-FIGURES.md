@@ -98,8 +98,13 @@ Exact in the drawing (`tests` assert each one numerically):
   which is why the marking is legitimate rather than decorative.
 
 Drawing choice, not printed: the size of the angle pair (50°). No printed value
-contradicts it and no step of the proof depends on it. No equality between `AB`
-and `AC` is claimed anywhere in the figure or the solution.
+contradicts it and no step of the proof depends on it.
+
+The figure carries **no `AB = AC` equality mark**, and the source does not give
+that equality. It is _derived_: the solution's question 1 claims the congruence
+`ABM ≅ ACM` with the correspondence `A ⟷ A`, `B ⟷ C`, `M ⟷ M`, and `AB = AC`
+follows from that claimed congruence — it is a consequence of question 1, not an
+input to it. Nothing in the drawing should be read as printing it.
 
 ### Question 4 — both printed boxes
 
