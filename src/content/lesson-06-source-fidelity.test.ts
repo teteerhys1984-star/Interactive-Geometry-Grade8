@@ -106,10 +106,11 @@ describe('Lesson 6 — Q3–Q15 source fidelity', () => {
   it('classifies all 26 diagram records exactly as documented', () => {
     const diagrams = lessonDiagrams(lesson);
     expect(diagrams).toHaveLength(26);
-    expect(diagrams.filter((diagram) => diagram.kind === 'reference')).toHaveLength(5);
+    // No Lesson 06 figure is a «راجع الكتاب» placeholder any more.
+    expect(diagrams.filter((diagram) => diagram.kind === 'reference')).toHaveLength(0);
     expect(
       diagrams.filter((diagram) => diagram.origin === 'textbook' && diagram.kind !== 'reference'),
-    ).toHaveLength(3);
+    ).toHaveLength(8);
     expect(diagrams.filter((diagram) => diagram.origin === 'authored')).toHaveLength(18);
   });
 
@@ -118,7 +119,12 @@ describe('Lesson 6 — Q3–Q15 source fidelity', () => {
       (diagram) => diagram.origin === 'textbook' && diagram.kind !== 'reference',
     );
     expect(reconstructed.map((diagram) => diagram.id)).toEqual([
+      'fig-ex6-q3-angle-bisector',
+      'fig-ex6-q4-three-points',
       'fig-ex6-q6-grid-shape',
+      'fig-ex6-q9-six-lines',
+      'fig-ex6-q10-line-construction',
+      'fig-ex6-q11-isosceles-altitude',
       'fig-ex6-q13-point-grid',
       'fig-ex6-q15-right-triangle',
     ]);
@@ -209,9 +215,10 @@ describe('Lesson 6 — Q3–Q15 source fidelity', () => {
     }
   });
 
-  it('keeps the six-case Q9 figure a reference and accounts for every case', () => {
+  it('renders the six-case Q9 figure and accounts for every case', () => {
     const q9 = lesson06Exercises.find((exercise) => exercise.number === 9)!;
-    expect(q9.sourceFigure?.type).toBe('reference');
+    expect(q9.sourceFigure?.type).toBe('reconstructed');
+    expect(q9.sourceFigure?.scenario).toBe('q9-six-lines');
     expect(q9.sourceFigure?.alt).toContain('ست حالات');
     expect(q9.branches.map((branch) => branch.label)).toEqual([
       '(1)-①',
@@ -232,7 +239,8 @@ describe('Lesson 6 — Q3–Q15 source fidelity', () => {
     expect(alt).toContain('$B$ أسفل الوسط');
     expect(alt).toContain('$B$ أسفل اليسار الأوسط');
     expect(alt).toContain('$C$ أسفل اليمين');
-    expect(q4.sourceFigure?.type).toBe('reference');
+    expect(q4.sourceFigure?.type).toBe('reconstructed');
+    expect(q4.sourceFigure?.scenario).toBe('q4-parallelogram-points');
     expect(q4.branches.map((branch) => branch.label)).toEqual(['①', '②']);
   });
 

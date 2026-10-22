@@ -445,8 +445,16 @@ const VERIFIED_TEXTBOOK_FIGURES = [
   'fig-ex5-q1-9',
   'fig-ex5-q2-1',
   'fig-ex5-q2-3',
-  // Lesson 6 verification calculations are recorded in docs/LESSON-06-FIGURES.md.
+  // Lesson 6 reconstructions carry only the relations the printed page states:
+  // incidence, one parallel direction, right-angle/equality marks and the two
+  // grids. No measured slope or distance is asserted anywhere. The per-figure
+  // record is in docs/LESSON-06-FIGURES.md.
+  'fig-ex6-q3-angle-bisector',
+  'fig-ex6-q4-three-points',
   'fig-ex6-q6-grid-shape',
+  'fig-ex6-q9-six-lines',
+  'fig-ex6-q10-line-construction',
+  'fig-ex6-q11-isosceles-altitude',
   'fig-ex6-q13-point-grid',
   'fig-ex6-q15-right-triangle',
   // Lesson 7 reconstructions carry no measured geometry: each one is fixed by

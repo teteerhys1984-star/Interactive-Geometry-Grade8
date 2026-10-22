@@ -62,6 +62,487 @@ function Dot({
   );
 }
 
+type Point2 = { x: number; y: number };
+
+const round2 = (value: number) => Math.round(value * 100) / 100;
+
+const path2 = (points: Point2[]) =>
+  points
+    .map((point, index) => `${index === 0 ? 'M' : 'L'} ${round2(point.x)} ${round2(point.y)}`)
+    .join(' ');
+
+function unitVector(from: Point2, to: Point2): Point2 {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const length = Math.hypot(dx, dy) || 1;
+  return { x: dx / length, y: dy / length };
+}
+
+/** Right-angle mark inside the corner between the directions `u` and `v`. */
+function rightAnglePath(corner: Point2, u: Point2, v: Point2, size = 16): string {
+  const p1 = { x: corner.x + u.x * size, y: corner.y + u.y * size };
+  const p3 = { x: corner.x + v.x * size, y: corner.y + v.y * size };
+  const p2 = { x: p1.x + v.x * size, y: p1.y + v.y * size };
+  return path2([p1, p2, p3]);
+}
+
+/** Single equality tick across the midpoint of a segment. */
+function tickPath(from: Point2, to: Point2, size = 7): string {
+  const mid = { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 };
+  const dir = unitVector(from, to);
+  return path2([
+    { x: mid.x - dir.y * size, y: mid.y + dir.x * size },
+    { x: mid.x + dir.y * size, y: mid.y - dir.x * size },
+  ]);
+}
+
+/** Arc at `center` between two mathematical angles (counter-clockwise, y up). */
+function angleArcPath(center: Point2, radius: number, from: number, to: number): string {
+  const p1 = { x: center.x + radius * Math.cos(from), y: center.y - radius * Math.sin(from) };
+  const p2 = { x: center.x + radius * Math.cos(to), y: center.y - radius * Math.sin(to) };
+  return `M ${round2(p1.x)} ${round2(p1.y)} A ${radius} ${radius} 0 0 0 ${round2(p2.x)} ${round2(p2.y)}`;
+}
+
+/** A labelled source point together with its `data-point` test hook. */
+function Point({
+  x,
+  y,
+  label,
+  dx = 9,
+  dy = -9,
+  anchor,
+}: Point2 & { label: string; dx?: number; dy?: number; anchor?: 'start' | 'middle' | 'end' }) {
+  return (
+    <g data-point={label}>
+      <circle cx={round2(x)} cy={round2(y)} r="3.4" className={styles.dot} />
+      <text x={round2(x + dx)} y={round2(y + dy)} textAnchor={anchor} className={styles.label}>
+        {label}
+      </text>
+    </g>
+  );
+}
+
+/**
+ * Q3 — angle bisector with two perpendiculars.
+ *
+ * Verified relations (docs/LESSON-06-FIGURES.md): `Ax` horizontal, `Ay`
+ * oblique, `Az` the bisector of xÂy; B ∈ Ax, C ∈ Ay, M ∈ Az, BM ⟂ Ax and
+ * CM ⟂ Ay. The half-angles are exactly equal in the drawing and both right
+ * angles are exact: with A as origin, AB = AC = 300 and M = (300, 300·tan25°)
+ * satisfies BM ⟂ Ax and CM ⟂ Ay simultaneously. Only the size of the angle
+ * pair (50°) is a drawing choice; no printed value is contradicted.
+ */
+function Q3Source() {
+  const a: Point2 = { x: 88, y: 300 };
+  const theta = (50 * Math.PI) / 180;
+  const half = theta / 2;
+  const arm = 300;
+  const b: Point2 = { x: a.x + arm, y: a.y };
+  const c: Point2 = { x: a.x + arm * Math.cos(theta), y: a.y - arm * Math.sin(theta) };
+  const m: Point2 = { x: a.x + arm, y: a.y - arm * Math.tan(half) };
+  const at = (radius: number, angle: number): Point2 => ({
+    x: a.x + radius * Math.cos(angle),
+    y: a.y - radius * Math.sin(angle),
+  });
+  const xEnd = at(470, 0);
+  const yEnd = at(330, theta);
+  const zEnd = at(430, half);
+  const arcRadius = 56;
+  return (
+    <>
+      <line
+        x1={round2(a.x)}
+        y1={round2(a.y)}
+        x2={round2(xEnd.x)}
+        y2={round2(xEnd.y)}
+        className={styles.sourceRay}
+        markerEnd="url(#uc-arrow)"
+        data-ray="Ax"
+      />
+      <line
+        x1={round2(a.x)}
+        y1={round2(a.y)}
+        x2={round2(yEnd.x)}
+        y2={round2(yEnd.y)}
+        className={styles.sourceRay}
+        markerEnd="url(#uc-arrow)"
+        data-ray="Ay"
+      />
+      <line
+        x1={round2(a.x)}
+        y1={round2(a.y)}
+        x2={round2(zEnd.x)}
+        y2={round2(zEnd.y)}
+        className={styles.sourceRay}
+        markerEnd="url(#uc-arrow)"
+        data-ray="Az"
+      />
+      <line
+        x1={round2(b.x)}
+        y1={round2(b.y)}
+        x2={round2(m.x)}
+        y2={round2(m.y)}
+        className={styles.sourceSegment}
+        data-segment="BM"
+      />
+      <line
+        x1={round2(c.x)}
+        y1={round2(c.y)}
+        x2={round2(m.x)}
+        y2={round2(m.y)}
+        className={styles.sourceSegment}
+        data-segment="CM"
+      />
+      <path
+        d={rightAnglePath(b, unitVector(b, a), unitVector(b, m))}
+        className={styles.rightMark}
+        data-mark="right-B"
+      />
+      <path
+        d={rightAnglePath(c, unitVector(c, a), unitVector(c, m))}
+        className={styles.rightMark}
+        data-mark="right-C"
+      />
+      <path
+        d={angleArcPath(a, arcRadius, 0, half)}
+        className={styles.angleArc}
+        data-mark="angle-xAz"
+      />
+      <path
+        d={angleArcPath(a, arcRadius, half, theta)}
+        className={styles.angleArc}
+        data-mark="angle-zAy"
+      />
+      <Point x={a.x} y={a.y} label="A" dx={-30} dy={24} />
+      <Point x={b.x} y={b.y} label="B" dx={-8} dy={26} />
+      <Point x={c.x} y={c.y} label="C" dx={-28} dy={-8} />
+      <Point x={m.x} y={m.y} label="M" dx={-8} dy={-16} />
+      <text x={round2(xEnd.x + 8)} y={round2(xEnd.y + 7)} className={styles.label}>
+        x
+      </text>
+      <text x={round2(yEnd.x + 8)} y={round2(yEnd.y + 2)} className={styles.label}>
+        y
+      </text>
+      <text x={round2(zEnd.x + 8)} y={round2(zEnd.y - 2)} className={styles.label}>
+        z
+      </text>
+    </>
+  );
+}
+
+/**
+ * Q4 — the two printed boxes with three labelled points each.
+ *
+ * Only the verified relative layouts are drawn: ① A upper-left, C
+ * middle-right, B lower-middle; ② A upper-left, B lower-middle-left, C
+ * lower-right. The fourth vertex D is the exercise answer and is NOT drawn,
+ * and no measurement or grid is implied.
+ */
+function Q4Source() {
+  const boxes = [
+    {
+      number: '①',
+      x: 40,
+      points: [
+        { label: 'A', x: 78, y: 104, dx: -26, dy: 24 },
+        { label: 'C', x: 252, y: 188, dx: 10, dy: -8 },
+        { label: 'B', x: 168, y: 276, dx: -26, dy: 22 },
+      ],
+    },
+    {
+      number: '②',
+      x: 342,
+      points: [
+        { label: 'A', x: 380, y: 104, dx: -26, dy: 24 },
+        { label: 'B', x: 416, y: 264, dx: -30, dy: 18 },
+        { label: 'C', x: 556, y: 276, dx: -26, dy: 22 },
+      ],
+    },
+  ];
+  return (
+    <>
+      {boxes.map((box) => (
+        <g key={box.number} data-box={box.number}>
+          <rect x={box.x} y="62" width="258" height="250" rx="4" className={styles.panelFrame} />
+          <text x={box.x + 14} y="48" className={styles.panelNumber}>
+            {box.number}
+          </text>
+          {box.points.map((point) => (
+            <Point
+              key={point.label}
+              x={point.x}
+              y={point.y}
+              label={point.label}
+              dx={point.dx}
+              dy={point.dy}
+            />
+          ))}
+        </g>
+      ))}
+    </>
+  );
+}
+
+/**
+ * Q9 — the six printed cases, reconstructed panel by panel.
+ *
+ * The printed page fixes one relation per panel; the panel layout, the slopes
+ * and the distances are NOT printed, so they are a schematic realisation that
+ * preserves each recorded relation exactly:
+ *   (1)-① AB ∥ (d)            (1)-② neither A nor B lies on (d)
+ *   (1)-③ A ∈ (d)             (2)-① B ∈ (d) and A ∉ (d)
+ *   (2)-② [AB] meets (d) at an unlabelled point
+ *   (2)-③ general case, A and B on the same side of (d)
+ * No other incidence, parallelism or coincidence is claimed.
+ */
+function Q9Source() {
+  const panelWidth = 176;
+  const panelHeight = 132;
+  const columns = [52, 238, 424];
+  const rows = [26, 186];
+
+  /**
+   * A point placed on the panel's line by two exact parameters: `t` along the
+   * line and `offset` perpendicular to it. Building every point this way keeps
+   * each recorded relation exact rather than eyeballed:
+   *   offset 0     → the point lies on (d)
+   *   equal offsets → the segment joining the points is parallel to (d)
+   *   opposite signs → the segment crosses (d)
+   */
+  type Placement = { t: number; offset: number };
+  type Panel = {
+    id: string;
+    number: string;
+    line: [Point2, Point2];
+    a: Placement;
+    b: Placement;
+  };
+
+  /**
+   * Deterministic label placement: outward from the line (never across it) and
+   * flipped inward before the text can leave the panel. No hand-tuned offsets.
+   */
+  const labelSpot = (point: Point2, label: string) => {
+    const width = 8.4 * label.length;
+    const right = point.x + width + 12 < panelWidth;
+    const above = point.y - 14 > 26;
+    return {
+      dx: right ? 9 : -9,
+      dy: above ? -9 : 22,
+      anchor: (right ? 'start' : 'end') as 'start' | 'end',
+    };
+  };
+
+  const linePoint = (line: [Point2, Point2], { t, offset }: Placement): Point2 => {
+    const [p1, p2] = line;
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    const length = Math.hypot(dx, dy) || 1;
+    // Unit normal; positive offsets move to the lower-right side of the screen.
+    const nx = -dy / length;
+    const ny = dx / length;
+    return {
+      x: p1.x + t * dx + offset * nx,
+      y: p1.y + t * dy + offset * ny,
+    };
+  };
+
+  const panels: Panel[] = [
+    {
+      id: '(1)-①',
+      number: '①',
+      line: [
+        { x: 16, y: 110 },
+        { x: 160, y: 52 },
+      ],
+      // AB ∥ (d): identical perpendicular offsets.
+      a: { t: 0.2, offset: -40 },
+      b: { t: 0.78, offset: -40 },
+    },
+    {
+      id: '(1)-②',
+      number: '②',
+      line: [
+        { x: 16, y: 44 },
+        { x: 160, y: 104 },
+      ],
+      // Neither labelled point lies on (d).
+      a: { t: 0.18, offset: -34 },
+      b: { t: 0.78, offset: -30 },
+    },
+    {
+      id: '(1)-③',
+      number: '③',
+      line: [
+        { x: 16, y: 112 },
+        { x: 160, y: 48 },
+      ],
+      // A ∈ (d) exactly (offset 0); B is off the line.
+      a: { t: 0.44, offset: 0 },
+      b: { t: 0.66, offset: -40 },
+    },
+    {
+      id: '(2)-①',
+      number: '①',
+      line: [
+        { x: 16, y: 52 },
+        { x: 160, y: 112 },
+      ],
+      // B ∈ (d) exactly; A is on the other side of the line.
+      a: { t: 0.2, offset: 40 },
+      b: { t: 0.6, offset: 0 },
+    },
+    {
+      id: '(2)-②',
+      number: '②',
+      line: [
+        { x: 16, y: 100 },
+        { x: 160, y: 62 },
+      ],
+      // Opposite signs: the segment [AB] meets (d) between the two points.
+      a: { t: 0.14, offset: 20 },
+      b: { t: 0.86, offset: -30 },
+    },
+    {
+      id: '(2)-③',
+      number: '③',
+      line: [
+        { x: 16, y: 116 },
+        { x: 160, y: 56 },
+      ],
+      // General case: both points on the same side, but not parallel to (d).
+      a: { t: 0.26, offset: -34 },
+      b: { t: 0.74, offset: -46 },
+    },
+  ];
+
+  return (
+    <>
+      {rows.map((rowY, rowIndex) => (
+        <text key={`row-${rowIndex}`} x="18" y={rowY + 74} className={styles.panelRowLabel}>
+          {`(${rowIndex + 1})`}
+        </text>
+      ))}
+      {panels.map((panel, index) => {
+        const column = index % 3;
+        const row = Math.floor(index / 3);
+        const a = linePoint(panel.line, panel.a);
+        const b = linePoint(panel.line, panel.b);
+        // Pick the candidate that sits farthest from both labels, so the
+        // printed name of the line can never collide with A or B.
+        const candidates = [0.05, 0.95].flatMap((t) => [-24, 24].map((offset) => ({ t, offset })));
+        const score = (candidate: { t: number; offset: number }, point: Point2) => {
+          const spot = linePoint(panel.line, candidate);
+          return Math.hypot(spot.x - point.x, spot.y - point.y);
+        };
+        const best = candidates.reduce(
+          (chosen, candidate) => {
+            const value = Math.min(score(candidate, a), score(candidate, b));
+            return value > chosen.value ? { candidate, value } : chosen;
+          },
+          { candidate: candidates[0]!, value: -Infinity },
+        );
+        const dLabel = linePoint(panel.line, best.candidate);
+        return (
+          <g
+            key={panel.id}
+            data-panel={panel.id}
+            transform={`translate(${columns[column]} ${rows[row]})`}
+          >
+            <rect width={panelWidth} height={panelHeight} rx="3" className={styles.panelFrame} />
+            <text x="12" y="20" className={styles.panelNumber}>
+              {panel.number}
+            </text>
+            <line
+              x1={panel.line[0].x}
+              y1={panel.line[0].y}
+              x2={panel.line[1].x}
+              y2={panel.line[1].y}
+              className={styles.sourceLine}
+              data-role="d"
+            />
+            <text
+              x={dLabel.x}
+              y={dLabel.y}
+              textAnchor="middle"
+              className={styles.lineLabel}
+              data-role="d-label"
+            >
+              (d)
+            </text>
+            <Point x={a.x} y={a.y} label="A" {...labelSpot(a, 'A')} />
+            <Point x={b.x} y={b.y} label="B" {...labelSpot(b, 'B')} />
+          </g>
+        );
+      })}
+    </>
+  );
+}
+
+/**
+ * Q10 — a red line with C on it, B above-right and A below-right.
+ *
+ * Only the recorded facts are fixed: C ∈ (d), B on the upper-right side of
+ * (d), A on the lower-right side. The slope and the distances are drawing
+ * choices; no measurement is printed.
+ */
+function Q10Source() {
+  const d1: Point2 = { x: 60, y: 290 };
+  const d2: Point2 = { x: 560, y: 90 };
+  const c: Point2 = { x: 260, y: 210 };
+  const b: Point2 = { x: 360, y: 130 };
+  const a: Point2 = { x: 430, y: 260 };
+  return (
+    <>
+      <line x1={d1.x} y1={d1.y} x2={d2.x} y2={d2.y} className={styles.sourceLine} data-role="d" />
+      <text x="520" y="128" className={styles.lineLabel}>
+        (d)
+      </text>
+      <Point x={a.x} y={a.y} label="A" dx={12} dy={22} />
+      <Point x={b.x} y={b.y} label="B" dx={12} dy={-10} />
+      <Point x={c.x} y={c.y} label="C" dx={-24} dy={22} />
+    </>
+  );
+}
+
+/**
+ * Q11 — isosceles triangle ABC with apex C, and the altitude CN to the base.
+ *
+ * CA = CB, N ∈ [AB] and CN ⟂ AB, with the printed equality ticks on [CA]
+ * and [CB] and the right-angle mark at N. Nothing else is marked: AN = NB is
+ * the exercise result, not a given, so no tick or mark states it.
+ */
+function Q11Source() {
+  const a: Point2 = { x: 130, y: 290 };
+  const b: Point2 = { x: 510, y: 290 };
+  const c: Point2 = { x: 320, y: 90 };
+  const n: Point2 = { x: 320, y: 290 };
+  return (
+    <>
+      <path d={path2([a, b, c, a])} className={styles.sourceSegment} data-shape="ABC" />
+      <line
+        x1={c.x}
+        y1={c.y}
+        x2={n.x}
+        y2={n.y}
+        className={styles.sourceSegment}
+        data-segment="CN"
+      />
+      <path
+        d={rightAnglePath(n, unitVector(n, a), unitVector(n, c))}
+        className={styles.rightMark}
+        data-mark="right-N"
+      />
+      <path d={tickPath(a, c)} className={styles.tickMark} data-mark="tick-CA" />
+      <path d={tickPath(b, c)} className={styles.tickMark} data-mark="tick-CB" />
+      <Point x={a.x} y={a.y} label="A" dx={-26} dy={24} />
+      <Point x={b.x} y={b.y} label="B" dx={12} dy={24} />
+      <Point x={c.x} y={c.y} label="C" dx={-10} dy={-14} />
+      <Point x={n.x} y={n.y} label="N" dx={-8} dy={26} />
+    </>
+  );
+}
+
 /** Static SVGs whose geometry is either source-verified or explicitly authored. */
 export function UnitContinuationFigure({ spec }: { spec: InteractiveDiagram }) {
   const scenario = String(spec.params.scenario ?? '');
@@ -77,7 +558,12 @@ export function UnitContinuationFigure({ spec }: { spec: InteractiveDiagram }) {
           </pattern>
         </defs>
 
+        {scenario === 'q3-angle-bisector' ? <Q3Source /> : null}
+        {scenario === 'q4-parallelogram-points' ? <Q4Source /> : null}
         {scenario === 'q6-source-grid' ? <Q6Source /> : null}
+        {scenario === 'q9-six-lines' ? <Q9Source /> : null}
+        {scenario === 'q10-line-construction' ? <Q10Source /> : null}
+        {scenario === 'q11-isosceles-altitude' ? <Q11Source /> : null}
         {scenario === 'q13-source-grid' ? <Q13Source /> : null}
         {scenario === 'q15-source-triangle' ? <Q15Source /> : null}
         {scenario === 'q5-central-symmetry' ? <Q5Authored /> : null}

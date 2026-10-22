@@ -78,6 +78,64 @@
   stroke-linejoin: round;
 }
 
+/* Source reconstructions that must stay unfilled: rays, segments, panels. */
+.sourceSegment {
+  fill: none;
+  stroke: var(--color-text);
+  stroke-width: 2.6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.sourceRay {
+  stroke: var(--color-text);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.sourceLine {
+  stroke: #c84432;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.lineLabel {
+  fill: #c84432;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 20px;
+  font-style: italic;
+}
+
+.angleArc {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 2.4;
+}
+
+.tickMark {
+  stroke: var(--color-text);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+.panelFrame {
+  fill: none;
+  stroke: var(--color-text-muted);
+  stroke-width: 1.6;
+}
+
+.panelNumber {
+  fill: var(--color-text-muted);
+  font-family: var(--font-arabic);
+  font-size: 17px;
+}
+
+.panelRowLabel {
+  fill: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 18px;
+}
+
 .rightMark {
   fill: none;
   stroke: #c84432;
