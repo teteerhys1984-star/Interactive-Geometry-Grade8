@@ -6,11 +6,12 @@ export const definition: TestDefinitionInput = {
   scope: 'lesson',
   targetId: 'lesson-04-triangle-congruence',
   summary:
-    'اختبار شامل يغطي حالات تطابق المثلثين الثلاث، تطابق المثلثات القائمة، وتطبيقات الطائرة الورقية والمثلث المتساوي الساقين.',
+    'اختبار من عشرين سؤالاً يغطي حالات تطابق مثلثين الثلاث، وحالتي تطابق المثلثين القائمين، والبراهين الهندسية في متوازي الأضلاع والمستطيل، وتطبيقات الطائرة الورقية والمثلث المتساوي الساقين، وتحليل الأخطاء.',
   instructions:
-    'عشرون سؤالاً تقيس فهمك العميق لحالات التطابق والبراهين الهندسية. يمكنك مراجعة الأسئلة قبل التسليم.',
+    'عشرون سؤالاً تقيس فهمك لحالات التطابق والبراهين الهندسية، والدرجة الكاملة 31. يمكنك التنقل والمراجعة بحرية قبل تسليم الاختبار. لا يظهر أي تصحيح أثناء الإجابة، وفي أسئلة صح/خطأ وتحليل الخطأ تُحتسب الأجزاء كلٌّ على حدة.',
   passingScore: 60,
   solutionGroupSize: 5,
+  solutionPolicy: 'detailed',
   questionIds: [
     'geo-l04-t01-q01',
     'geo-l04-t01-q02',
@@ -56,7 +57,7 @@ export const definition: TestDefinitionInput = {
     ],
     types: [
       { type: 'single-choice', count: 7 },
-      { type: 'true-false', count: 3 },
+      { type: 'true-false-justify', count: 3 },
       { type: 'multi-select', count: 2 },
       { type: 'numeric', count: 2 },
       { type: 'exact', count: 1 },
