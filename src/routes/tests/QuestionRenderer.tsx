@@ -1,5 +1,6 @@
 import type { ChangeEvent } from 'react';
 import { Blocks } from '@/components/content';
+import { plainTextIsolated } from '@/lib/bidi';
 import { RichText } from '@/components/math';
 import type {
   AnswerValue,
@@ -755,6 +756,13 @@ function OrderingInput({
   );
 }
 
+/**
+ * Structured matching control: every left item owns a labelled radiogroup of
+ * the right-column targets. Targets are rendered through <RichText> exactly
+ * like every other authored string — a native <select> can NEVER be used here
+ * because <option> elements cannot hold KaTeX output, so authored `$…$` runs
+ * would leak to the learner as raw LaTeX source without LTR isolation.
+ */
 function MatchingInput({
   left,
   right,
@@ -778,25 +786,32 @@ function MatchingInput({
             <div className={styles.matchingArrow} aria-hidden="true">
               ←
             </div>
-            <div className={styles.matchingRight}>
-              <select
-                className={styles.matchingSelect}
-                value={currentRightId}
-                onChange={(event: ChangeEvent<HTMLSelectElement>) => {
-                  const val = event.target.value;
-                  const next = { ...pairs };
-                  if (val) next[item.id] = val;
-                  else delete next[item.id];
-                  onChange(next);
-                }}
-              >
-                <option value="">-- اختر ما يناسبه --</option>
-                {right.map((target) => (
-                  <option key={target.id} value={target.id}>
-                    {target.text}
-                  </option>
-                ))}
-              </select>
+            <div
+              className={styles.matchingOptions}
+              role="radiogroup"
+              aria-label={plainTextIsolated(item.text)}
+            >
+              {right.map((target) => {
+                const isChecked = currentRightId === target.id;
+                return (
+                  <label
+                    key={target.id}
+                    className={`${styles.matchingOption} ${isChecked ? styles.selected : ''}`}
+                  >
+                    <input
+                      type="radio"
+                      name={`q-matching-${item.id}`}
+                      value={target.id}
+                      checked={isChecked}
+                      onChange={() => onChange({ ...pairs, [item.id]: target.id })}
+                      className={styles.radioInput}
+                    />
+                    <span className={styles.optionText}>
+                      <RichText text={target.text} />
+                    </span>
+                  </label>
+                );
+              })}
             </div>
           </div>
         );
