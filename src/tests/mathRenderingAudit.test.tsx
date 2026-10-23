@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Blocks } from '@/components/content';
-import { splitInlineMath } from '@/lib/bidi';
 import { allLessons } from '@/content/registry';
 import { catalog, hasSolutionSet, testQuestions, solutionLoaders } from '@/tests/registry';
 import { QuestionRenderer } from '@/routes/tests/QuestionRenderer';
@@ -15,6 +14,60 @@ interface StringFinding {
   classification: 'paired-math' | 'unmatched-or-empty-marker' | 'literal-candidate';
 }
 
+type DollarClassification = StringFinding['classification'];
+
+// A number followed by `$` at a prose boundary is a likely literal currency marker.
+function isPostfixCurrencyDollar(text: string, index: number): boolean {
+  const before = text.slice(0, index);
+  const after = text.slice(index + 1);
+  const followsAmount = /(?:^|[\s([{])\d+(?:[.,]\d+)?\s*$/.test(before);
+  const precedesTextBoundary = /^(?:$|[\s,،.;:!?)}\]])/.test(after);
+
+  return followsAmount && precedesTextBoundary;
+}
+
+// Flag clear LaTeX/operator fragments as malformed; ambiguous bare dollars remain review candidates.
+function looksLikeUnclosedMath(text: string, index: number): boolean {
+  const left = text.slice(0, index).trimEnd().split(/\s+/).at(-1) ?? '';
+  const right =
+    text
+      .slice(index + 1)
+      .trimStart()
+      .split(/\s+/)[0] ?? '';
+  const nearby = `${left} ${right}`;
+
+  return ['\\', '^', '_', '=', '{', '}', '[', ']'].some((token) => nearby.includes(token));
+}
+
+function classifyDollarMarkers(text: string): DollarClassification[] {
+  const classifications: DollarClassification[] = [];
+  let opening = -1;
+
+  for (let index = text.indexOf('$'); index !== -1; index = text.indexOf('$', index + 1)) {
+    if (opening === -1 && isPostfixCurrencyDollar(text, index)) {
+      classifications.push('literal-candidate');
+      continue;
+    }
+
+    if (opening === -1) {
+      opening = index;
+      continue;
+    }
+
+    const expression = text.slice(opening + 1, index);
+    classifications.push(expression.trim() ? 'paired-math' : 'unmatched-or-empty-marker');
+    opening = -1;
+  }
+
+  if (opening !== -1) {
+    classifications.push(
+      looksLikeUnclosedMath(text, opening) ? 'unmatched-or-empty-marker' : 'literal-candidate',
+    );
+  }
+
+  return classifications;
+}
+
 function collectStrings(
   value: unknown,
   path: string,
@@ -22,19 +75,9 @@ function collectStrings(
 ): StringFinding[] {
   if (typeof value === 'string') {
     if (!value.includes('$')) return output;
-    const segments = splitInlineMath(value);
-    const hasRawMarker = segments.some(
-      (segment) => segment.type !== 'math' && segment.value.includes('$'),
-    );
-    output.push({
-      path,
-      text: value,
-      classification: hasRawMarker
-        ? 'unmatched-or-empty-marker'
-        : segments.some((segment) => segment.type === 'math')
-          ? 'paired-math'
-          : 'literal-candidate',
-    });
+    for (const classification of classifyDollarMarkers(value)) {
+      output.push({ path, text: value, classification });
+    }
     return output;
   }
 
@@ -53,6 +96,27 @@ function renderQuestion(question: (typeof testQuestions)[number]) {
 }
 
 describe('platform math-rendering audit', () => {
+  it('distinguishes literal-dollar candidates, malformed math, and complete math', () => {
+    const classificationsFor = (text: string) =>
+      collectStrings(text, 'fixture').map((finding) => finding.classification);
+
+    expect(classificationsFor('ثمنه 5$، والصيغة $x^2$')).toEqual([
+      'literal-candidate',
+      'paired-math',
+    ]);
+    expect(classificationsFor('صيغة غير مكتملة $x^2')).toEqual(['unmatched-or-empty-marker']);
+    expect(classificationsFor('$x^2$')).toEqual(['paired-math']);
+  });
+
+  it('rejects empty and whitespace-only math delimiters', () => {
+    const classificationsFor = (text: string) =>
+      collectStrings(text, 'fixture').map((finding) => finding.classification);
+
+    expect(classificationsFor('$$')).toEqual(['unmatched-or-empty-marker']);
+    expect(classificationsFor('$ $')).toEqual(['unmatched-or-empty-marker']);
+    expect(classificationsFor('$x^2$')).toEqual(['paired-math']);
+  });
+
   it('classifies dollar-marked source strings before content changes', async () => {
     const roots: { path: string; value: unknown }[] = [
       { path: 'test questions', value: testQuestions },
