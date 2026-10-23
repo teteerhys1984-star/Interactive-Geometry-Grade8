@@ -381,7 +381,9 @@ describe('Lesson 4 — rebuilt test contract («تطابق المثلثات»)',
     });
   });
 
-  it('q04 & q14: verify genuine congruence necessity, exact geometry, and equivalent rational grading', () => {
+  it('q04 & q14: verify explicit hypotenuse-leg instruction, pedagogical provenance, exact geometry, and rational grading', async () => {
+    const solutions = await loadSolutionSet(TEST_ID);
+
     // q04 must give AC = 7.5 cm (not AB = 7.5 cm directly) so isosceles + correspondence are both required.
     const q04 = questionById('geo-l04-t01-q04');
     const q04Text = promptText(q04);
@@ -396,8 +398,8 @@ describe('Lesson 4 — rebuilt test contract («تطابق المثلثات»)',
       earnedPoints: 0,
     });
 
-    // q14: right triangles ABC (at A) and DEF (at D), BC = EF (symbolic), AB = DE = 4 cm, Area(ABC) = 15 cm²,
-    // asking for leg [DF] in cm -> 15/2 = 7.5 cm (NOT area 15!).
+    // q14: right triangles ABC (at A) and DEF (at D), BC = EF, AB = DE = 4 cm, Area(ABC) = 15 cm²,
+    // explicitly asking to compute leg [DF] using «الوتر وضلع القائمة» -> 15/2 = 7.5 cm (NOT area 15!).
     const q14 = questionById('geo-l04-t01-q14');
     if (q14.type !== 'exact') throw new Error('Expected q14 to be exact');
     const q14Text = promptText(q14);
@@ -406,10 +408,20 @@ describe('Lesson 4 — rebuilt test contract («تطابق المثلثات»)',
     expect(q14Text).toContain('AB = DE = 4');
     expect(q14Text).toContain('15\\ \\mathrm{cm}^2');
     expect(q14Text).toContain('طول الضلع القائم $[DF]$');
+    expect(q14Text).toContain('«الوتر وضلع القائمة»');
     expect(q14.unit).toBe('cm');
     expect(q14.answer).toEqual({ numerator: 15, denominator: 2 });
 
-    // Arithmetic & Euclidean right-triangle verification: (4, 7.5, 8.5).
+    // Solution & provenance must acknowledge the Pythagorean path and frame congruence as the pedagogical goal,
+    // never claiming congruence is the sole mathematical route.
+    const sol14 = solutions!.solutions['geo-l04-t01-q14']!;
+    const sol14Authored = JSON.stringify(sol14.provenance.platformAuthored);
+    expect(sol14.check).toContain('فيثاغورس');
+    expect(sol14Authored).toContain('فيثاغورس');
+    expect(sol14Authored).toContain('الهدف التعليمي');
+    expect(sol14Authored).not.toContain('ضرورياً للانتقال');
+
+    // Arithmetic & Euclidean right-triangle verification: (4, 7.5, 8.5) via both congruence and Pythagoras.
     const legAB = 4;
     const areaABC = 15;
     const legAC = (2 * areaABC) / legAB;
@@ -417,6 +429,7 @@ describe('Lesson 4 — rebuilt test contract («تطابق المثلثات»)',
     const hypotenuse = Math.hypot(legAB, legAC);
     expect(hypotenuse).toBe(8.5);
     expect(hypotenuse).toBeGreaterThan(legAC);
+    expect(Math.sqrt(hypotenuse ** 2 - legAB ** 2)).toBe(7.5);
 
     // Grading checks: equivalent fractions/decimals pass; area (15) or missing factor-1/2 (15/4 = 3.75) fail.
     for (const valid of ['15/2', '7.5', '30/4', '7,5']) {
