@@ -6,11 +6,12 @@ export const definition: TestDefinitionInput = {
   scope: 'lesson',
   targetId: 'lesson-03-image-of-a-shape',
   summary:
-    'اختبار شامل يغطي صور المستقيمات والقطع والدوائر والمضلعات، والتوازي والتعامد والإنشاءات.',
+    'اختبار من عشرين سؤالاً يغطي صور المستقيمات والقطع وأنصاف المستقيمات والدوائر والمضلعات وفق الانسحاب، والتوازي والتعامد، والإنشاء بالفرجار والمسطرة، وتحليل الأخطاء.',
   instructions:
-    'عشرون سؤالاً تقيس فهمك لقواعد صور الأشكال الهندسية. يمكنك التنقل والمراجعة بحرية قبل تسليم الاختبار.',
+    'عشرون سؤالاً تقيس فهمك لقواعد صور الأشكال الهندسية، والدرجة الكاملة 31. يمكنك التنقل والمراجعة بحرية قبل تسليم الاختبار. لا يظهر أي تصحيح أثناء الإجابة، وفي أسئلة صح/خطأ وتحليل الخطأ تُحتسب الأجزاء كلٌّ على حدة.',
   passingScore: 60,
   solutionGroupSize: 5,
+  solutionPolicy: 'detailed',
   questionIds: [
     'geo-l03-t01-q01',
     'geo-l03-t01-q02',
@@ -56,7 +57,7 @@ export const definition: TestDefinitionInput = {
     ],
     types: [
       { type: 'single-choice', count: 7 },
-      { type: 'true-false', count: 3 },
+      { type: 'true-false-justify', count: 3 },
       { type: 'multi-select', count: 2 },
       { type: 'numeric', count: 2 },
       { type: 'exact', count: 1 },

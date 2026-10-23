@@ -94,11 +94,13 @@ describe('Lesson 2 — rebuilt test contract', () => {
     expect(
       testDefinitions.find((definition) => definition.id === 'lesson-01-test')?.solutionPolicy,
     ).toBe('detailed');
+    // Later lesson rebuilds opt in to the same detailed policy; this test only
+    // guarantees that Lesson 2 itself stays opted in (no exclusivity claim).
     expect(
       testDefinitions
         .filter((definition) => definition.solutionPolicy === 'detailed')
         .map((definition) => definition.id),
-    ).toEqual(['lesson-01-test', 'lesson-02-test']);
+    ).toContain(TEST_ID);
   });
 
   it('passes the strict detailed-solution audit with zero issues and cites printed pages', async () => {
