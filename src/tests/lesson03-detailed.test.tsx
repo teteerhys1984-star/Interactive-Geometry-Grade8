@@ -366,4 +366,102 @@ describe('Lesson 3 — rebuilt test contract', () => {
       assignments: { i1: 'cat-parallel', i3: 'cat-not-parallel' },
     });
   });
+  it('q19 shows exactly one incorrect step (s3) and its key locates it without ambiguity', () => {
+    const question = questionById('geo-l03-t01-q19');
+    if (question.type !== 'error-analysis') throw new Error('Expected q19 to be error-analysis');
+
+    // The displayed derivation keeps its three ordered steps.
+    expect(question.steps.map((step) => step.id)).toEqual(['s1', 's2', 's3']);
+    const text = new Map(question.steps.map((step) => [step.id, step.text]));
+
+    // Only the last step carries the false uniqueness claim; s1 and s2 state true facts.
+    const uniquenessClaim = question.steps.filter((step) => step.text.includes('واحد فقط'));
+    expect(uniquenessClaim.map((step) => step.id)).toEqual(['s3']);
+    for (const id of ['s1', 's2']) {
+      expect(
+        text.get(id),
+        `${id} must not claim the distance alone fixes the translation`,
+      ).not.toContain('وحدها');
+      expect(text.get(id), `${id} must not claim the vector is fully determined`).not.toContain(
+        'تحديداً تاماً',
+      );
+    }
+    expect(text.get('s1')).toContain('ثابتة');
+    expect(text.get('s2')).toContain('عمودي');
+
+    // Exactly one choice names the third step, and it is the key; the distractors either
+    // blame the (correct) first step or deny that anything is wrong.
+    const blameStepThree = question.choices.filter((choice) => choice.text.includes('الخطوة 3'));
+    expect(blameStepThree.map((choice) => choice.id)).toEqual(['ch-many']);
+    expect(blameStepThree[0]!.id).toBe(question.answerId);
+    expect(question.choices.find((choice) => choice.id === 'ch-direction')?.text).toContain(
+      'الخطوة 1',
+    );
+    expect(question.choices.find((choice) => choice.id === 'ch-none')?.text).not.toContain(
+      'الخطوة',
+    );
+    expect(question.choices.find((choice) => choice.id === question.answerId)?.text).toContain(
+      'الخطوة 3',
+    );
+
+    // The engine still awards the location point only for the keyed choice.
+    const correction = question.correction!.answerId;
+    const reason = question.justification!.answerId;
+    expect(
+      gradeQuestionDetailed(question, answers.errorAnalysis('ch-many', correction, reason)),
+    ).toMatchObject({ outcome: 'correct', earnedPoints: 3, maxPoints: 3 });
+    expect(
+      gradeQuestionDetailed(question, answers.errorAnalysis('ch-direction', correction, reason)),
+    ).toMatchObject({ outcome: 'partially-correct', earnedPoints: 2, maxPoints: 3 });
+    expect(
+      gradeQuestionDetailed(question, answers.errorAnalysis('ch-none', correction, reason)),
+    ).toMatchObject({ outcome: 'partially-correct', earnedPoints: 2, maxPoints: 3 });
+  });
+
+  it('makes the 60 % pass mark land on 19/31 in practice, not on 18/31', () => {
+    // 18/31 = 58.06 -> 58 %, 19/31 = 61.29 -> 61 %: whole points only.
+    expect(Math.round((18 / 31) * 100)).toBe(58);
+    expect(Math.round((19 / 31) * 100)).toBe(61);
+    expect(Math.round((18 / 31) * 100) >= entry!.definition.passingScore).toBe(false);
+    expect(Math.round((19 / 31) * 100) >= entry!.definition.passingScore).toBe(true);
+
+    // Reproduce it end to end: thirteen one-point questions, q02 (2) and q10 (3) make an
+    // 18-point sheet, which must fail; one more point on the ordering item must pass.
+    const eighteen: AnswerMap = {};
+    for (const questionId of [
+      'geo-l03-t01-q01',
+      'geo-l03-t01-q03',
+      'geo-l03-t01-q04',
+      'geo-l03-t01-q05',
+      'geo-l03-t01-q06',
+      'geo-l03-t01-q08',
+      'geo-l03-t01-q09',
+      'geo-l03-t01-q11',
+      'geo-l03-t01-q13',
+      'geo-l03-t01-q14',
+      'geo-l03-t01-q15',
+      'geo-l03-t01-q17',
+      'geo-l03-t01-q18',
+      'geo-l03-t01-q02',
+      'geo-l03-t01-q10',
+    ]) {
+      eighteen[questionId] = correctAnswer(questionById(questionId));
+    }
+    const failing = gradeTest(TEST_ID, entry!.definition.passingScore, entry!.questions, eighteen);
+    expect(failing).toMatchObject({ earnedPoints: 18, maxPoints: 31, score: 58, passed: false });
+
+    // A single correctly placed ordering step is worth exactly one point.
+    eighteen['geo-l03-t01-q12'] = answers.order(['s1', 's3', 's2']);
+    const passing = gradeTest(TEST_ID, entry!.definition.passingScore, entry!.questions, eighteen);
+    expect(passing).toMatchObject({ earnedPoints: 19, maxPoints: 31, score: 61, passed: true });
+  });
+
+  it('states the q09 perimeter check correctly (8π ≈ 25.13 cm)', async () => {
+    const solutions = await loadSolutionSet(TEST_ID);
+    const check = solutions!.solutions['geo-l03-t01-q09']!.check ?? '';
+    expect(check).toContain('8\\pi');
+    expect(check).toContain('25.13');
+    expect(Number((2 * Math.PI * 4).toFixed(2))).toBe(25.13);
+    expect(solutions!.solutions['geo-l03-t01-q09']!.answerSummary).toContain('8');
+  });
 });
