@@ -162,6 +162,26 @@ describe('Lesson 2 — rebuilt test contract', () => {
     expect(maximum).toBe(30);
   });
 
+  it('explains q06 with the correct side and diagonal pairs and preserves its one-point answer', async () => {
+    const question = entry!.questions.find((candidate) => candidate.id === 'geo-l02-t01-q06')!;
+    if (question.type !== 'single-choice') throw new Error('Expected q06 to be single-choice');
+    const grade = gradeQuestionDetailed(question, answers.single(question.answerId));
+    expect(grade).toMatchObject({ outcome: 'correct', earnedPoints: 1, maxPoints: 1 });
+
+    const solutions = await loadSolutionSet(TEST_ID);
+    const solution = solutions!.solutions[question.id]!;
+    expect(solution.scoringCriteria.reduce((sum, criterion) => sum + criterion.points, 0)).toBe(
+      grade.maxPoints,
+    );
+    const explanation = solution.steps
+      .map((step) => (step.type === 'paragraph' ? step.text : ''))
+      .join(' ');
+    expect(explanation).toContain('$[PQ]$ و$[NM]$');
+    expect(explanation).toContain('$[QN]$ و$[MP]$');
+    expect(explanation).toContain('$[QM]$ و$[NP]$ فهما قطرا الشكل');
+    expect(explanation).not.toContain('$[QM]$ مقابلة لـ$[NP]$');
+  });
+
   it('grades a fully correct sheet as 30/30 and applies the configured 60% pass mark', () => {
     const answerMap: AnswerMap = Object.fromEntries(
       entry!.questions.map((question) => [question.id, correctAnswer(question)]),
