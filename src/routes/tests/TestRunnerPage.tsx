@@ -170,13 +170,19 @@ export function TestRunnerPage() {
               الإجابات الصحيحة: <strong dir="ltr">{result.correct}</strong>
             </span>
             <span>
+              جزئية: <strong dir="ltr">{result.partiallyCorrect}</strong>
+            </span>
+            <span>
               الإجابات الخاطئة: <strong dir="ltr">{result.incorrect}</strong>
             </span>
             <span>
               غير مجاب: <strong dir="ltr">{result.unanswered}</strong>
             </span>
             <span>
-              المجموع: <strong dir="ltr">{result.total}</strong>
+              النقاط:{' '}
+              <strong dir="ltr">
+                {result.earnedPoints} / {result.maxPoints}
+              </strong>
             </span>
           </div>
         </div>
@@ -190,6 +196,7 @@ export function TestRunnerPage() {
               const q = questions[pos];
               if (!q) return null;
               const isCorrect = item.outcome === 'correct';
+              const isPartial = item.outcome === 'partially-correct';
               const isUnanswered = item.outcome === 'unanswered';
 
               return (
@@ -198,9 +205,11 @@ export function TestRunnerPage() {
                   className={`${styles.reviewItem} ${
                     isCorrect
                       ? styles.revCorrect
-                      : isUnanswered
-                        ? styles.revUnanswered
-                        : styles.revIncorrect
+                      : isPartial
+                        ? styles.revPartial
+                        : isUnanswered
+                          ? styles.revUnanswered
+                          : styles.revIncorrect
                   }`}
                 >
                   <div className={styles.reviewItemHeader}>
@@ -210,9 +219,11 @@ export function TestRunnerPage() {
                     <span className={styles.revStatus}>
                       {isCorrect
                         ? '✓ إجابة صحيحة'
-                        : isUnanswered
-                          ? '— لم تتم الإجابة'
-                          : '✕ إجابة خاطئة'}
+                        : isPartial
+                          ? `◐ إجابة جزئية (${item.earnedPoints}/${item.maxPoints})`
+                          : isUnanswered
+                            ? '— لم تتم الإجابة'
+                            : '✕ إجابة خاطئة'}
                     </span>
                     <span className={styles.revType}>
                       {QUESTION_TYPE_LABELS[q.type]} · {DIFFICULTY_LABELS[q.difficulty]}

@@ -7,6 +7,7 @@ import {
   testQuestions,
 } from './registry';
 import { loadSolutionSet } from './registry';
+import { solutionSetCompletenessIssues } from './solutionAudit';
 
 const FORBIDDEN = [
   'todo',
@@ -106,6 +107,10 @@ describe('test domain audit — definitions, questions and blueprints', () => {
           `Solution for question ${qId} in ${def.id}`,
         ).toBeDefined();
       }
+      expect(
+        solutionSetCompletenessIssues(def, getTestEntry(def.id)!.questions, solutionSet!),
+        `Question-to-solution completeness for ${def.id}`,
+      ).toEqual([]);
     }
   });
 });

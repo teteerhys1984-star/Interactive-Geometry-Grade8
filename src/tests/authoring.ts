@@ -1,6 +1,15 @@
 import type { ContentBlock, DiagramSpec, SourceRef } from '@/content/schema';
 import type { TestFigureSpec } from '@/components/diagram/renderers/testFigureSpec';
-import type { Choice, Difficulty, TestQuestionInput, TestSolutionInput } from './schema';
+import type {
+  Choice,
+  ChoicePartInput,
+  Difficulty,
+  FillInBlankInput,
+  MultiPartItemInput,
+  SolutionPartInput,
+  TestQuestionInput,
+  TestSolutionInput,
+} from './schema';
 import { TEST_FIGURE_RENDERER } from '@/components/diagram/renderers/testFigureSpec';
 
 /**
@@ -123,6 +132,99 @@ export function trueFalse(input: QuestionBaseInput & { answer: boolean }): TestQ
   return { ...base(input), type: 'true-false', answer: input.answer };
 }
 
+/** Build a controlled choice sub-part used by correction and justification questions. */
+export function choicePart(input: {
+  id: string;
+  prompt: (string | ContentBlock)[];
+  choices: Choice[];
+  answer: string;
+  points?: number;
+}): ChoicePartInput {
+  return {
+    id: input.id,
+    prompt: toBlocks(input.prompt),
+    choices: input.choices,
+    answerId: input.answer,
+    ...(input.points === undefined ? {} : { points: input.points }),
+  };
+}
+
+export function trueFalseJustify(
+  input: QuestionBaseInput & {
+    answer: boolean;
+    correction?: ChoicePartInput;
+    justification?: ChoicePartInput;
+  },
+): TestQuestionInput {
+  return {
+    ...base(input),
+    type: 'true-false-justify',
+    answer: input.answer,
+    ...(input.correction ? { correction: input.correction } : {}),
+    ...(input.justification ? { justification: input.justification } : {}),
+  };
+}
+
+export function shortAnswer(
+  input: QuestionBaseInput & {
+    acceptedAnswers: string[];
+    normalization?: 'term' | 'exact-text';
+  },
+): TestQuestionInput {
+  return {
+    ...base(input),
+    type: 'short-answer',
+    acceptedAnswers: input.acceptedAnswers,
+    normalization: input.normalization ?? 'term',
+  };
+}
+
+export function fillIn(
+  input: QuestionBaseInput & { blanks: FillInBlankInput[] },
+): TestQuestionInput {
+  return { ...base(input), type: 'fill-in', blanks: input.blanks };
+}
+
+export function fillInBlank(input: {
+  id: string;
+  label: string;
+  acceptedAnswers: string[];
+  normalization?: 'term' | 'exact-text';
+  points?: number;
+}): FillInBlankInput {
+  return {
+    id: input.id,
+    label: input.label,
+    acceptedAnswers: input.acceptedAnswers,
+    normalization: input.normalization ?? 'term',
+    ...(input.points === undefined ? {} : { points: input.points }),
+  };
+}
+
+export function justification(
+  input: QuestionBaseInput & { steps: ChoicePartInput[] },
+): TestQuestionInput {
+  return { ...base(input), type: 'justification', steps: input.steps };
+}
+
+export function multiPart(
+  input: QuestionBaseInput & { parts: MultiPartItemInput[] },
+): TestQuestionInput {
+  return { ...base(input), type: 'multi-part', parts: input.parts };
+}
+
+export function diagramReading(
+  input: QuestionBaseInput & { parts: MultiPartItemInput[] },
+): TestQuestionInput {
+  return { ...base(input), type: 'diagram-reading', parts: input.parts };
+}
+
+export function transformationApplication(
+  input: QuestionBaseInput & { parts: MultiPartItemInput[] },
+): TestQuestionInput {
+  return { ...base(input), type: 'transformation-application', parts: input.parts };
+}
+
 export function numeric(
   input: QuestionBaseInput & { answer: number; tolerance?: number; unit?: string },
 ): TestQuestionInput {
@@ -159,7 +261,12 @@ export function ordering(
 }
 
 export function matching(
-  input: QuestionBaseInput & { left: Choice[]; right: Choice[]; pairs: Record<string, string> },
+  input: QuestionBaseInput & {
+    left: Choice[];
+    right: Choice[];
+    pairs: Record<string, string>;
+    allowReuse?: boolean;
+  },
 ): TestQuestionInput {
   return {
     ...base(input),
@@ -167,6 +274,7 @@ export function matching(
     left: input.left,
     right: input.right,
     pairs: input.pairs,
+    ...(input.allowReuse ? { allowReuse: true } : {}),
   };
 }
 
@@ -187,7 +295,13 @@ export function classification(
 }
 
 export function errorAnalysis(
-  input: QuestionBaseInput & { steps: Choice[]; choices: Choice[]; answer: string },
+  input: QuestionBaseInput & {
+    steps: Choice[];
+    choices: Choice[];
+    answer: string;
+    correction?: ChoicePartInput;
+    justification?: ChoicePartInput;
+  },
 ): TestQuestionInput {
   return {
     ...base(input),
@@ -195,6 +309,8 @@ export function errorAnalysis(
     steps: input.steps,
     choices: input.choices,
     answerId: input.answer,
+    ...(input.correction ? { correction: input.correction } : {}),
+    ...(input.justification ? { justification: input.justification } : {}),
   };
 }
 
@@ -202,24 +318,82 @@ export function errorAnalysis(
 /*  Solutions                                                                */
 /* ------------------------------------------------------------------------ */
 
-/**
- * A pedagogical solution. `steps` explain WHY; `rule` names the property used;
- * `check` and `commonError` are added only when they genuinely help.
- */
-export function solution(input: {
+/** Build one independently explained/scored solution part. */
+export function solutionPart(input: {
+  id: string;
   answer: string;
+  given?: (string | ContentBlock)[];
   steps: (string | ContentBlock)[];
   rule?: string;
   check?: string;
   commonError?: string;
+  diagramNotes?: (string | ContentBlock)[];
+  scoringCriteria?: { points: number; description: string }[];
+  sourceVerified?: (string | ContentBlock)[];
+  platformAuthored?: (string | ContentBlock)[];
+  provenance?: {
+    sourceVerified?: (string | ContentBlock)[];
+    platformAuthored?: (string | ContentBlock)[];
+  };
   sourceRefs?: SourceRef[];
-}): TestSolutionInput {
+}): SolutionPartInput {
+  const provenance = input.provenance ?? {};
   return {
+    id: input.id,
     answerSummary: input.answer,
+    given: toBlocks(input.given ?? []),
     steps: toBlocks(input.steps),
     ...(input.rule ? { rule: input.rule } : {}),
     ...(input.check ? { check: input.check } : {}),
     ...(input.commonError ? { commonError: input.commonError } : {}),
+    diagramNotes: toBlocks(input.diagramNotes ?? []),
+    scoringCriteria: input.scoringCriteria ?? [],
+    provenance: {
+      sourceVerified: toBlocks(input.sourceVerified ?? provenance.sourceVerified ?? []),
+      platformAuthored: toBlocks(input.platformAuthored ?? provenance.platformAuthored ?? []),
+    },
+    ...(input.sourceRefs ? { sourceRefs: input.sourceRefs } : {}),
+  };
+}
+
+/**
+ * A pedagogical solution. `steps` explain WHY; `rule` names the property used;
+ * `given`, `diagramNotes`, provenance and `parts` make future detailed
+ * solutions explicit without changing the existing lesson solution files.
+ */
+export function solution(input: {
+  answer: string;
+  given?: (string | ContentBlock)[];
+  steps: (string | ContentBlock)[];
+  rule?: string;
+  check?: string;
+  commonError?: string;
+  diagramNotes?: (string | ContentBlock)[];
+  scoringCriteria?: { points: number; description: string }[];
+  sourceVerified?: (string | ContentBlock)[];
+  platformAuthored?: (string | ContentBlock)[];
+  provenance?: {
+    sourceVerified?: (string | ContentBlock)[];
+    platformAuthored?: (string | ContentBlock)[];
+  };
+  parts?: SolutionPartInput[];
+  sourceRefs?: SourceRef[];
+}): TestSolutionInput {
+  const provenance = input.provenance ?? {};
+  return {
+    answerSummary: input.answer,
+    given: toBlocks(input.given ?? []),
+    steps: toBlocks(input.steps),
+    ...(input.rule ? { rule: input.rule } : {}),
+    ...(input.check ? { check: input.check } : {}),
+    ...(input.commonError ? { commonError: input.commonError } : {}),
+    diagramNotes: toBlocks(input.diagramNotes ?? []),
+    scoringCriteria: input.scoringCriteria ?? [],
+    provenance: {
+      sourceVerified: toBlocks(input.sourceVerified ?? provenance.sourceVerified ?? []),
+      platformAuthored: toBlocks(input.platformAuthored ?? provenance.platformAuthored ?? []),
+    },
+    parts: input.parts ?? [],
     ...(input.sourceRefs ? { sourceRefs: input.sourceRefs } : {}),
   };
 }

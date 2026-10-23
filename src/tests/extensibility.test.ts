@@ -51,6 +51,7 @@ const defL1: TestDefinition = {
   passingScore: 60,
   solutionGroupSize: 5,
   questionIds: ['q-l1-01'],
+  solutionPolicy: 'legacy',
   blueprint: {
     coverage: [{ concept: 'def', label: 'مفهوم', count: 1 }],
     difficulty: [{ level: 'basic', count: 1 }],
@@ -92,6 +93,7 @@ describe('Test Discovery & Extensibility (Rule 75)', () => {
       passingScore: 60,
       solutionGroupSize: 5,
       questionIds: ['q-l2-01'],
+      solutionPolicy: 'legacy',
       blueprint: {
         coverage: [{ concept: 'image-point', label: 'صورة نقطة', count: 1 }],
         difficulty: [{ level: 'medium', count: 1 }],
@@ -127,6 +129,7 @@ describe('Test Discovery & Extensibility (Rule 75)', () => {
       passingScore: 60,
       solutionGroupSize: 5,
       questionIds: ['q-l1-01'],
+      solutionPolicy: 'legacy',
       blueprint: {
         coverage: [{ concept: 'def', label: 'مفهوم', count: 1 }],
         difficulty: [{ level: 'basic', count: 1 }],

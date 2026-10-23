@@ -158,7 +158,7 @@ describe('scoring engine — all question types', () => {
     expect(gradeQuestion(qStrict, answers.exact('0.5'))).toBe('incorrect');
   });
 
-  it('grades ordering questions requiring full correct sequence', () => {
+  it('grades ordering questions by correct position with full credit only for the full sequence', () => {
     const q: TestQuestion = {
       ...baseQuestion,
       id: 'q-ord',
@@ -171,12 +171,14 @@ describe('scoring engine — all question types', () => {
       answerOrder: ['step-2', 'step-1', 'step-3'],
     };
     expect(gradeQuestion(q, answers.order([]))).toBe('unanswered');
-    expect(gradeQuestion(q, answers.order(['step-1', 'step-2', 'step-3']))).toBe('incorrect');
-    expect(gradeQuestion(q, answers.order(['step-2', 'step-1']))).toBe('incorrect');
+    expect(gradeQuestion(q, answers.order(['step-1', 'step-2', 'step-3']))).toBe(
+      'partially-correct',
+    );
+    expect(gradeQuestion(q, answers.order(['step-2', 'step-1']))).toBe('partially-correct');
     expect(gradeQuestion(q, answers.order(['step-2', 'step-1', 'step-3']))).toBe('correct');
   });
 
-  it('grades matching questions requiring every pair', () => {
+  it('grades matching questions by correct pair with full credit only when complete', () => {
     const q: TestQuestion = {
       ...baseQuestion,
       id: 'q-match',
@@ -190,9 +192,10 @@ describe('scoring engine — all question types', () => {
         { id: 'r2', text: '2' },
       ],
       pairs: { l1: 'r2', l2: 'r1' },
+      allowReuse: false,
     };
     expect(gradeQuestion(q, answers.matching({}))).toBe('unanswered');
-    expect(gradeQuestion(q, answers.matching({ l1: 'r2' }))).toBe('incorrect');
+    expect(gradeQuestion(q, answers.matching({ l1: 'r2' }))).toBe('partially-correct');
     expect(gradeQuestion(q, answers.matching({ l1: 'r1', l2: 'r2' }))).toBe('incorrect');
     expect(gradeQuestion(q, answers.matching({ l1: 'r2', l2: 'r1' }))).toBe('correct');
   });
