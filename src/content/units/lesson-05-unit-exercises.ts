@@ -251,7 +251,8 @@ export const lesson05ExerciseOne: Exercise[] = [
       'يبقى الرأس $A$ مناظراً للرأس $D$.',
     ],
     result: 'الإجابة الصحيحة هي ③: $\\widehat{A} = \\widehat{D}$.',
-    verify: 'اكتب التناظر الكامل: $A \\leftrightarrow D$، $B \\leftrightarrow E$، $C \\leftrightarrow F$.',
+    verify:
+      'اكتب التناظر الكامل: $A \\leftrightarrow D$، $B \\leftrightarrow E$، $C \\leftrightarrow F$.',
     warning: 'لا تعتمد على اتجاه المثلث في الصفحة؛ علامات الأضلاع هي الدليل.',
   },
   {
@@ -428,7 +429,7 @@ export const lesson05ExerciseTwo: Exercise[] = [
     steps: [
       'طرفا الأصل هما $A$ و$M$.',
       'طرفا الصورة هما $B$ و$M’$.',
-      'المعطى يثبت $A \\mapsto B$، إذن الطرف الآخر يحقق $M \\mapsto M’.',
+      "المعطى يثبت $A \\mapsto B$، إذن الطرف الآخر يحقق $M \\mapsto M'.$.",
     ],
     result: 'موافق؛ العبارة صحيحة.',
     verify:
@@ -446,12 +447,12 @@ export const lesson05ExerciseTwo: Exercise[] = [
     rule: 'زوج نقطتين معلومتين يحدد انسحاباً واحداً؛ وهنا هما مركزا الدائرتين.',
     why: 'لا تنطبق الدائرة الأولى على الثانية بانسحاب إلا إذا انتقل مركزها إلى مركز الثانية، ومتجه المركزين وحيد.',
     steps: [
-      'سمّ مركزي الدائرتين $O$ و$O’.',
-      'أي انسحاب مطلوب يجب أن يحقق $O \\mapsto O’.',
-      'الانسحاب المحدد بالمتجه $\\overrightarrow{OO’}$ وحيد، وتساوي نصفي القطر يضمن انطباق الدائرتين.',
+      "سمّ مركزي الدائرتين $O$ و$O'.$.",
+      "أي انسحاب مطلوب يجب أن يحقق $O \\mapsto O'.$.",
+      "الانسحاب المحدد بالمتجه $\\overrightarrow{OO'}$ وحيد، وتساوي نصفي القطر يضمن انطباق الدائرتين.",
     ],
     result: 'موافق؛ العبارة صحيحة.',
-    verify: 'أي متجه مختلف لا يرسل المركز إلى $O’$، فلا يمكن أن يعطي الدائرة $C’$.',
+    verify: "أي متجه مختلف لا يرسل المركز إلى $O'$، فلا يمكن أن يعطي الدائرة $C’$.",
     warning:
       'لو لم تتساوَ نصفا القطر لما وُجد أي انسحاب ينقل إحدى الدائرتين إلى الأخرى؛ المساواة شرط وجود، والمركزان شرطا الوحدانية.',
   },
@@ -460,7 +461,8 @@ export const lesson05ExerciseTwo: Exercise[] = [
     number: '9',
     title: 'التناظر المركزي من انسحاب متكرر',
     source: SOURCE_5,
-    question: '$B$ هي صورة $A$ وفق الانسحاب الذي ينقل $C$ إلى $A$، إذن $B$ هي نظيرة $C$ بالنسبة إلى $A$.',
+    question:
+      '$B$ هي صورة $A$ وفق الانسحاب الذي ينقل $C$ إلى $A$، إذن $B$ هي نظيرة $C$ بالنسبة إلى $A$.',
     given: '$C \\mapsto A$ يحدد الانسحاب، وتحت الحركة نفسها $A \\mapsto B$.',
     required: 'إثبات أن $A$ مركز تناظر بين $C$ و$B$.',
     idea: 'حوّل عبارتي الانسحاب إلى مساواة متجهين.',
@@ -570,10 +572,7 @@ function mainQuestionStep(options: {
       printedCard(main, exercises),
       ...exercises.flatMap((ex, index): ContentBlock[] => {
         const label = PRINTED_LABELS[index] ?? ex.number;
-        return [
-          ...(ex.figure ? [figureBlock(ex, label)] : []),
-          ...teachingBlocks(ex, label),
-        ];
+        return [...(ex.figure ? [figureBlock(ex, label)] : []), ...teachingBlocks(ex, label)];
       }),
     ],
   };

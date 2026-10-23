@@ -434,7 +434,7 @@ export const questions: TestQuestionInput[] = [
     difficulty: 'basic',
     prompt: ['صورة نصف المستقيم $[Mx)$ وفق انسحاب هي:'],
     choices: [
-      { id: 'a', text: "نصف مستقيم $[M'x') يوازيه وله الاتجاه نفسه" },
+      { id: 'a', text: "نصف مستقيم $[M'x')$ يوازيه وله الاتجاه نفسه" },
       { id: 'b', text: 'مستقيم كامل غير محدود' },
       { id: 'c', text: 'قطعة مستقيمة محدودة' },
       { id: 'd', text: 'نصف مستقيم معاكس في الاتجاه' },

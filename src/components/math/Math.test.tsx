@@ -23,8 +23,9 @@ describe('LTR/BIDI isolation', () => {
     expect(screen.getByText('قانون فيثاغورس')).toBeInTheDocument();
   });
 
-  it('does not throw on malformed LaTeX', () => {
-    expect(() => render(<Math latex="\\frac{" />)).not.toThrow();
+  it('does not crash on malformed LaTeX and retains KaTeX’s visible error fallback', () => {
+    const { container } = render(<Math latex="\\notacommand{" />);
+    expect(container.querySelector('.katex-error')).not.toBeNull();
   });
 
   it('renders a semantic fraction with an Arabic aria-label', () => {
@@ -39,6 +40,36 @@ describe('RichText', () => {
     expect(container.textContent).toContain('طول الضلع');
     expect(container.querySelector('.katex')).not.toBeNull();
     expect(container.querySelector('[dir="ltr"]')).not.toBeNull();
+  });
+
+  it('renders powers, subscripts, angles, parentheses, overbars and geometry symbols', () => {
+    const { container } = render(
+      <RichText
+        text={
+          'الصيغ: $x^2$، $M_1$، $\\widehat{ABC}$، $(AB)$، $\\overline{AB}$، $\\overrightarrow{AB}$، و$\\parallel$.'
+        }
+      />,
+    );
+
+    expect(container.querySelectorAll('.katex')).toHaveLength(7);
+    expect(container.querySelector('.katex-error')).toBeNull();
+    expect(container.querySelector('msup')).not.toBeNull();
+    expect(container.querySelector('msub')).not.toBeNull();
+    expect(container.querySelectorAll('mover').length).toBeGreaterThanOrEqual(2);
+    expect(container.querySelectorAll('[dir="ltr"]')).toHaveLength(7);
+    expect(container.textContent).not.toContain('$');
+  });
+
+  it('preserves an intentional standalone dollar sign as ordinary text', () => {
+    const { container } = render(<RichText text="السعر 5$، وليس جزءاً من صيغة رياضية." />);
+    expect(container.textContent).toBe('السعر 5$، وليس جزءاً من صيغة رياضية.');
+    expect(container.querySelector('.katex')).toBeNull();
+  });
+
+  it('keeps an unmatched delimiter visible as source text without breaking the page', () => {
+    const { container } = render(<RichText text="صيغة غير مكتملة $x^2" />);
+    expect(container.textContent).toBe('صيغة غير مكتملة $x^2');
+    expect(container.querySelector('.katex')).toBeNull();
   });
 
   it('renders plain Arabic without any maths markup', () => {

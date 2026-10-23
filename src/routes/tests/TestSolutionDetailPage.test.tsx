@@ -91,7 +91,7 @@ describe('Test solution detail renderer', () => {
               sourceVerified: [{ type: 'paragraph', text: 'عبارة متحققة من المصدر.' }],
               platformAuthored: [{ type: 'paragraph', text: 'وصلة تفسيرية من المنصة.' }],
             },
-            scoringCriteria: [{ points: 1, description: 'اختيار الإجابة' }],
+            scoringCriteria: [{ points: 1, description: 'اختيار القيمة $x^2$ الصحيحة' }],
             sourceRefs: [{ page: 11, book: 'كتاب الهندسة', locator: 'التمرين 2' }],
             parts: [
               {
@@ -107,7 +107,7 @@ describe('Test solution detail renderer', () => {
                   sourceVerified: [{ type: 'paragraph', text: 'مصدر الجزء المتحقق.' }],
                   platformAuthored: [{ type: 'paragraph', text: 'شرح الجزء المؤلف.' }],
                 },
-                scoringCriteria: [{ points: 1, description: 'درجة الجزء' }],
+                scoringCriteria: [{ points: 1, description: 'درجة للقيمة $M_1$' }],
                 sourceRefs: [{ page: 12, locator: 'الشكل 2' }],
               },
             ],
@@ -116,7 +116,7 @@ describe('Test solution detail renderer', () => {
       }),
     );
 
-    renderSolutions(testId);
+    const { container } = renderSolutions(testId);
 
     expect(await screen.findByText('الإجابة الصحيحة:')).toBeInTheDocument();
     expect(screen.getByText('طريقة التحقق:')).toBeInTheDocument();
@@ -138,6 +138,11 @@ describe('Test solution detail renderer', () => {
     expect(screen.getByText('شرح الجزء المؤلف.')).toBeInTheDocument();
     expect(screen.getByText('ص. 11')).toBeInTheDocument();
     expect(screen.getByText('ص. 12')).toBeInTheDocument();
+    const rubricItems = Array.from(container.querySelectorAll('li')).filter((item) =>
+      item.querySelector('.katex'),
+    );
+    expect(rubricItems).toHaveLength(2);
+    expect(rubricItems.map((item) => item.textContent).join(' ')).not.toContain('$');
   });
 
   it('keeps legacy solutions clean by omitting empty optional metadata sections', async () => {
