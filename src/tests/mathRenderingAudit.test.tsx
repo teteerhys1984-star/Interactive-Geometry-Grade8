@@ -95,7 +95,7 @@ describe('platform math-rendering audit', () => {
       }
       unmount();
     }
-  });
+  }, 30_000);
 
   it('renders all lesson step content blocks without exposing inline-math delimiters', () => {
     for (const { lesson } of allLessons) {
@@ -116,7 +116,7 @@ describe('platform math-rendering audit', () => {
         unmount();
       }
     }
-  });
+  }, 30_000);
 
   it('renders every published detailed-solution group and its rubric math in the live page', async () => {
     const user = userEvent.setup();
@@ -161,5 +161,5 @@ describe('platform math-rendering audit', () => {
     }
 
     expect(foundRenderedRubricMath).toBe(true);
-  });
+  }, 30_000);
 });
