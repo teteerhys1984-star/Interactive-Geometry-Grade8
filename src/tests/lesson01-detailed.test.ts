@@ -66,11 +66,11 @@ describe('Lesson 1 test — detailed solution contract', () => {
     );
   });
 
-  it('keeps the detailed policy unique to Lesson 1 until other lessons opt in', () => {
+  it('keeps Lesson 1 on the detailed solution policy', () => {
     const detailed = testDefinitions.filter(
       (definition) => definition.solutionPolicy === 'detailed',
     );
-    expect(detailed.map((definition) => definition.id)).toEqual([TEST_ID]);
+    expect(detailed.map((definition) => definition.id)).toContain(TEST_ID);
   });
 
   it('aligns scoring criteria with the engine maximum for every question and part', async () => {

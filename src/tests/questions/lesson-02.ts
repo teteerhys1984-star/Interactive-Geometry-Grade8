@@ -1,4 +1,5 @@
 import {
+  choicePart,
   classification,
   errorAnalysis,
   exact,
@@ -8,7 +9,7 @@ import {
   numeric,
   ordering,
   singleChoice,
-  trueFalse,
+  trueFalseJustify,
 } from '../authoring';
 import { compassIntersectionFigure } from '../figureScenes';
 import type { TestQuestionInput } from '../schema';
@@ -32,14 +33,18 @@ import type { TestQuestionInput } from '../schema';
  *      • grid-coordinates (التعيين والقراءة على الشبكة السنتيمترية): 5
  *    Types:
  *      • single-choice:   7
- *      • true-false:      3
+ *      • true-false-justify: 3
  *      • multi-select:    2
  *      • numeric:         2
  *      • exact:           1
  *      • ordering:        1
  *      • matching:        1
  *      • classification:  1
- *      • error-analysis:  2
+ *      • error-analysis:  2 (both include independently scored correction and reason)
+ *  SOURCE NOTE: The verified Lesson 2 source audit covers textbook pages 8–10.
+ *  Questions are assessment items authored for this platform, not copied
+ *  textbook exercises; coordinate values and worked examples are identified
+ *  as platform-authored in the corresponding detailed solutions.
  * ============================================================================
  */
 
@@ -69,7 +74,7 @@ export const questions: TestQuestionInput[] = [
   }),
 
   /* ------------------------------------------------------------------ 02 */
-  trueFalse({
+  trueFalseJustify({
     id: 'geo-l02-t01-q02',
     lessonId: LESSON_ID,
     concept: 'special-case',
@@ -78,6 +83,18 @@ export const questions: TestQuestionInput[] = [
       "إذا كانت النقطة $M$ تنتمي إلى المستقيم $(AB)$، فإن صورتها $M'$ وفق الانسحاب الذي ينقل $A$ إلى $B$ تقع أيضاً على المستقيم $(AB)$ نفسه.",
     ],
     answer: true,
+    justification: choicePart({
+      id: 'reason',
+      prompt: ['اختر السبب الذي يبرّر الحكم:'],
+      choices: [
+        {
+          id: 'same-line',
+          text: 'متجهة الانسحاب موازية للمستقيم $(AB)$، لذا تبقى الصورة على المستقيم نفسه.',
+        },
+        { id: 'same-distance-only', text: 'كل نقطة تبعد المسافة نفسها عن $A$ و$B$.' },
+      ],
+      answer: 'same-line',
+    }),
     sourceRefs: [P9],
   }),
 
@@ -153,7 +170,7 @@ export const questions: TestQuestionInput[] = [
   }),
 
   /* ------------------------------------------------------------------ 07 */
-  trueFalse({
+  trueFalseJustify({
     id: 'geo-l02-t01-q07',
     lessonId: LESSON_ID,
     concept: 'special-case',
@@ -162,6 +179,18 @@ export const questions: TestQuestionInput[] = [
       "في الحالة الخاصة ($M$ تنتمي إلى المستقيم $(AB)$)، لا يتشكل متوازي أضلاع حقيقي ذو مساحة، ومع ذلك تبقى القطعتان $[AM']$ و $[BM]$ متناصفتين ولهما المنتصف المشترك نفسه.",
     ],
     answer: true,
+    justification: choicePart({
+      id: 'reason',
+      prompt: ['لماذا تتناصف القطعتان رغم وقوع النقاط على استقامة واحدة؟'],
+      choices: [
+        {
+          id: 'shared-midpoint',
+          text: "لأن $M' = M + (B-A)$، فيكون منتصف $[AM']$ هو نفسه منتصف $[BM]$، حتى مع انعدام المساحة.",
+        },
+        { id: 'parallelogram-area', text: 'لأن كل رباعي متوازي أضلاع يجب أن تكون مساحته موجبة.' },
+      ],
+      answer: 'shared-midpoint',
+    }),
     sourceRefs: [P9],
   }),
 
@@ -189,7 +218,10 @@ export const questions: TestQuestionInput[] = [
         id: 'c1',
         text: "نختار النقطة التي تجعل الرباعي $GHM'M$ متوازي أضلاع يحفظ اتجاه السير من $G$ إلى $H$",
       },
-      { id: 'c2', text: 'نرفض النقطة التي تقع في الاتجاه المعاكس والتي تشكل رباعياً متشابكاً' },
+      {
+        id: 'c2',
+        text: 'نرفض التقاطع الذي يعطي رباعياً متشابكاً ويعكس اتجاه الحركة من $G$ إلى $H$',
+      },
       { id: 'c3', text: 'نختار دائماً النقطة الأقرب إلى مركز الورقة بغض النظر عن الاتجاه' },
       { id: 'c4', text: 'كلتا نقطتي التقاطع تعطيان صورة صحيحة وفق الانسحاب نفسه' },
     ],
@@ -247,9 +279,9 @@ export const questions: TestQuestionInput[] = [
       { id: 'cat-diff', text: 'مسافة الانسحاب تختلف عن 5 وحدات' },
     ],
     items: [
-      { id: 'p1', text: 'من $(0, 0)$ إلى $(3, 4)$' },
-      { id: 'p2', text: 'من $(1, 1)$ إلى $(6, 1)$' },
-      { id: 'p3', text: 'من $(2, 2)$ إلى $(5, 5)$' },
+      { id: 'p1', text: 'من النقطة (0, 0) إلى (5, 0)' },
+      { id: 'p2', text: 'من النقطة (1, 1) إلى (1, 6)' },
+      { id: 'p3', text: 'من النقطة (2, 2) إلى (5, 2)' },
       { id: 'p4', text: 'من $(0, 5)$ إلى $(0, 0)$' },
     ],
     assignment: {
@@ -344,7 +376,7 @@ export const questions: TestQuestionInput[] = [
     steps: [
       { id: 's1', text: 'الخطوة 1: قاس بفتحة الفرجار المسافة $AB$.' },
       { id: 's2', text: 'الخطوة 2: ركز الفرجار في $B$ بدلاً من $M$ ورسم دائرة نصف قطرها $AB$.' },
-      { id: 's3', text: 'الخطوة 3: ركز الفرجار في $M$ ورسم دائرة نصف قطرها $AM$.' },
+      { id: 's3', text: 'الخطوة 3: ركز الفرجار في $B$ ورسم دائرة نصف قطرها $AM$.' },
     ],
     choices: [
       { id: 's1', text: 'الخطأ في الخطوة 1' },
@@ -355,6 +387,27 @@ export const questions: TestQuestionInput[] = [
       { id: 's3', text: 'الخطأ في الخطوة 3 فقط' },
     ],
     answer: 's2',
+    correction: choicePart({
+      id: 'correction',
+      prompt: ['ما التصحيح الصحيح لموضع القوس الأول؟'],
+      choices: [
+        { id: 'centre-m', text: 'مركزه $M$ ونصف قطره $AB$.' },
+        { id: 'centre-b', text: 'مركزه $B$ ونصف قطره $AM$.' },
+      ],
+      answer: 'centre-m',
+    }),
+    justification: choicePart({
+      id: 'reason',
+      prompt: ['لماذا يلزم هذا المركز ونصف القطر؟'],
+      choices: [
+        {
+          id: 'radius-image',
+          text: "لأن $MM'=AB$، وهما ضلعان متقابلان في متوازي الأضلاع الذي يحدد صورة $M$.",
+        },
+        { id: 'radius-original', text: "لأن $MM'=AM$ في كل انسحاب." },
+      ],
+      answer: 'radius-image',
+    }),
     sourceRefs: [P9],
   }),
 
@@ -424,11 +477,35 @@ export const questions: TestQuestionInput[] = [
       { id: 'ch-3', text: 'الخلل أن التوازي لا يلزم في متوازي الأضلاع.' },
     ],
     answer: 'ch-1',
+    correction: choicePart({
+      id: 'correction',
+      prompt: ['أي شرط موجّه يُكمل المعطيين؟'],
+      choices: [
+        {
+          id: 'same-vector',
+          text: 'يجب أن تكون $\\overrightarrow{MN}=\\overrightarrow{AB}$، لا مجرد توازي المستقيمين وتساوي الطولين.',
+        },
+        { id: 'same-line', text: 'يكفي أن تقع $M$ و$N$ على مستقيم واحد، مهما كان اتجاهه.' },
+      ],
+      answer: 'same-vector',
+    }),
+    justification: choicePart({
+      id: 'reason',
+      prompt: ['ما سبب عدم كفاية التوازي وتساوي الطول وحدهما؟'],
+      choices: [
+        {
+          id: 'opposite',
+          text: 'يمكن أن يكون $\\overrightarrow{MN}=-\\overrightarrow{AB}$، أي الاتجاه المعاكس.',
+        },
+        { id: 'lengths', text: 'الانسحاب لا يحفظ المسافات بين النقاط.' },
+      ],
+      answer: 'opposite',
+    }),
     sourceRefs: [P8, P9],
   }),
 
   /* ------------------------------------------------------------------ 20 */
-  trueFalse({
+  trueFalseJustify({
     id: 'geo-l02-t01-q20',
     lessonId: LESSON_ID,
     concept: 'special-case',
@@ -437,6 +514,15 @@ export const questions: TestQuestionInput[] = [
       "إذا كانت $M$ تنتمي إلى القطعة المستقيمة $[AB]$، وكانت $M'$ صورتها وفق الانسحاب من $A$ إلى $B$، فإن طول القطعة $[BM']$ يساوي دائماً طول القطعة $[AM]$.",
     ],
     answer: true,
+    justification: choicePart({
+      id: 'reason',
+      prompt: ['اختر سلسلة المساواة التي تثبت العبارة:'],
+      choices: [
+        { id: 'difference', text: "$BM' = AM' - AB = (AM+AB)-AB = AM$." },
+        { id: 'same-as-ab', text: "$BM' = AB$ مهما كان موضع $M$ داخل $[AB]$." },
+      ],
+      answer: 'difference',
+    }),
     sourceRefs: [P9],
   }),
 ];
