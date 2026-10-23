@@ -228,6 +228,433 @@ describe('Test Domain foundation scoring', () => {
     });
   });
 
+  it('marks an unknown matching right id as malformed with zero points', () => {
+    const question = parseQuestion({
+      id: 'q-malformed-matching-unknown-right',
+      type: 'matching',
+      left: [
+        { id: 'left-a', text: 'أ' },
+        { id: 'left-b', text: 'ب' },
+      ],
+      right: [
+        { id: 'right-a', text: '1' },
+        { id: 'right-b', text: '2' },
+      ],
+      pairs: { 'left-a': 'right-a', 'left-b': 'right-b' },
+    });
+
+    expect(
+      gradeQuestionDetailed(
+        question,
+        answers.matching({ 'left-a': 'right-unknown', 'left-b': 'right-b' }),
+      ),
+    ).toEqual({
+      outcome: 'incorrect',
+      earnedPoints: 0,
+      maxPoints: 2,
+      answered: true,
+    });
+  });
+
+  it('marks a duplicate matching right id as malformed when reuse is disabled', () => {
+    const question = parseQuestion({
+      id: 'q-malformed-matching-duplicate-right',
+      type: 'matching',
+      left: [
+        { id: 'left-a', text: 'أ' },
+        { id: 'left-b', text: 'ب' },
+      ],
+      right: [
+        { id: 'right-a', text: '1' },
+        { id: 'right-b', text: '2' },
+      ],
+      pairs: { 'left-a': 'right-a', 'left-b': 'right-b' },
+    });
+
+    expect(
+      gradeQuestionDetailed(
+        question,
+        answers.matching({ 'left-a': 'right-a', 'left-b': 'right-a' }),
+      ),
+    ).toEqual({ outcome: 'incorrect', earnedPoints: 0, maxPoints: 2, answered: true });
+  });
+
+  it('marks an unknown ordering item id as malformed with zero points', () => {
+    const question = parseQuestion({
+      id: 'q-malformed-order-unknown-item',
+      type: 'ordering',
+      items: [
+        { id: 'item-a', text: 'أ' },
+        { id: 'item-b', text: 'ب' },
+        { id: 'item-c', text: 'ج' },
+      ],
+      answerOrder: ['item-a', 'item-b', 'item-c'],
+    });
+
+    expect(
+      gradeQuestionDetailed(question, answers.order(['item-a', 'item-unknown', 'item-c'])),
+    ).toEqual({
+      outcome: 'incorrect',
+      earnedPoints: 0,
+      maxPoints: 3,
+      answered: true,
+    });
+  });
+
+  it('marks an unknown justification step id as malformed with zero points', () => {
+    const question = parseQuestion({
+      id: 'q-malformed-justification-step',
+      type: 'justification',
+      steps: [
+        {
+          id: 'step-premise',
+          prompt: [{ type: 'paragraph', text: 'المعطى' }],
+          choices: [
+            { id: 'choice-right', text: 'الصحيح' },
+            { id: 'choice-wrong', text: 'الخطأ' },
+          ],
+          answerId: 'choice-right',
+          points: 1,
+        },
+        {
+          id: 'step-rule',
+          prompt: [{ type: 'paragraph', text: 'القاعدة' }],
+          choices: [
+            { id: 'rule-right', text: 'الصحيح' },
+            { id: 'rule-wrong', text: 'الخطأ' },
+          ],
+          answerId: 'rule-right',
+          points: 1,
+        },
+      ],
+    });
+
+    expect(
+      gradeQuestionDetailed(
+        question,
+        answers.justification({
+          'step-premise': 'choice-right',
+          'step-unknown': 'choice-right',
+        }),
+      ),
+    ).toEqual({ outcome: 'incorrect', earnedPoints: 0, maxPoints: 2, answered: true });
+  });
+
+  it('marks an unknown justification choice id as malformed with zero points', () => {
+    const question = parseQuestion({
+      id: 'q-malformed-justification-choice',
+      type: 'justification',
+      steps: [
+        {
+          id: 'step-premise',
+          prompt: [{ type: 'paragraph', text: 'المعطى' }],
+          choices: [
+            { id: 'choice-right', text: 'الصحيح' },
+            { id: 'choice-wrong', text: 'الخطأ' },
+          ],
+          answerId: 'choice-right',
+          points: 1,
+        },
+        {
+          id: 'step-rule',
+          prompt: [{ type: 'paragraph', text: 'القاعدة' }],
+          choices: [
+            { id: 'rule-right', text: 'الصحيح' },
+            { id: 'rule-wrong', text: 'الخطأ' },
+          ],
+          answerId: 'rule-right',
+          points: 1,
+        },
+      ],
+    });
+
+    expect(
+      gradeQuestionDetailed(
+        question,
+        answers.justification({
+          'step-premise': 'choice-unknown',
+          'step-rule': 'rule-right',
+        }),
+      ),
+    ).toEqual({ outcome: 'incorrect', earnedPoints: 0, maxPoints: 2, answered: true });
+  });
+
+  it('marks an unknown multi-part id as malformed with zero points', () => {
+    const question = parseQuestion({
+      id: 'q-malformed-multipart-part',
+      type: 'multi-part',
+      parts: [
+        {
+          id: 'part-a',
+          type: 'single-choice',
+          prompt: [{ type: 'paragraph', text: 'الجزء أ' }],
+          choices: [
+            { id: 'a-right', text: 'الصحيح' },
+            { id: 'a-wrong', text: 'الخطأ' },
+          ],
+          answerId: 'a-right',
+          points: 1,
+        },
+        {
+          id: 'part-b',
+          type: 'numeric',
+          prompt: [{ type: 'paragraph', text: 'الجزء ب' }],
+          answer: 4,
+          points: 1,
+        },
+      ],
+    });
+
+    expect(
+      gradeQuestionDetailed(
+        question,
+        answers.multiPart({
+          'part-a': answers.single('a-right'),
+          'part-unknown': answers.single('a-right'),
+        }),
+      ),
+    ).toEqual({ outcome: 'incorrect', earnedPoints: 0, maxPoints: 2, answered: true });
+  });
+
+  it('marks an unknown true-false correction id as malformed with zero points', () => {
+    const question = parseQuestion({
+      id: 'q-malformed-tfj-correction',
+      type: 'true-false-justify',
+      answer: false,
+      correction: {
+        id: 'correction',
+        prompt: [{ type: 'paragraph', text: 'التصحيح' }],
+        choices: [
+          { id: 'correction-right', text: 'الصحيح' },
+          { id: 'correction-wrong', text: 'الخطأ' },
+        ],
+        answerId: 'correction-right',
+        points: 1,
+      },
+      justification: {
+        id: 'reason',
+        prompt: [{ type: 'paragraph', text: 'التعليل' }],
+        choices: [
+          { id: 'reason-right', text: 'الصحيح' },
+          { id: 'reason-wrong', text: 'الخطأ' },
+        ],
+        answerId: 'reason-right',
+        points: 1,
+      },
+    });
+
+    expect(
+      gradeQuestionDetailed(
+        question,
+        answers.trueFalseJustify(false, 'correction-unknown', 'reason-right'),
+      ),
+    ).toEqual({ outcome: 'incorrect', earnedPoints: 0, maxPoints: 3, answered: true });
+  });
+
+  it('marks an unknown true-false justification id as malformed with zero points', () => {
+    const question = parseQuestion({
+      id: 'q-malformed-tfj-justification',
+      type: 'true-false-justify',
+      answer: false,
+      correction: {
+        id: 'correction',
+        prompt: [{ type: 'paragraph', text: 'التصحيح' }],
+        choices: [
+          { id: 'correction-right', text: 'الصحيح' },
+          { id: 'correction-wrong', text: 'الخطأ' },
+        ],
+        answerId: 'correction-right',
+        points: 1,
+      },
+      justification: {
+        id: 'reason',
+        prompt: [{ type: 'paragraph', text: 'التعليل' }],
+        choices: [
+          { id: 'reason-right', text: 'الصحيح' },
+          { id: 'reason-wrong', text: 'الخطأ' },
+        ],
+        answerId: 'reason-right',
+        points: 1,
+      },
+    });
+
+    expect(
+      gradeQuestionDetailed(
+        question,
+        answers.trueFalseJustify(false, 'correction-right', 'reason-unknown'),
+      ),
+    ).toEqual({ outcome: 'incorrect', earnedPoints: 0, maxPoints: 3, answered: true });
+  });
+
+  it('grades a wrong true-false verdict as incorrect without malformed answer state', () => {
+    const question = parseQuestion({
+      id: 'q-tfj-wrong-verdict',
+      type: 'true-false-justify',
+      answer: false,
+      correction: {
+        id: 'correction',
+        prompt: [{ type: 'paragraph', text: 'التصحيح' }],
+        choices: [
+          { id: 'correction-right', text: 'الصحيح' },
+          { id: 'correction-wrong', text: 'الخطأ' },
+        ],
+        answerId: 'correction-right',
+        points: 1,
+      },
+      justification: {
+        id: 'reason',
+        prompt: [{ type: 'paragraph', text: 'التعليل' }],
+        choices: [
+          { id: 'reason-right', text: 'الصحيح' },
+          { id: 'reason-wrong', text: 'الخطأ' },
+        ],
+        answerId: 'reason-right',
+        points: 1,
+      },
+    });
+
+    expect(gradeQuestionDetailed(question, answers.trueFalseJustify(true))).toEqual({
+      outcome: 'incorrect',
+      earnedPoints: 0,
+      maxPoints: 3,
+      answered: true,
+    });
+    // The runner disables the correction control after a true verdict, while
+    // the authored justification remains applicable to either verdict.
+    expect(
+      gradeQuestionDetailed(question, answers.trueFalseJustify(true, undefined, 'reason-right')),
+    ).toMatchObject({ outcome: 'partially-correct', earnedPoints: 1, maxPoints: 3 });
+  });
+
+  it('marks an unknown error-analysis step id as malformed with zero points', () => {
+    const question = parseQuestion({
+      id: 'q-malformed-error-step',
+      type: 'error-analysis',
+      steps: [
+        { id: 'step-one', text: 'الأولى' },
+        { id: 'step-two', text: 'الثانية' },
+      ],
+      choices: [
+        { id: 'step-one', text: 'الأولى' },
+        { id: 'step-two', text: 'الثانية' },
+      ],
+      answerId: 'step-two',
+      correction: {
+        id: 'correction',
+        prompt: [{ type: 'paragraph', text: 'التصحيح' }],
+        choices: [
+          { id: 'correction-right', text: 'الصحيح' },
+          { id: 'correction-wrong', text: 'الخطأ' },
+        ],
+        answerId: 'correction-right',
+        points: 1,
+      },
+      justification: {
+        id: 'reason',
+        prompt: [{ type: 'paragraph', text: 'التعليل' }],
+        choices: [
+          { id: 'reason-right', text: 'الصحيح' },
+          { id: 'reason-wrong', text: 'الخطأ' },
+        ],
+        answerId: 'reason-right',
+        points: 1,
+      },
+    });
+
+    expect(gradeQuestionDetailed(question, answers.errorAnalysis('step-unknown'))).toEqual({
+      outcome: 'incorrect',
+      earnedPoints: 0,
+      maxPoints: 3,
+      answered: true,
+    });
+  });
+
+  it('marks an unknown error-analysis correction id as malformed with zero points', () => {
+    const question = parseQuestion({
+      id: 'q-malformed-error-correction',
+      type: 'error-analysis',
+      steps: [
+        { id: 'step-one', text: 'الأولى' },
+        { id: 'step-two', text: 'الثانية' },
+      ],
+      choices: [
+        { id: 'step-one', text: 'الأولى' },
+        { id: 'step-two', text: 'الثانية' },
+      ],
+      answerId: 'step-two',
+      correction: {
+        id: 'correction',
+        prompt: [{ type: 'paragraph', text: 'التصحيح' }],
+        choices: [
+          { id: 'correction-right', text: 'الصحيح' },
+          { id: 'correction-wrong', text: 'الخطأ' },
+        ],
+        answerId: 'correction-right',
+        points: 1,
+      },
+      justification: {
+        id: 'reason',
+        prompt: [{ type: 'paragraph', text: 'التعليل' }],
+        choices: [
+          { id: 'reason-right', text: 'الصحيح' },
+          { id: 'reason-wrong', text: 'الخطأ' },
+        ],
+        answerId: 'reason-right',
+        points: 1,
+      },
+    });
+
+    expect(
+      gradeQuestionDetailed(
+        question,
+        answers.errorAnalysis('step-two', 'correction-unknown', 'reason-right'),
+      ),
+    ).toEqual({ outcome: 'incorrect', earnedPoints: 0, maxPoints: 3, answered: true });
+  });
+
+  it('marks an unknown error-analysis justification id as malformed with zero points', () => {
+    const question = parseQuestion({
+      id: 'q-malformed-error-justification',
+      type: 'error-analysis',
+      steps: [
+        { id: 'step-one', text: 'الأولى' },
+        { id: 'step-two', text: 'الثانية' },
+      ],
+      choices: [
+        { id: 'step-one', text: 'الأولى' },
+        { id: 'step-two', text: 'الثانية' },
+      ],
+      answerId: 'step-two',
+      correction: {
+        id: 'correction',
+        prompt: [{ type: 'paragraph', text: 'التصحيح' }],
+        choices: [
+          { id: 'correction-right', text: 'الصحيح' },
+          { id: 'correction-wrong', text: 'الخطأ' },
+        ],
+        answerId: 'correction-right',
+        points: 1,
+      },
+      justification: {
+        id: 'reason',
+        prompt: [{ type: 'paragraph', text: 'التعليل' }],
+        choices: [
+          { id: 'reason-right', text: 'الصحيح' },
+          { id: 'reason-wrong', text: 'الخطأ' },
+        ],
+        answerId: 'reason-right',
+        points: 1,
+      },
+    });
+
+    expect(
+      gradeQuestionDetailed(
+        question,
+        answers.errorAnalysis('step-two', 'correction-right', 'reason-unknown'),
+      ),
+    ).toEqual({ outcome: 'incorrect', earnedPoints: 0, maxPoints: 3, answered: true });
+  });
+
   it('scores error location, correction and reason while retaining the old single answer form', () => {
     const question = parseQuestion({
       id: 'q-error-structured',

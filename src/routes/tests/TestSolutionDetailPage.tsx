@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import type { SourceRef } from '@/content/schema';
 import { getTestEntry, loadSolutionSet } from '@/tests/registry';
 import type { SolutionSet, TestQuestion } from '@/tests/schema';
 import { Blocks } from '@/components/content';
@@ -218,38 +219,94 @@ export function TestSolutionDetailPage() {
                               <strong>{part.id}</strong>
                               <RichText text={part.answerSummary} />
                             </div>
-                            {part.given.length > 0 ? <Blocks blocks={part.given} /> : null}
-                            <div className={styles.stepsContent}>
-                              <Blocks blocks={part.steps} />
+                            {part.given.length > 0 ? (
+                              <div className={styles.metaRow}>
+                                <span className={styles.metaLabel}>معطيات الجزء:</span>
+                                <div className={styles.metaText}>
+                                  <Blocks blocks={part.given} />
+                                </div>
+                              </div>
+                            ) : null}
+                            <div className={styles.stepsSection}>
+                              <span className={styles.sectionLabel}>خطوات حل الجزء:</span>
+                              <div className={styles.stepsContent}>
+                                <Blocks blocks={part.steps} />
+                              </div>
                             </div>
                             {part.rule ? (
                               <div className={styles.metaRow}>
                                 <span className={styles.metaLabel}>قاعدة الجزء:</span>
-                                <RichText text={part.rule} />
+                                <span className={styles.metaText}>
+                                  <RichText text={part.rule} />
+                                </span>
+                              </div>
+                            ) : null}
+                            {part.check ? (
+                              <div className={styles.metaRow}>
+                                <span className={styles.metaLabel}>طريقة التحقق من الجزء:</span>
+                                <span className={styles.metaText}>
+                                  <RichText text={part.check} />
+                                </span>
+                              </div>
+                            ) : null}
+                            {part.commonError ? (
+                              <div className={`${styles.metaRow} ${styles.warningRow}`}>
+                                <span className={styles.metaLabel}>خطأ شائع في الجزء:</span>
+                                <span className={styles.metaText}>
+                                  <RichText text={part.commonError} />
+                                </span>
+                              </div>
+                            ) : null}
+                            {part.diagramNotes.length > 0 ? (
+                              <div className={styles.diagramNotesRow}>
+                                <span className={styles.metaLabel}>ملاحظات شكل الجزء:</span>
+                                <Blocks blocks={part.diagramNotes} />
+                              </div>
+                            ) : null}
+                            {part.provenance.sourceVerified.length > 0 ? (
+                              <div className={styles.provenanceRow}>
+                                <span className={styles.metaLabel}>
+                                  بيان الجزء الموثّق من المصدر:
+                                </span>
+                                <Blocks blocks={part.provenance.sourceVerified} />
+                              </div>
+                            ) : null}
+                            {part.provenance.platformAuthored.length > 0 ? (
+                              <div className={styles.authoredRow}>
+                                <span className={styles.metaLabel}>شرح الجزء من المنصّة:</span>
+                                <Blocks blocks={part.provenance.platformAuthored} />
                               </div>
                             ) : null}
                             {part.scoringCriteria.length > 0 ? (
-                              <ul className={styles.criteriaList}>
-                                {part.scoringCriteria.map((criterion, index) => (
-                                  <li key={`${criterion.description}-${index}`}>
-                                    <span dir="ltr">{criterion.points}</span> —{' '}
-                                    {criterion.description}
-                                  </li>
-                                ))}
-                              </ul>
+                              <div className={styles.criteriaRow}>
+                                <span className={styles.metaLabel}>معايير درجة الجزء:</span>
+                                <ul className={styles.criteriaList}>
+                                  {part.scoringCriteria.map((criterion, index) => (
+                                    <li key={`${criterion.description}-${index}`}>
+                                      <span dir="ltr">{criterion.points}</span> —{' '}
+                                      {criterion.description}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ) : null}
+                            {part.sourceRefs && part.sourceRefs.length > 0 ? (
+                              <SourceReferences refs={part.sourceRefs} label="مراجع مصدر الجزء:" />
                             ) : null}
                           </section>
                         ))}
                       </div>
                     ) : null}
 
+                    {sol.sourceRefs && sol.sourceRefs.length > 0 ? (
+                      <SourceReferences refs={sol.sourceRefs} label="مراجع الحل الإضافية:" />
+                    ) : null}
+
                     {question.sourceRefs.length > 0 ? (
-                      <footer className={styles.sourceFooter}>
-                        مرجع الكتاب المدرسي: ص. {question.sourceRefs.map((r) => r.page).join('، ')}
-                        {question.sourceRefs[0]?.locator
-                          ? ` (${question.sourceRefs[0].locator})`
-                          : ''}
-                      </footer>
+                      <SourceReferences
+                        refs={question.sourceRefs}
+                        label="مراجع السؤال في الكتاب:"
+                      />
                     ) : null}
                   </div>
                 ) : (
@@ -261,5 +318,24 @@ export function TestSolutionDetailPage() {
         </div>
       )}
     </TestShell>
+  );
+}
+
+function SourceReferences({ refs, label }: { refs: SourceRef[]; label: string }) {
+  if (refs.length === 0) return null;
+
+  return (
+    <div className={styles.sourceReferences}>
+      <span className={styles.metaLabel}>{label}</span>
+      <ul className={styles.sourceReferenceList}>
+        {refs.map((ref, index) => (
+          <li key={`${ref.page}-${ref.book ?? ''}-${ref.locator ?? ''}-${index}`}>
+            <span dir="ltr">ص. {ref.page}</span>
+            {ref.book ? ` — ${ref.book}` : ''}
+            {ref.locator ? ` — ${ref.locator}` : ''}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

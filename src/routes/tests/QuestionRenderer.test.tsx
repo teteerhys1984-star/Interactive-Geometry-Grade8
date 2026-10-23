@@ -115,4 +115,71 @@ describe('Test Domain structured renderer', () => {
     );
     expect(screen.getByPlaceholderText('اكتب المصطلح أو العبارة المقبولة')).toBeInTheDocument();
   });
+
+  it('renders diagram-reading prompts through its structured parts and emits a part answer', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const question = testQuestionSchema.parse({
+      ...base,
+      id: 'q-render-diagram-reading',
+      type: 'diagram-reading',
+      prompt: [{ type: 'paragraph', text: 'اقرأ الشكل الهندسي' }],
+      parts: [
+        {
+          id: 'diagram-point',
+          type: 'single-choice',
+          prompt: [{ type: 'paragraph', text: 'ما صورة النقطة؟' }],
+          choices: [
+            { id: 'point-a', text: 'النقطة أ' },
+            { id: 'point-b', text: 'النقطة ب' },
+          ],
+          answerId: 'point-b',
+        },
+      ],
+    });
+
+    render(<QuestionRenderer question={question} value={undefined} onChange={onChange} />);
+    expect(screen.getByText('اقرأ الشكل الهندسي')).toBeInTheDocument();
+    expect(screen.getByText('ما صورة النقطة؟')).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: 'النقطة أ' })).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: 'النقطة ب' })).toBeInTheDocument();
+
+    await user.click(screen.getByRole('radio', { name: 'النقطة ب' }));
+    expect(onChange).toHaveBeenLastCalledWith({
+      kind: 'multi-part',
+      parts: { 'diagram-point': { kind: 'single', optionId: 'point-b' } },
+    });
+  });
+
+  it('renders transformation-application prompts through its structured numeric part', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const question = testQuestionSchema.parse({
+      ...base,
+      id: 'q-render-transformation',
+      type: 'transformation-application',
+      prompt: [{ type: 'paragraph', text: 'طبّق التحويل الهندسي' }],
+      parts: [
+        {
+          id: 'image-distance',
+          type: 'numeric',
+          prompt: [{ type: 'paragraph', text: 'ما إحداثي الصورة؟' }],
+          answer: 4,
+          unit: 'سم',
+        },
+      ],
+    });
+
+    render(<QuestionRenderer question={question} value={undefined} onChange={onChange} />);
+    expect(screen.getByText('طبّق التحويل الهندسي')).toBeInTheDocument();
+    expect(screen.getByText('ما إحداثي الصورة؟')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('اكتب القيمة العددية')).toBeInTheDocument();
+    expect(screen.getByText('سم')).toBeInTheDocument();
+
+    await user.type(screen.getByPlaceholderText('اكتب القيمة العددية'), '4');
+    expect(onChange).toHaveBeenLastCalledWith({
+      kind: 'multi-part',
+      parts: { 'image-distance': { kind: 'numeric', raw: '4' } },
+    });
+  });
 });
