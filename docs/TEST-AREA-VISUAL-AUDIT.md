@@ -12,32 +12,32 @@ The audit treats a drawing as a representation of the stem, not as an extra sour
 
 ## Per-question inventory
 
-**Final totals:** 11 required + 3 beneficial + 186 text-only = 200.
+**Final totals:** 12 required + 5 beneficial + 183 text-only = 200.
 
 ### Lesson 1 — «الانسحاب وخواصه» (20 questions; textbook pages 5–7)
 
-| Question ID       | Class          | Audit basis                                                                             |
-| ----------------- | -------------- | --------------------------------------------------------------------------------------- |
-| `geo-l01-t01-q01` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q02` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q03` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q04` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q05` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q06` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q07` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q08` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q09` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q10` | B — beneficial | رسم تخطيطي لهيئتين متطابقتين مختلفتي الاتجاه يوضح معنى شرط التوازي دون علامة إجابة.     |
-| `geo-l01-t01-q11` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q12` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q13` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q14` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q15` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q16` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q17` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q18` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q19` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
-| `geo-l01-t01-q20` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب. |
+| Question ID       | Class          | Audit basis                                                                                                                                 |
+| ----------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `geo-l01-t01-q01` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب.                                                     |
+| `geo-l01-t01-q02` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب.                                                     |
+| `geo-l01-t01-q03` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب.                                                     |
+| `geo-l01-t01-q04` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب.                                                     |
+| `geo-l01-t01-q05` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب.                                                     |
+| `geo-l01-t01-q06` | A — required   | قراءة المسارات المتساوية والمتوازية هي موضع السؤال نفسه؛ الأسهم والعلامات المتماثلة تعرض المعطيات المطبوعة في الكتاب دون نصٍّ يذكر النتائج. |
+| `geo-l01-t01-q07` | B — beneficial | شكل المثلث القائم بالأبعاد المعطاة يحدد موقع الزاوية القائمة والوتر بدقة، دون رسم المثلث الصورة أو أي قياس غير معطى.                        |
+| `geo-l01-t01-q08` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب.                                                     |
+| `geo-l01-t01-q09` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب.                                                     |
+| `geo-l01-t01-q10` | B — beneficial | رسم تخطيطي لهيئتين متطابقتين مختلفتي الاتجاه يوضح معنى شرط التوازي دون علامة إجابة.                                                         |
+| `geo-l01-t01-q11` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب.                                                     |
+| `geo-l01-t01-q12` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب.                                                     |
+| `geo-l01-t01-q13` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب.                                                     |
+| `geo-l01-t01-q14` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب.                                                     |
+| `geo-l01-t01-q15` | B — beneficial | شبكة مربعات مع سهمَي الانسحاب تدعم تطبيق التحويلين على النقطة المعطاة ذهنياً، دون رسم أي صورة لها تكشف الإحداثيات المطلوبة.                 |
+| `geo-l01-t01-q16` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب.                                                     |
+| `geo-l01-t01-q17` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب.                                                     |
+| `geo-l01-t01-q18` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب.                                                     |
+| `geo-l01-t01-q19` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب.                                                     |
+| `geo-l01-t01-q20` | C — text-only  | النص يحدد المفهوم/المعطيات كاملة؛ الرسم هنا سيكرر الخاصية أو يرسم ترتيباً يكشف المطلوب.                                                     |
 
 ### Lesson 2 — «صورة نقطة وفق انسحاب» (20 questions; textbook pages 8–10)
 
@@ -256,24 +256,27 @@ The audit treats a drawing as a representation of the stem, not as an extra sour
 
 ## Figure-source and geometry decisions
 
-Figures are platform-authored SVGs attached only to the following **14 audited questions** (11 required + 3 beneficial). The stem remains the authority for its facts; coordinates used only to lay out schematic views are never exposed as a grid or claimed as measurements.
+Figures are platform-authored SVGs attached only to the following **17 audited questions** (12 required + 5 beneficial). The three Lesson 1 rows below were added by the Lesson 1 test rebuild, which also upgraded `geo-l01-t01-q06` to a diagram-reading question and `geo-l01-t01-q15` to a transformation-application question. The stem remains the authority for its facts; coordinates used only to lay out schematic views are never exposed as a grid or claimed as measurements.
 
-| Question          | Source checked                       | Visual content and answer-protection decision                                                                                                                                           |
-| ----------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `geo-l01-t01-q10` | Lesson 1 pages 6–7                   | Two exactly congruent triangle outlines, one rotated 45° from the other; no length/angle marks or translation arrow.                                                                    |
-| `geo-l02-t01-q08` | Lesson 2 page 9                      | Both compass-circle intersections X and Y are shown with identical open-point marks; only the stated G→H vector is arrowed. The prompt now names X/Y so the figure labels are explicit. |
-| `geo-l03-t01-q16` | Lesson 3 pages 14–15                 | Original circle with K on its circumference and an unlabelled centre mark; no translated image is drawn.                                                                                |
-| `geo-l04-t01-q06` | Lesson 4 pages 17–18                 | Corresponding labelled triangles; coordinates are derived from BC=EF=6 cm and the given 50°/70° angles. Side ticks show BC=EF only; angle arcs are unticked.                            |
-| `geo-l04-t01-q08` | Lesson 4 page 18                     | Parallelogram ABCD with the stated diagonal AC; no side or angle marks.                                                                                                                 |
-| `geo-l04-t01-q13` | Lesson 4 page 19                     | Kite ABCD and common diagonal AC; ticks encode AB=AD and CB=CD only.                                                                                                                    |
-| `geo-l04-t01-q15` | Lesson 4 page 19                     | Two right triangles with right-angle marks and ticks on BC/EF and AB/DE only; the requested AC/DF sides carry no label or equality mark.                                                |
-| `geo-l04-t01-q17` | Lesson 4 page 18                     | Intersecting lines and triangles AMB/EMF; ticks encode AM=ME and BM=MF only; no vertical-angle equality marks.                                                                          |
-| `geo-l05-t01-q03` | Unit exercise source, Question 1     | Parallelogram MNPQ in the stated vertex order; no arrows are drawn on the answer-choice vectors.                                                                                        |
-| `geo-l06-t01-q06` | Unit exercise source, Questions 3–15 | Isosceles triangle, the given equal-side ticks, and equal arcs for the angle bisector; no right-angle or midpoint mark.                                                                 |
-| `geo-l06-t01-q12` | Unit exercise source, Questions 3–15 | Parallelogram and diagonals crossing at O; the prompt minimally clarifies that O is their intersection. No midpoint marks are added.                                                    |
-| `geo-u01-t01-q19` | Unit 1 lesson 2, pages 8–10          | Same two-candidate compass construction; the prompt explicitly states the A→B translation and names X/Y.                                                                                |
-| `geo-u01-t01-q37` | Unit 1 lesson 4, pages 17–19         | Kite ABCD and common diagonal AC; only the two given side equalities are marked.                                                                                                        |
-| `geo-u01-t01-q38` | Unit 1 lesson 4, pages 17–19         | One unscaled representative right triangle; annotations show the given 5 cm leg and 15 cm² area, never the requested leg.                                                               |
+| Question          | Source checked                       | Visual content and answer-protection decision                                                                                                                                            |
+| ----------------- | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `geo-l01-t01-q06` | Lesson 1 page 6                      | Translation paths A→B, M→M′, N→N′ drawn as arrows with identical single ticks (the printed p.6 relations), plus unmarked [MN] and its image [M′N′]; no image triangle, no stated result. |
+| `geo-l01-t01-q07` | Lesson 1 page 6                      | The original right triangle ABC with right-angle mark at A and the given 6 cm / 8 cm / 10 cm annotations only; the image triangle A′B′C′ is never drawn.                                 |
+| `geo-l01-t01-q10` | Lesson 1 pages 6–7                   | Two exactly congruent triangle outlines, one rotated 45° from the other; no length/angle marks or translation arrow.                                                                     |
+| `geo-l01-t01-q15` | Lesson 1 pages 5–6                   | Square grid, the labelled point M(2, 1), and two free arrows from one base representing T₁ and T₂; no image of M is plotted, so the requested coordinates stay hidden.                   |
+| `geo-l02-t01-q08` | Lesson 2 page 9                      | Both compass-circle intersections X and Y are shown with identical open-point marks; only the stated G→H vector is arrowed. The prompt now names X/Y so the figure labels are explicit.  |
+| `geo-l03-t01-q16` | Lesson 3 pages 14–15                 | Original circle with K on its circumference and an unlabelled centre mark; no translated image is drawn.                                                                                 |
+| `geo-l04-t01-q06` | Lesson 4 pages 17–18                 | Corresponding labelled triangles; coordinates are derived from BC=EF=6 cm and the given 50°/70° angles. Side ticks show BC=EF only; angle arcs are unticked.                             |
+| `geo-l04-t01-q08` | Lesson 4 page 18                     | Parallelogram ABCD with the stated diagonal AC; no side or angle marks.                                                                                                                  |
+| `geo-l04-t01-q13` | Lesson 4 page 19                     | Kite ABCD and common diagonal AC; ticks encode AB=AD and CB=CD only.                                                                                                                     |
+| `geo-l04-t01-q15` | Lesson 4 page 19                     | Two right triangles with right-angle marks and ticks on BC/EF and AB/DE only; the requested AC/DF sides carry no label or equality mark.                                                 |
+| `geo-l04-t01-q17` | Lesson 4 page 18                     | Intersecting lines and triangles AMB/EMF; ticks encode AM=ME and BM=MF only; no vertical-angle equality marks.                                                                           |
+| `geo-l05-t01-q03` | Unit exercise source, Question 1     | Parallelogram MNPQ in the stated vertex order; no arrows are drawn on the answer-choice vectors.                                                                                         |
+| `geo-l06-t01-q06` | Unit exercise source, Questions 3–15 | Isosceles triangle, the given equal-side ticks, and equal arcs for the angle bisector; no right-angle or midpoint mark.                                                                  |
+| `geo-l06-t01-q12` | Unit exercise source, Questions 3–15 | Parallelogram and diagonals crossing at O; the prompt minimally clarifies that O is their intersection. No midpoint marks are added.                                                     |
+| `geo-u01-t01-q19` | Unit 1 lesson 2, pages 8–10          | Same two-candidate compass construction; the prompt explicitly states the A→B translation and names X/Y.                                                                                 |
+| `geo-u01-t01-q37` | Unit 1 lesson 4, pages 17–19         | Kite ABCD and common diagonal AC; only the two given side equalities are marked.                                                                                                         |
+| `geo-u01-t01-q38` | Unit 1 lesson 4, pages 17–19         | One unscaled representative right triangle; annotations show the given 5 cm leg and 15 cm² area, never the requested leg.                                                                |
 
 The Lesson 3 translation/shape questions were prioritized in the visual review, but remain text-only where showing the translated image would disclose the invariant being tested. Likewise, the angle-computation items remain text-only because an accurately scaled drawing could reveal the requested result.
 
@@ -281,7 +284,7 @@ All three stem clarifications are deliberately small: (1) Lesson 2 q08 names the
 
 ## Automated audit and review
 
-- **Coverage:** machine-readable classification map contains all 200 live IDs and tests require 11 A, 3 B, and 186 C questions. Every A/B question has exactly one figure; C questions have none.
+- **Coverage:** machine-readable classification map contains all 200 live IDs and tests require 12 A, 5 B, and 183 C questions. Every A/B question has exactly one figure; C questions have none.
 - **Scene validity:** Zod checks finite coordinates/radii, unique point IDs and visible labels, valid primitive references, non-zero segments/polygons, valid angle rays, and geometrically perpendicular right-angle marks.
 - **Label/reference consistency:** visible point labels must exactly match `questionLabels`, which must be present in the question prompt. Text annotations are checked against prompt notation; Latin letters/digits in alt text and captions must be inside inline-math isolates. Figure provenance must cite a source page already cited by that question.
 - **SVG/mobile/accessibility:** tests cover responsive `viewBox` + `preserveAspectRatio`, LTR isolation inside RTL content, accessible names, keyboard-operable zoom, and the scrollable mobile zoom viewport.
