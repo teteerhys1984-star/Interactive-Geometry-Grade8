@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
+import { RichText } from '@/components/math';
 import styles from './TeachingBlock.module.css';
 
 export type TeachingVariant = 'concept' | 'why' | 'example' | 'pitfall' | 'summary' | 'tip';
@@ -54,7 +55,9 @@ export function TeachingBlock({
         </span>
         <div className={styles.headings}>
           <p className={styles.kind}>{variantLabels[variant]}</p>
-          <h3 className={styles.title}>{title}</h3>
+          <h3 className={styles.title}>
+            <RichText text={title} />
+          </h3>
         </div>
         <span className={styles.badge}>شرح المنصّة</span>
       </header>

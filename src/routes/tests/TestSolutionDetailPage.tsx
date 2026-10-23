@@ -203,7 +203,8 @@ export function TestSolutionDetailPage() {
                         <ul className={styles.criteriaList}>
                           {sol.scoringCriteria.map((criterion, index) => (
                             <li key={`${criterion.description}-${index}`}>
-                              <span dir="ltr">{criterion.points}</span> — {criterion.description}
+                              <span dir="ltr">{criterion.points}</span> —{' '}
+                              <RichText text={criterion.description} />
                             </li>
                           ))}
                         </ul>
@@ -284,7 +285,7 @@ export function TestSolutionDetailPage() {
                                   {part.scoringCriteria.map((criterion, index) => (
                                     <li key={`${criterion.description}-${index}`}>
                                       <span dir="ltr">{criterion.points}</span> —{' '}
-                                      {criterion.description}
+                                      <RichText text={criterion.description} />
                                     </li>
                                   ))}
                                 </ul>
