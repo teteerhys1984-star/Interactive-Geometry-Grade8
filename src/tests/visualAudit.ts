@@ -35,6 +35,7 @@ export const ALL_AUDITED_QUESTION_IDS = [
 ];
 
 export const FIGURE_REQUIRED_QUESTION_IDS = [
+  'geo-l01-t01-q06',
   'geo-l02-t01-q08',
   'geo-l03-t01-q16',
   'geo-l04-t01-q06',
@@ -49,7 +50,9 @@ export const FIGURE_REQUIRED_QUESTION_IDS = [
 ] as const;
 
 export const FIGURE_BENEFICIAL_QUESTION_IDS = [
+  'geo-l01-t01-q07',
   'geo-l01-t01-q10',
+  'geo-l01-t01-q15',
   'geo-l06-t01-q12',
   'geo-u01-t01-q38',
 ] as const;
@@ -85,6 +88,8 @@ const textOnlyRationaleByQuestion: Record<string, string> = {
 };
 
 const requiredRationales: Record<(typeof FIGURE_REQUIRED_QUESTION_IDS)[number], string> = {
+  'geo-l01-t01-q06':
+    'قراءة المسارات المتساوية والمتوازية هي موضع السؤال نفسه؛ الأسهم والعلامات المتماثلة تعرض المعطيات المطبوعة في الكتاب دون نصٍّ يذكر النتائج.',
   'geo-l02-t01-q08':
     'تقاطع قوسي الفرجار له مرشحان مكانيان؛ يلزم إظهار المرشحين معاً دون تمييز الصحيح.',
   'geo-l03-t01-q16': 'التمييز بين مركز الدائرة ونقطة على محيطها هو موضع الخطأ الهندسي نفسه.',
@@ -104,8 +109,12 @@ const requiredRationales: Record<(typeof FIGURE_REQUIRED_QUESTION_IDS)[number], 
 };
 
 const beneficialRationales: Record<(typeof FIGURE_BENEFICIAL_QUESTION_IDS)[number], string> = {
+  'geo-l01-t01-q07':
+    'شكل المثلث القائم بالأبعاد المعطاة يحدد موقع الزاوية القائمة والوتر بدقة، دون رسم المثلث الصورة أو أي قياس غير معطى.',
   'geo-l01-t01-q10':
     'رسم تخطيطي لهيئتين متطابقتين مختلفتي الاتجاه يوضح معنى شرط التوازي دون علامة إجابة.',
+  'geo-l01-t01-q15':
+    'شبكة مربعات مع سهمَي الانسحاب تدعم تطبيق التحويلين على النقطة المعطاة ذهنياً، دون رسم أي صورة لها تكشف الإحداثيات المطلوبة.',
   'geo-l06-t01-q12': 'مخطط متوازي الأضلاع والقطرين يساعد على تتبع خطوات البرهان دون علامات منتصف.',
   'geo-u01-t01-q38':
     'مثلث قائم تخطيطي يحمل المساحة والضلع المعطيين فقط ولا يضع قياساً للضلع المطلوب.',

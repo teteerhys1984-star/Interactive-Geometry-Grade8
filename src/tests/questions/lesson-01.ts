@@ -1,15 +1,22 @@
 import {
+  choicePart,
   classification,
+  diagramReading,
   errorAnalysis,
   exact,
   figureBlock,
+  fillIn,
+  fillInBlank,
+  justification,
   matching,
   multiSelect,
   numeric,
   ordering,
   singleChoice,
   testFigure,
+  transformationApplication,
   trueFalse,
+  trueFalseJustify,
 } from '../authoring';
 import type { TestQuestionInput } from '../schema';
 
@@ -28,25 +35,39 @@ import type { TestQuestionInput } from '../schema';
  *    Coverage:
  *      • definition (التعريف والمفهوم): 5
  *      • direction-distance (الاتجاه والمسافة): 4
- *      • properties (خواص حفظ الأطوال والزوايا والمساحات والاستقامة): 6
- *      • non-translation (تمييز ما ليس انسحاباً والتركيب): 5
+ *      • properties (خواص حفظ الأطوال والزوايا والمساحات والاستقامة): 7
+ *      • non-translation (تمييز ما ليس انسحاباً والتركيب): 4
  *    Types:
- *      • single-choice:   7
- *      • true-false:      3
- *      • multi-select:    2
- *      • numeric:         2
- *      • exact:           1
- *      • ordering:        1
- *      • matching:        1
- *      • classification:  1
- *      • error-analysis:  2
+ *      • single-choice:              4  (q01, q03, q10, q17)
+ *      • true-false:                 1  (q09)
+ *      • true-false-justify:         2  (q02, q20)
+ *      • multi-select:               2  (q07, q18)
+ *      • fill-in:                    1  (q05)
+ *      • numeric:                    2  (q04, q08)
+ *      • exact:                      1  (q14)
+ *      • diagram-reading:            1  (q06 — figure required)
+ *      • transformation-application: 1  (q15 — grid figure)
+ *      • matching:                   1  (q11)
+ *      • ordering:                   1  (q13)
+ *      • classification:             1  (q12)
+ *      • justification:              1  (q19)
+ *      • error-analysis:             1  (q16)
  *
  *  SOURCE FIDELITY & ORIGINALITY
  *  -----------------------------
  *  • Every question is ANCHORED to real pages 5, 6, and 7 of the textbook.
  *  • Every question is ORIGINAL: none copies or paraphrases the textbook's
  *    exercises or the in-lesson assessments.
- *  • All mathematical relationships are exact.
+ *  • All mathematical relationships are exact; figures use exact coordinates
+ *    so the drawing can never contradict the stem (see testFigureSpec.ts).
+ *  • Source-verified facts used here (docs/LESSON-01-COVERAGE.md):
+ *      – p.5: the pavement activity — one fixed direction, one fixed distance.
+ *      – p.6: definition (A goes to B ⇒ every point moves alike) and the
+ *        printed relations MM' = NN' = AB, (MM') ∥ (AB), (NN') ∥ (AB).
+ *      – p.6: the four preserved properties — lengths, collinearity, angle
+ *        measures, areas.
+ *      – p.7: «تحقق» panel ③ — a reflected (flipped) orientation is NOT a
+ *        translation image.
  * ============================================================================
  */
 
@@ -77,15 +98,44 @@ export const questions: TestQuestionInput[] = [
   }),
 
   /* ------------------------------------------------------------------ 02 */
-  trueFalse({
+  trueFalseJustify({
     id: 'geo-l01-t01-q02',
     lessonId: LESSON_ID,
     concept: 'direction-distance',
     difficulty: 'basic',
     prompt: [
-      'إذا نقل انسحاب النقطة $A$ إلى النقطة $B$، فإن النقطة $B$ تنتقل وفق الانسحاب ذاته إلى النقطة $A$.',
+      'إذا نقل انسحاب النقطة $A$ إلى النقطة $B$، فإن النقطة $B$ تعود إلى النقطة $A$ وفق الانسحاب ذاته.',
     ],
     answer: false,
+    correction: choicePart({
+      id: 'correction',
+      prompt: ['اختر العبارة الصحيحة:'],
+      choices: [
+        {
+          id: 'fix-a',
+          text: 'وفق الانسحاب ذاته تنتقل $B$ أبعد في الاتجاه نفسه، أما الانسحاب الذي يعيد $B$ إلى $A$ فهو انسحاب معاكس في الاتجاه.',
+        },
+        {
+          id: 'fix-b',
+          text: 'الانسحاب ذاته ينقل $B$ إلى $A$ لأن المسافة $AB$ تساوي المسافة $BA$.',
+        },
+        { id: 'fix-c', text: 'لا يمكن لأي انسحاب أن ينقل النقطة $B$ إطلاقاً.' },
+      ],
+      answer: 'fix-a',
+    }),
+    justification: choicePart({
+      id: 'justification',
+      prompt: ['لماذا العبارة الأصلية خاطئة؟'],
+      choices: [
+        {
+          id: 'why-a',
+          text: 'لأن الانسحاب يتحدد بالاتجاه والمسافة معاً، والاتجاه من $B$ إلى $A$ يعاكس اتجاه الانسحاب المعطى.',
+        },
+        { id: 'why-b', text: 'لأن المسافة من $B$ إلى $A$ أكبر من المسافة من $A$ إلى $B$.' },
+        { id: 'why-c', text: 'لأن الانسحاب يؤثر في نقطة البداية فقط دون بقية النقاط.' },
+      ],
+      answer: 'why-a',
+    }),
     sourceRefs: [P6],
   }),
 
@@ -124,40 +174,109 @@ export const questions: TestQuestionInput[] = [
   }),
 
   /* ------------------------------------------------------------------ 05 */
-  singleChoice({
+  fillIn({
     id: 'geo-l01-t01-q05',
     lessonId: LESSON_ID,
     concept: 'properties',
     difficulty: 'basic',
     prompt: [
-      'أيُّ العبارات الآتية تُمثّل الخواص الأربع الأساسية التي يحافظ عليها الانسحاب بحسب ما ورد في الكتاب المدرسي؟',
+      'أكمل كل فراغ باسم الخاصية المحفوظة المناسبة، وفق خواص الانسحاب الأربع كما وردت في الكتاب المدرسي:',
     ],
-    choices: [
-      { id: 'opt-a', text: 'الأطوال، والاستقامة، وقياس الزوايا، والمساحات.' },
-      { id: 'opt-b', text: 'الأطوال، والاتجاه فقط، دون حفظ قياس الزوايا.' },
-      { id: 'opt-c', text: 'المساحات، ولكن قد تنحني المستقيمات بعد الانسحاب.' },
-      { id: 'opt-d', text: 'موضع المركز، والشكل، مع مضاعفة الأبعاد بنسبة ثابتة.' },
+    blanks: [
+      fillInBlank({
+        id: 'b-lengths',
+        label:
+          "الخاصية الأولى: يحافظ الانسحاب على … ؛ فطول القطعة $[MN]$ يساوي طول صورتها $[M'N']$.",
+        acceptedAnswers: ['الأطوال', 'أطوال', 'الطول', 'طول'],
+      }),
+      fillInBlank({
+        id: 'b-collinearity',
+        label:
+          'الخاصية الثانية: يحافظ الانسحاب على … ؛ فإذا كانت ثلاث نقاط على استقامة واحدة فإن صورها تبقى على استقامة واحدة.',
+        acceptedAnswers: ['الاستقامة', 'استقامة', 'استقامة النقاط'],
+      }),
+      fillInBlank({
+        id: 'b-angles',
+        label: 'الخاصية الثالثة: يحافظ الانسحاب على … ؛ فصورة الزاوية زاوية لها القياس نفسه.',
+        acceptedAnswers: ['قياس الزوايا', 'قياسات الزوايا', 'قياس الزاوية', 'الزوايا', 'زوايا'],
+      }),
+      fillInBlank({
+        id: 'b-areas',
+        label: 'الخاصية الرابعة: يحافظ الانسحاب على … ؛ فمساحة الشكل تساوي مساحة صورته.',
+        acceptedAnswers: ['المساحات', 'مساحات', 'المساحة', 'مساحة'],
+      }),
     ],
-    answer: 'opt-a',
     sourceRefs: [P6],
   }),
 
   /* ------------------------------------------------------------------ 06 */
-  singleChoice({
+  diagramReading({
     id: 'geo-l01-t01-q06',
     lessonId: LESSON_ID,
     concept: 'direction-distance',
     difficulty: 'medium',
     prompt: [
-      "في انسحاب ينقل النقطة $K$ إلى النقطة $L$، صورة النقطة $X$ هي $X'$ وصورة النقطة $Y$ هي $Y'$. ما العلاقة التي تربط دائماً بين المسارين $[XX']$ و $[YY']$؟",
+      "في الشكل، انسحاب ينقل النقطة $A$ إلى النقطة $B$، والنقطة $M'$ هي صورة النقطة $M$، والنقطة $N'$ هي صورة النقطة $N$. العلامات المتماثلة على الأسهم الثلاثة تعني أن المسارات الثلاثة متساوية في الطول. اقرأ الشكل ثم أجب عن كل جزء:",
+      figureBlock(
+        testFigure({
+          id: 'test-l01-q06-paths-of-translation',
+          alt: "شكل يمثّل انسحاباً ينقل $A$ إلى $B$: سهم من $M$ إلى $M'$ وسهم من $N$ إلى $N'$، والعلامات المتماثلة على المسارات الثلاثة تعني تساوي أطوالها، والقطعة $[MN]$ وصورتها $[M'N']$ مرسومتان دون علامات.",
+          caption:
+            'رسم من إعداد المنصّة: المسارات مرسومة كأسهم، والعلامات المتماثلة هي المعطى الوحيد عن الأطوال.',
+          sourceRefs: [P6],
+          spec: {
+            points: [
+              { id: 'A', x: 0, y: 0, labelSide: 'sw' },
+              { id: 'B', x: 4, y: 1, labelSide: 'ne' },
+              { id: 'M', x: 1, y: 3, labelSide: 'nw' },
+              { id: 'M-prime', label: 'M′', x: 5, y: 4, labelSide: 'n' },
+              { id: 'N', x: 6, y: 2, labelSide: 's' },
+              { id: 'N-prime', label: 'N′', x: 10, y: 3, labelSide: 'se' },
+            ],
+            segments: [
+              { from: 'A', to: 'B', arrow: 'end', ticks: 1 },
+              { from: 'M', to: 'M-prime', arrow: 'end', ticks: 1 },
+              { from: 'N', to: 'N-prime', arrow: 'end', ticks: 1 },
+              { from: 'M', to: 'N' },
+              { from: 'M-prime', to: 'N-prime' },
+            ],
+            questionLabels: ['A', 'B', 'M', 'N', 'M′', 'N′'],
+          },
+        }),
+      ),
     ],
-    choices: [
-      { id: 'opt-a', text: "$XX' = YY' = KL$ و $(XX') \\parallel (YY') \\parallel (KL)$" },
-      { id: 'opt-b', text: "$XX' + YY' = KL$ و $(XX') \\perp (YY')$" },
-      { id: 'opt-c', text: "$XY = X'Y'$ فقط دون أي علاقة توازٍ بين المسارين" },
-      { id: 'opt-d', text: 'المساران متقاطعان دائماً في منتصف القطعة $[KL]$' },
+    parts: [
+      {
+        id: 'part-length',
+        type: 'single-choice',
+        prompt: [{ type: 'paragraph', text: "إلى ماذا يساوي طول المسار $[MM']$؟" }],
+        choices: [
+          { id: 'len-ab', text: 'طول القطعة $[AB]$' },
+          { id: 'len-mn', text: 'طول القطعة $[MN]$' },
+          { id: 'len-mnp', text: "طول القطعة $[M'N']$" },
+        ],
+        answerId: 'len-ab',
+      },
+      {
+        id: 'part-position',
+        type: 'single-choice',
+        prompt: [
+          { type: 'paragraph', text: "ما الوضع النسبي بين المستقيم $(NN')$ والمستقيم $(AB)$؟" },
+        ],
+        choices: [
+          { id: 'pos-parallel', text: 'متوازيان' },
+          { id: 'pos-perp', text: 'متعامدان' },
+          { id: 'pos-secant', text: 'متقاطعان في نقطة واحدة' },
+        ],
+        answerId: 'pos-parallel',
+      },
+      {
+        id: 'part-equal-paths',
+        type: 'true-false',
+        prompt: [{ type: 'paragraph', text: "بحسب العلامات المعطاة في الشكل: $MM' = NN'$." }],
+        answer: true,
+      },
     ],
-    answer: 'opt-a',
     sourceRefs: [P6],
   }),
 
@@ -169,6 +288,29 @@ export const questions: TestQuestionInput[] = [
     difficulty: 'medium',
     prompt: [
       "مثلث قائم $ABC$ في $A$، فيه $AB = 6\\ \\mathrm{cm}$ و $AC = 8\\ \\mathrm{cm}$ والوتر $BC = 10\\ \\mathrm{cm}$. نُقِل بانسحاب إلى المثلث $A'B'C'$. أيُّ العبارات الآتية صحيحة حتماً؟ (اختر كل الإجابات الصحيحة)",
+      figureBlock(
+        testFigure({
+          id: 'test-l01-q07-right-triangle',
+          alt: 'مثلث قائم $ABC$ زاويته القائمة في $A$، طول $[AB]$ هو $6\\ \\mathrm{cm}$ وطول $[AC]$ هو $8\\ \\mathrm{cm}$ وطول الوتر $[BC]$ هو $10\\ \\mathrm{cm}$.',
+          caption: 'رسم من إعداد المنصّة: المثلث الأصلي بمعطياته فقط، دون رسم صورته.',
+          sourceRefs: [P6],
+          spec: {
+            points: [
+              { id: 'A', x: 0, y: 0, labelSide: 'sw' },
+              { id: 'B', x: 6, y: 0, labelSide: 'se' },
+              { id: 'C', x: 0, y: 8, labelSide: 'nw' },
+            ],
+            polygons: [{ points: ['A', 'B', 'C'], fill: true }],
+            rightAngles: [{ at: 'A', from: 'B', to: 'C' }],
+            annotations: [
+              { x: 3, y: -0.75, text: '6 cm' },
+              { x: -0.9, y: 4, text: '8 cm', anchor: 'end' },
+              { x: 3.6, y: 4.5, text: '10 cm' },
+            ],
+            questionLabels: ['A', 'B', 'C'],
+          },
+        }),
+      ),
     ],
     choices: [
       { id: 'c1', text: "المثلث $A'B'C'$ قائم في $A'$" },
@@ -354,21 +496,70 @@ export const questions: TestQuestionInput[] = [
   }),
 
   /* ------------------------------------------------------------------ 15 */
-  singleChoice({
+  transformationApplication({
     id: 'geo-l01-t01-q15',
     lessonId: LESSON_ID,
     concept: 'direction-distance',
     difficulty: 'advanced',
     prompt: [
-      'على شبكة إحداثية، انسحاب $T_1$ ينقل النقطة $(x, y)$ إلى $(x + 4, y + 2)$، وانسحاب ثانٍ $T_2$ ينقل النقطة $(x, y)$ إلى $(x - 1, y + 3)$. إذا طُبِّق الانسحاب $T_1$ على النقطة $M(2, 1)$ ثم طُبِّق $T_2$ على الناتج، فما إحداثيا النقطة النهائية؟',
+      'على شبكة مربعات مرسومٌ الانسحابان $T_1$ و$T_2$: الأول ينقل أي نقطة $(x, y)$ إلى $(x + 4, y + 2)$، والثاني ينقل أي نقطة $(x, y)$ إلى $(x - 1, y + 3)$، وكل سهم في الشكل يحدد اتجاه الانسحاب ومسافته. النقطة $M(2, 1)$ مرسومة على الشبكة ولم تُرسم أي صورة لها. ليكن $M_1$ صورة $M$ وفق $T_1$ و$M_2$ صورة $M_1$ وفق $T_2$. طبّق الانسحابين ثم أجب عن كل جزء:',
+      figureBlock(
+        testFigure({
+          id: 'test-l01-q15-composed-translations-grid',
+          alt: 'شبكة إحداثية مربعة عليها النقطة $M$ وإحداثياها $(2, 1)$، وسهمان يصدران من نقطة واحدة: أولهما يمثّل الانسحاب $T_1$ وثانيهما يمثّل الانسحاب $T_2$، ولم تُرسم أي صورة للنقطة $M$.',
+          caption: 'رسم من إعداد المنصّة: كل سهم يحدد اتجاه الانسحاب ومسافته فقط.',
+          sourceRefs: [P5, P6],
+          spec: {
+            grid: { minX: -2, maxX: 5, minY: -1, maxY: 4 },
+            points: [
+              { id: 'O', x: 0, y: 0, showLabel: false, mark: 'none' },
+              { id: 'v1', x: 4, y: 2, showLabel: false, mark: 'none' },
+              { id: 'v2', x: -1, y: 3, showLabel: false, mark: 'none' },
+              { id: 'M', x: 2, y: 1, mark: 'dot', labelSide: 'se' },
+            ],
+            segments: [
+              { from: 'O', to: 'v1', arrow: 'end' },
+              { from: 'O', to: 'v2', arrow: 'end' },
+            ],
+            annotations: [
+              { x: 4.35, y: 2.3, text: 'T₁', anchor: 'start' },
+              { x: -1.35, y: 3.3, text: 'T₂', anchor: 'end' },
+            ],
+            questionLabels: ['M'],
+          },
+        }),
+      ),
     ],
-    choices: [
-      { id: 'opt-a', text: '$(5, 6)$' },
-      { id: 'opt-b', text: '$(6, 3)$' },
-      { id: 'opt-c', text: '$(1, 4)$' },
-      { id: 'opt-d', text: '$(7, 5)$' },
+    parts: [
+      {
+        id: 'p-x1',
+        type: 'numeric',
+        prompt: [{ type: 'paragraph', text: 'سينا النقطة $M_1$ (صورة $M$ وفق $T_1$):' }],
+        answer: 6,
+        tolerance: 0,
+      },
+      {
+        id: 'p-y1',
+        type: 'numeric',
+        prompt: [{ type: 'paragraph', text: 'صاد النقطة $M_1$:' }],
+        answer: 3,
+        tolerance: 0,
+      },
+      {
+        id: 'p-x2',
+        type: 'numeric',
+        prompt: [{ type: 'paragraph', text: 'سينا النقطة $M_2$ (صورة $M_1$ وفق $T_2$):' }],
+        answer: 5,
+        tolerance: 0,
+      },
+      {
+        id: 'p-y2',
+        type: 'numeric',
+        prompt: [{ type: 'paragraph', text: 'صاد النقطة $M_2$:' }],
+        answer: 6,
+        tolerance: 0,
+      },
     ],
-    answer: 'opt-a',
     sourceRefs: [P5, P6],
   }),
 
@@ -388,7 +579,7 @@ export const questions: TestQuestionInput[] = [
       },
       {
         id: 'step-2',
-        text: "الخطوة 2: قسنا الزوايا فوجدنا قياس كل زاوية في $T$ يساوي قياس نظيرتها في $T'.",
+        text: "الخطوة 2: قسنا الزوايا فوجدنا قياس كل زاوية في $T$ يساوي قياس نظيرتها في $T'.$",
       },
       {
         id: 'step-3',
@@ -404,6 +595,32 @@ export const questions: TestQuestionInput[] = [
       },
     ],
     answer: 'step-3',
+    correction: choicePart({
+      id: 'correction',
+      prompt: ['اختر العبارة التي تصحّح الحل المعروض:'],
+      choices: [
+        {
+          id: 'fix-a',
+          text: 'حفظ الأطوال والزوايا شرط لازم للانسحاب لكنه غير كافٍ؛ يجب فحص بقاء اتجاه الشكل وتوازي كل ضلع مع نظيره.',
+        },
+        { id: 'fix-b', text: 'يكفي قياس الأطوال وحدها للحكم بأن الحركة انسحاب.' },
+        { id: 'fix-c', text: 'يكفي قياس الزوايا وحدها للحكم بأن الحركة انسحاب.' },
+      ],
+      answer: 'fix-a',
+    }),
+    justification: choicePart({
+      id: 'justification',
+      prompt: ['لماذا لا يكفي حفظ الأطوال والزوايا للحكم بأن الحركة انسحاب؟'],
+      choices: [
+        {
+          id: 'why-a',
+          text: 'لأن الدوران والتناظر المحوري يحفظان الأطوال والزوايا أيضاً، ومع ذلك فليسا انسحاباً.',
+        },
+        { id: 'why-b', text: 'لأن الأطوال تتغير في الدوران.' },
+        { id: 'why-c', text: 'لأن قياسات الزوايا لا تُحفظ في التناظر المحوري.' },
+      ],
+      answer: 'why-a',
+    }),
     sourceRefs: [P6, P7],
   }),
 
@@ -446,47 +663,106 @@ export const questions: TestQuestionInput[] = [
   }),
 
   /* ------------------------------------------------------------------ 19 */
-  errorAnalysis({
+  justification({
     id: 'geo-l01-t01-q19',
     lessonId: LESSON_ID,
     concept: 'non-translation',
     difficulty: 'thinking',
     prompt: [
-      'ادّعى تلميذ ما يأتي: «إذا كان للشكلين $F_1$ و $F_2$ المساحة نفسها والمحيط نفسه، فإنه يوجد دائماً انسحاب ينقل أحدهما إلى الآخر». أين وجه الخلل في هذا الادعاء؟',
+      'ادّعى تلميذ: «إذا كان للشكلين $F_1$ و$F_2$ المساحة نفسها والمحيط نفسه، فإنه يوجد دائماً انسحاب ينقل أحدهما إلى الآخر». أكمل خطوات التبرير الآتية لتقويم هذا الادعاء:',
     ],
     steps: [
-      { id: 's1', text: 'الادعاء مبني على أن تساوي المساحة والمحيط يضمن تطابق الشكلين.' },
-      {
-        id: 's2',
-        text: 'وحتى لو تطابق الشكلان، فقد يختلف اتجاههما (كدوران أو قلب) فلا يربطهما انسحاب.',
-      },
-      {
-        id: 's3',
-        text: 'وقد يتساوى المحيط والمساحة بين شكلين مختلفين تماماً (مثل دائرة ومستطيل).',
-      },
+      choicePart({
+        id: 'step-premise',
+        prompt: ['أولاً: هل يضمن تساوي المساحة والمحيط أن يكون الشكلان متطابقين؟'],
+        choices: [
+          {
+            id: 'premise-a',
+            text: 'نعم؛ فتساوي المساحة والمحيط يفرض تساوي جميع الأضلاع والزوايا.',
+          },
+          {
+            id: 'premise-b',
+            text: 'لا؛ فقد يتساوى شكلان في المساحة والمحيط مع اختلاف أطوال الأضلاع أو قياسات الزوايا.',
+          },
+        ],
+        answer: 'premise-b',
+      }),
+      choicePart({
+        id: 'step-orientation',
+        prompt: [
+          'ثانياً: إذا كان الشكلان متطابقين، فهل يلزم أن يوجد انسحاب ينقل أحدهما إلى الآخر؟',
+        ],
+        choices: [
+          {
+            id: 'orient-a',
+            text: 'نعم؛ فالتطابق يعني تساوي الأطوال والزوايا، وهذا وحده يكفي لوجود الانسحاب.',
+          },
+          {
+            id: 'orient-b',
+            text: 'لا؛ فقد يختلف اتجاه الشكلين بدوران أو قلب، والانسحاب يشترط بقاء الاتجاه وتوازي كل ضلع مع نظيره.',
+          },
+        ],
+        answer: 'orient-b',
+      }),
+      choicePart({
+        id: 'step-verdict',
+        prompt: ['الخلاصة: ما الحكم النهائي على ادعاء التلميذ؟'],
+        choices: [
+          {
+            id: 'verdict-a',
+            text: 'الادعاء خاطئ: تساوي المساحة والمحيط لا يضمن التطابق، وحتى مع التطابق يشترط بقاء اتجاه الشكل لوجود انسحاب.',
+          },
+          { id: 'verdict-b', text: 'الادعاء صحيح بالنسبة إلى المضلعات فقط.' },
+          { id: 'verdict-c', text: 'الادعاء صحيح لأن الانسحاب يحفظ المساحات والمحيطات.' },
+        ],
+        answer: 'verdict-a',
+      }),
     ],
-    choices: [
-      {
-        id: 'ch-a',
-        text: 'الادعاء غير صحيح لأن تساوي المساحة والمحيط لا يضمن التطابق أصلاً، وحتى مع التطابق يشترط الانسحاب وحدة الاتجاه وتوازي الأضلاع النظيرة.',
-      },
-      { id: 'ch-b', text: 'الادعاء صحيح تماماً ولا خطأ فيه.' },
-      { id: 'ch-c', text: 'الخطأ فقط في حالة الدوائر، أما المضلعات فالادعاء صحيح.' },
-    ],
-    answer: 'ch-a',
     sourceRefs: [P6, P7],
   }),
 
   /* ------------------------------------------------------------------ 20 */
-  trueFalse({
+  trueFalseJustify({
     id: 'geo-l01-t01-q20',
     lessonId: LESSON_ID,
     concept: 'definition',
     difficulty: 'thinking',
     prompt: [
-      "إذا علمت صورتي نقطتين متمايزتين $A$ و $B$ فقط وفق حركة مستوية مجهولة ووجدنا أن $A'B' = AB$ و $(A'B') \\parallel (AB)$، فهل هذا يكفي وحده للجزم بأن الحركة انسحاب لكامل المستوي؟",
+      "نقلت حركة مستوية مجهولة نقطتين متمايزتين $A$ و$B$ إلى $A'$ و$B'$ على الترتيب، ووُجد أن $A'B' = AB$ وأن $(A'B') \\parallel (AB)$. هل تكفي هذه المعطيات وحدها للجزم بأن الحركة انسحاب لكامل المستوي؟",
     ],
     answer: false,
+    correction: choicePart({
+      id: 'correction',
+      prompt: ['اختر العبارة الصحيحة:'],
+      choices: [
+        {
+          id: 'fix-a',
+          text: 'لا تكفي نقطتان وحدهما؛ فقد تنطبق هاتان العلاقتان على حركة أخرى غير الانسحاب، ويُحسم الأمر بفحص صورة نقطة ثالثة ليست على المستقيم $(AB)$ أو بالتحقق من بقاء اتجاه الأشكال.',
+        },
+        { id: 'fix-b', text: 'تكفي نقطتان دائماً لأن تعريف الانسحاب يُقرأ من نقطتين.' },
+        { id: 'fix-c', text: 'لا تكفي ثلاث نقاط أبداً مهما كانت، فلا سبيل إلى الجزم بأي حركة.' },
+      ],
+      answer: 'fix-a',
+    }),
+    justification: choicePart({
+      id: 'justification',
+      prompt: ['أي مثال مضاد يبيّن أن هاتين العلاقتين لا تكفيان؟'],
+      choices: [
+        {
+          id: 'why-a',
+          text: 'الانعكاس حول محور يوازي المستقيم $(AB)$: ينقل $A$ و$B$ إلى نقطتين قطعتهما مساوية لـ $[AB]$ وموازية له، ومع ذلك فهو قلبٌ وليس انسحاباً.',
+        },
+        {
+          id: 'why-b',
+          text: 'الدوران بزاوية $360^\\circ$ حول منتصف $[AB]$: فهو يحرّك كل نقطة ثم يعيدها، لذلك يناقض الانسحاب.',
+        },
+        {
+          id: 'why-c',
+          text: 'لا يوجد مثال مضاد: فحفظ الطول والتوازي بين نقطتين هو تعريف الانسحاب نفسه.',
+        },
+      ],
+      answer: 'why-a',
+    }),
     sourceRefs: [P6, P7],
   }),
 ];

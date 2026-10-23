@@ -16,7 +16,7 @@ import {
 } from './visualAudit';
 import type { MultiPartItem, TestQuestion } from './schema';
 
-const EXPECTED_AUDIT_COUNTS = { A: 11, B: 3, C: 186 } as const;
+const EXPECTED_AUDIT_COUNTS = { A: 12, B: 5, C: 183 } as const;
 
 interface AuditedFigure {
   question: TestQuestion;
