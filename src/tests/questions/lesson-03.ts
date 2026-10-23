@@ -1,4 +1,5 @@
 import {
+  choicePart,
   classification,
   errorAnalysis,
   exact,
@@ -9,7 +10,7 @@ import {
   ordering,
   singleChoice,
   testFigure,
-  trueFalse,
+  trueFalseJustify,
 } from '../authoring';
 import type { TestQuestionInput } from '../schema';
 
@@ -28,28 +29,36 @@ import type { TestQuestionInput } from '../schema';
  *    Coverage:
  *      • image-line-segment (صورة مستقيم وقطعة مستقيمة ونصف مستقيم): 5
  *      • image-parallel-perp (صورة مستقيمين متوازيين أو متعامدين): 4
- *      • image-circle-polygon (صورة دائرة ومستطيل ومثلث): 6
+ *      • image-circle-polygon (صورة دائرة ومستطيل ومثلث ومضلعات): 6
  *      • construction-applications (الإنشاءات الهندسية والتطبيقات الحسابية): 5
  *    Types:
- *      • single-choice:   7
- *      • true-false:      3
- *      • multi-select:    2
- *      • numeric:         2
- *      • exact:           1
- *      • ordering:        1
- *      • matching:        1
- *      • classification:  1
- *      • error-analysis:  2
+ *      • single-choice:      7
+ *      • true-false-justify: 3  (two verdict + reason, one verdict + correction)
+ *      • multi-select:       2
+ *      • numeric:            2
+ *      • exact:              1
+ *      • ordering:           1
+ *      • matching:           1  (three pairs, one point per pair)
+ *      • classification:     1
+ *      • error-analysis:     2  (each with independently scored correction + reason)
+ *    Engine maximum: 31 points.
+ *
+ *  SOURCE NOTE: every item is anchored to the verified Lesson 3 content records
+ *  for printed pages 11–16 (`src/content/units/lesson-03-image-of-a-shape.ts`)
+ *  and to the original crop inventory in `docs/LESSON-03-FIGURES.md`. The
+ *  questions are assessment items authored for this platform — they are not
+ *  copied textbook exercises, and every numerical value chosen by the platform
+ *  is labelled as such in the detailed solution.
  * ============================================================================
  */
 
 const LESSON_ID = 'lesson-03-image-of-a-shape';
-const P11 = { page: 11, locator: 'نشاط تخمين صورة مستقيم' };
-const P12 = { page: 12, locator: 'إثبات توازي صورة المستقيم' };
-const P13 = { page: 13, locator: 'صورة مستقيمين متوازيين أو متعامدين وصورة قطعة' };
-const P14 = { page: 14, locator: 'صورة نصف مستقيم وصورة دائرة واكتساب معارف' };
-const P15 = { page: 15, locator: 'تطبيقات هندسية وتحقق من فهمك' };
-const P16 = { page: 16, locator: 'تدرب 1 و2 و3 و4' };
+const P11 = { page: 11, locator: 'نشاط تخمين صورة مستقيم وإثبات التوازي' };
+const P12 = { page: 12, locator: 'تعلّم صورة مستقيم وإنشاء الصورة بالفرجار' };
+const P13 = { page: 13, locator: 'صور المستقيمين المتوازيين والمتعامدين وصورة قطعة' };
+const P14 = { page: 14, locator: 'صورة نصف مستقيم ودائرة واكتساب معارف' };
+const P15 = { page: 15, locator: 'مثال المربع وتحقّق من فهمك' };
+const P16 = { page: 16, locator: 'تدرّب 1 و2 و3 و4' };
 
 export const questions: TestQuestionInput[] = [
   /* ------------------------------------------------------------------ 01 */
@@ -58,29 +67,40 @@ export const questions: TestQuestionInput[] = [
     lessonId: LESSON_ID,
     concept: 'image-line-segment',
     difficulty: 'basic',
-    prompt: [
-      'ما هي صورة مستقيم $(d)$ وفق انسحاب في الحالة العامة التي لا يوازي فيها المستقيم اتجاه الحركة؟',
-    ],
+    prompt: ['أيُّ العبارات الآتية صحيحة دائماً في شأن صورة المستقيم $(d)$ وفق انسحاب؟'],
     choices: [
-      { id: 'opt-a', text: 'مستقيم يوازي المستقيم $(d)$' },
-      { id: 'opt-b', text: 'مستقيم يعامد المستقيم $(d)$' },
-      { id: 'opt-c', text: 'نصف مستقيم يبدأ من نقطة الانسحاب' },
-      { id: 'opt-d', text: 'قطعة مستقيمة طولها يساوي مسافة الانسحاب' },
+      { id: 'opt-a', text: "المستقيم $(d')$ يوازي $(d)$ أو ينطبق عليه." },
+      { id: 'opt-b', text: "المستقيم $(d')$ يعامد $(d)$." },
+      { id: 'opt-c', text: 'نصف مستقيم مبدؤه صورة إحدى نقاط $(d)$.' },
+      { id: 'opt-d', text: 'قطعة مستقيمة طولها يساوي طول متجهة الانسحاب.' },
     ],
     answer: 'opt-a',
-    sourceRefs: [P11, P12, P13],
+    sourceRefs: [P11, P12],
   }),
 
   /* ------------------------------------------------------------------ 02 */
-  trueFalse({
+  trueFalseJustify({
     id: 'geo-l03-t01-q02',
     lessonId: LESSON_ID,
     concept: 'image-line-segment',
     difficulty: 'basic',
     prompt: [
-      "صورة قطعة مستقيمة $[MN]$ وفق انسحاب هي قطعة مستقيمة $[M'N']$ توازيها وتساويها في الطول تماماً.",
+      "صورة القطعة المستقيمة $[MN]$ وفق انسحاب هي قطعة مستقيمة $[M'N']$ توازي $[MN]$، وطولها يساوي طول $[MN]$.",
     ],
     answer: true,
+    justification: choicePart({
+      id: 'reason',
+      prompt: ['اختر التعليل الصحيح للحكم:'],
+      choices: [
+        {
+          id: 'preserve',
+          text: 'الانسحاب يحفظ الأطوال، وصورة المستقيم أو القطعة توازي أصلها.',
+        },
+        { id: 'double', text: 'لأن الانسحاب يضاعف طول كل قطعة كلما كبرت مسافته.' },
+        { id: 'fixed', text: 'لأن النقطتين $M$ و$N$ تبقىان في مكانهما بعد الانسحاب.' },
+      ],
+      answer: 'preserve',
+    }),
     sourceRefs: [P13],
   }),
 
@@ -91,13 +111,13 @@ export const questions: TestQuestionInput[] = [
     concept: 'image-circle-polygon',
     difficulty: 'basic',
     prompt: [
-      "دائرة $\\mathcal{C}$ مركزها $O$ ونصف قطرها $R$. صورتها وفق انسحاب ينقل $A$ إلى $B$ هي دائرة $\\mathcal{C}'$. ما مركز ونصف قطر الدائرة $\\mathcal{C}'$؟",
+      "دائرة $\\mathcal{C}$ مركزها $O$ ونصف قطرها $R$. صورتها وفق انسحاب هي الدائرة $\\mathcal{C}'$. ما مركز الدائرة $\\mathcal{C}'$ ونصف قطرها؟",
     ],
     choices: [
-      { id: 'opt-a', text: "مركزها $O'$ صورة $O$ وفق الانسحاب، ونصف قطرها يساوي $R$" },
-      { id: 'opt-b', text: 'مركزها $B$، ونصف قطرها يساوي $R + AB$' },
-      { id: 'opt-c', text: 'مركزها $O$، ونصف قطرها يتضاعف' },
-      { id: 'opt-d', text: "مركزها $O'$، ونصف قطرها يساوي مسافة الانسحاب $AB$" },
+      { id: 'opt-a', text: "مركزها $O'$ صورة $O$، ونصف قطرها $R$." },
+      { id: 'opt-b', text: 'مركزها $O$ نفسه، ونصف قطرها $R$.' },
+      { id: 'opt-c', text: "مركزها $O'$، ونصف قطرها $R+OO'$." },
+      { id: 'opt-d', text: 'مركزها نقطة من محيط $\\mathcal{C}$، ونصف قطرها $R$.' },
     ],
     answer: 'opt-a',
     sourceRefs: [P14],
@@ -107,10 +127,10 @@ export const questions: TestQuestionInput[] = [
   numeric({
     id: 'geo-l03-t01-q04',
     lessonId: LESSON_ID,
-    concept: 'construction-applications',
+    concept: 'image-circle-polygon',
     difficulty: 'basic',
     prompt: [
-      "مستطيل $ABCD$ مساحته $35\\ \\mathrm{cm}^2$. صورته وفق انسحاب هي المستطيل $A'B'C'D'$. ما مساحة المستطيل $A'B'C'D'$ بالسنتيمتر المربع؟",
+      'مستطيل مساحته $35\\ \\mathrm{cm}^2$. صُوِّر وفق انسحاب فنتج مستطيل جديد. ما مساحة المستطيل الناتج بالسنتيمتر المربع؟',
     ],
     answer: 35,
     tolerance: 0,
@@ -124,12 +144,12 @@ export const questions: TestQuestionInput[] = [
     lessonId: LESSON_ID,
     concept: 'image-parallel-perp',
     difficulty: 'basic',
-    prompt: ['وفق انسحاب، صورة مستقيمين متعامدين هما:'],
+    prompt: ['صورة مستقيمين متعامدين وفق انسحاب هما:'],
     choices: [
-      { id: 'opt-a', text: 'مستقيمان متعامدان' },
-      { id: 'opt-b', text: 'مستقيمان متوازيان' },
-      { id: 'opt-c', text: 'مستقيمان يتقاطعان بزاوية $45^\\circ$' },
-      { id: 'opt-d', text: 'مستقيم واحد منطبق' },
+      { id: 'opt-a', text: 'مستقيمان متعامدان.' },
+      { id: 'opt-b', text: 'مستقيمان متوازيان.' },
+      { id: 'opt-c', text: 'مستقيمان متقاطعان بزاوية $45^\\circ$.' },
+      { id: 'opt-d', text: 'مستقيم واحد منطبق على الآخر.' },
     ],
     answer: 'opt-a',
     sourceRefs: [P13],
@@ -141,27 +161,43 @@ export const questions: TestQuestionInput[] = [
     lessonId: LESSON_ID,
     concept: 'image-line-segment',
     difficulty: 'medium',
-    prompt: ['متى تكون صورة مستقيم $(d)$ وفق انسحاب هي المستقيم $(d)$ نفسه (أي ينطبق على نفسه)؟'],
+    prompt: ['متى تنطبق صورة المستقيم $(d)$ وفق انسحاب على المستقيم $(d)$ نفسه؟'],
     choices: [
-      { id: 'opt-a', text: 'عندما يكون اتجاه الانسحاب موازياً للمستقيم $(d)$' },
-      { id: 'opt-b', text: 'عندما يكون اتجاه الانسحاب عمودياً على المستقيم $(d)$' },
-      { id: 'opt-c', text: 'عندما تكون مسافة الانسحاب أكبر من $10\\ \\mathrm{cm}$' },
-      { id: 'opt-d', text: 'لا يمكن لصورة مستقيم أن تنطبق عليه إطلاقاً' },
+      { id: 'opt-a', text: 'عندما يكون اتجاه الانسحاب موازياً للمستقيم $(d)$.' },
+      { id: 'opt-b', text: 'عندما يكون اتجاه الانسحاب عمودياً على المستقيم $(d)$.' },
+      {
+        id: 'opt-c',
+        text: 'عندما تكون مسافة الانسحاب أكبر من طول أي قطعة مرسومة على $(d)$.',
+      },
+      { id: 'opt-d', text: 'لا يمكن أن تنطبق صورة مستقيم على المستقيم نفسه أبداً.' },
     ],
     answer: 'opt-a',
     sourceRefs: [P12, P13],
   }),
 
   /* ------------------------------------------------------------------ 07 */
-  trueFalse({
+  trueFalseJustify({
     id: 'geo-l03-t01-q07',
     lessonId: LESSON_ID,
     concept: 'image-parallel-perp',
     difficulty: 'medium',
     prompt: [
-      "إذا كان $(d_1) \\parallel (d_2)$، وكانت $(d_1')$ و $(d_2')$ صورتيهما وفق انسحاب، فإن $(d_1') \\parallel (d_2')$.",
+      "إذا كان $(d_1)\\perp(d_2)$، وكانت $(d_1')$ و$(d_2')$ صورتيهما وفق الانسحاب نفسه، فإن $(d_1')\\parallel(d_2')$.",
     ],
-    answer: true,
+    answer: false,
+    correction: choicePart({
+      id: 'correction',
+      prompt: ['اختر التصحيح الصحيح للعبارة:'],
+      choices: [
+        {
+          id: 'perp',
+          text: 'الصورتان متعامدتان، لأن الانسحاب يحفظ قياس الزوايا ومنها القائمة.',
+        },
+        { id: 'acute', text: 'الصورتان متقاطعتان بزاوية $45^\\circ$.' },
+        { id: 'coincide', text: 'الصورتان تنطبقان على المستقيمين الأصليين.' },
+      ],
+      answer: 'perp',
+    }),
     sourceRefs: [P13],
   }),
 
@@ -175,10 +211,13 @@ export const questions: TestQuestionInput[] = [
       "مثلث $ABC$ متساوي الأضلاع طول ضلعه $5\\ \\mathrm{cm}$. صُوِّر وفق انسحاب فكانت صورته المثلث $A'B'C'$. أيُّ العبارات الآتية صحيحة؟ (اختر كل الإجابات الصحيحة)",
     ],
     choices: [
-      { id: 'c1', text: "المثلث $A'B'C'$ متساوي الأضلاع أيضاً وطول ضلعه $5\\ \\mathrm{cm}$" },
-      { id: 'c2', text: "قياس كل زاوية من زوايا $A'B'C'$ يساوي $60^\\circ$" },
-      { id: 'c3', text: "كل ضلع من أضلاع $A'B'C'$ يوازي نظيره في $ABC$" },
-      { id: 'c4', text: "مساحة $A'B'C'$ ضعف مساحة $ABC$" },
+      {
+        id: 'c1',
+        text: "المثلث $A'B'C'$ متساوي الأضلاع، وطول كل ضلع فيه $5\\ \\mathrm{cm}$.",
+      },
+      { id: 'c2', text: "قياس كل زاوية من زوايا $A'B'C'$ يساوي $60^\\circ$." },
+      { id: 'c3', text: "كل ضلع من أضلاع $A'B'C'$ يوازي نظيره في $ABC$." },
+      { id: 'c4', text: "مساحة $A'B'C'$ ضعف مساحة $ABC$." },
     ],
     answers: ['c1', 'c2', 'c3'],
     sourceRefs: [P14, P16],
@@ -191,7 +230,7 @@ export const questions: TestQuestionInput[] = [
     concept: 'construction-applications',
     difficulty: 'medium',
     prompt: [
-      'دائرة مركزها النقطة $(2, 3)$ ونصف قطرها $4\\ \\mathrm{cm}$. نُقلت بانسحاب مقداره $6\\ \\mathrm{cm}$. ما محيط الدائرة الناتجة بدلالة $\\pi$ (اكتب معامل $\\pi$)؟',
+      'دائرة نصف قطرها $4\\ \\mathrm{cm}$. ما محيط صورتها وفق انسحاب، بدلالة $\\pi$؟ (اكتب معامل $\\pi$ فقط)',
     ],
     answer: 8,
     tolerance: 0,
@@ -211,9 +250,9 @@ export const questions: TestQuestionInput[] = [
       { id: 'l-cir', text: 'دائرة مركزها $O$ ونصف قطرها $r$' },
     ],
     right: [
-      { id: 'r-ray', text: "نصف مستقيم $[M'x')$ يوازيه وله الاتجاه نفسه" },
-      { id: 'r-seg', text: "قطعة مستقيمة $[M'N']$ توازيها ولها الطول نفسه" },
-      { id: 'r-cir', text: "دائرة مركزها $O'$ ونصف قطرها $r$" },
+      { id: 'r-ray', text: 'نصف مستقيم يوازي $[Mx)$ وله الاتجاه نفسه.' },
+      { id: 'r-seg', text: 'قطعة مستقيمة توازي $[MN]$ وطولها $MN$.' },
+      { id: 'r-cir', text: "دائرة مركزها $O'$ صورة $O$، ونصف قطرها $r$." },
     ],
     pairs: { 'l-ray': 'r-ray', 'l-seg': 'r-seg', 'l-cir': 'r-cir' },
     sourceRefs: [P13, P14],
@@ -225,22 +264,22 @@ export const questions: TestQuestionInput[] = [
     lessonId: LESSON_ID,
     concept: 'image-parallel-perp',
     difficulty: 'medium',
-    prompt: ['صنّف العلاقات بين المستقيمات الأصلية وصورها:'],
+    prompt: ['صنّف كل عبارة بحسب علاقة الصورة بالأصل:'],
     categories: [
-      { id: 'cat-always-parallel', text: 'تكون الصورة موازية للأصل دائماً' },
-      { id: 'cat-not-parallel', text: 'ليست موازية للأصل بالضرورة' },
+      { id: 'cat-parallel', text: 'الصورة توازي الأصل دائماً.' },
+      { id: 'cat-not-parallel', text: 'الصورة لا توازي الأصل بالضرورة.' },
     ],
     items: [
-      { id: 'i1', text: 'صورة مستقيم $(d)$ وفق أي انسحاب' },
-      { id: 'i2', text: 'صورة قطعة مستقيمة $[AB]$ وفق أي انسحاب' },
+      { id: 'i1', text: 'صورة مستقيم وفق أي انسحاب' },
+      { id: 'i2', text: 'صورة قطعة مستقيمة وفق أي انسحاب' },
       { id: 'i3', text: 'صورة مستقيم وفق دوران بزاوية $90^\\circ$' },
-      { id: 'i4', text: 'صورة نصف مستقيم $[Ox)$ وفق أي انسحاب' },
+      { id: 'i4', text: 'صورة نصف مستقيم وفق أي انسحاب' },
     ],
     assignment: {
-      i1: 'cat-always-parallel',
-      i2: 'cat-always-parallel',
+      i1: 'cat-parallel',
+      i2: 'cat-parallel',
       i3: 'cat-not-parallel',
-      i4: 'cat-always-parallel',
+      i4: 'cat-parallel',
     },
     sourceRefs: [P12, P13, P14],
   }),
@@ -251,11 +290,20 @@ export const questions: TestQuestionInput[] = [
     lessonId: LESSON_ID,
     concept: 'construction-applications',
     difficulty: 'medium',
-    prompt: ['رتّب خطوات إنشاء صورة مستقيم $(d)$ وفق انسحاب معلوم باستخدام الفرجار والمسطرة:'],
+    prompt: ['رتّب خطوات إنشاء صورة المستقيم $(d)$ وفق انسحاب معلوم باستخدام الفرجار والمسطرة:'],
     items: [
-      { id: 's1', text: 'نختار نقطتين متمايزتين $M$ و $N$ تنتميان إلى المستقيم $(d)$' },
-      { id: 's2', text: "ننشئ بالفرجار النقطتين $M'$ و $N'$ صورتي $M$ و $N$ وفق الانسحاب" },
-      { id: 's3', text: "نرسم المستقيم المار بالنقطتين $M'$ و $N'$ فيكون هو صورة المستقيم $(d)$" },
+      {
+        id: 's1',
+        text: 'نختار نقطتين متمايزتين $M$ و$N$ تنتميان إلى المستقيم $(d)$.',
+      },
+      {
+        id: 's2',
+        text: "ننشئ بالفرجار النقطتين $M'$ و$N'$ صورتي $M$ و$N$ وفق الانسحاب.",
+      },
+      {
+        id: 's3',
+        text: "نرسم المستقيم المار بالنقطتين $M'$ و$N'$، فيكون هو صورة المستقيم $(d)$.",
+      },
     ],
     answerOrder: ['s1', 's2', 's3'],
     sourceRefs: [P14],
@@ -268,13 +316,13 @@ export const questions: TestQuestionInput[] = [
     concept: 'image-circle-polygon',
     difficulty: 'medium',
     prompt: [
-      "مثلث $ABC$ قائم الزاوية في $A$. صورته وفق انسحاب هي المثلث $A'B'C'$. ما طبيعة الشكل الرباعي $ABB'A'$؟",
+      "نقطة $A$ وصورتها $A'$، ونقطة $B$ وصورتها $B'$، وفق الانسحاب نفسه، واتجاه الانسحاب غير موازٍ للمستقيم $(AB)$. ما طبيعة الشكل الرباعي $ABB'A'$؟",
     ],
     choices: [
-      { id: 'opt-a', text: 'متوازي أضلاع' },
-      { id: 'opt-b', text: 'مثلث متساوي الساقين' },
-      { id: 'opt-c', text: 'مستطيل دائماً' },
-      { id: 'opt-d', text: 'شبه منحرف متساوي الساقين' },
+      { id: 'opt-a', text: 'متوازي أضلاع.' },
+      { id: 'opt-b', text: 'مستطيل دائماً.' },
+      { id: 'opt-c', text: 'معيّن دائماً.' },
+      { id: 'opt-d', text: 'شبه منحرف لا غير.' },
     ],
     answer: 'opt-a',
     sourceRefs: [P13, P16],
@@ -284,15 +332,15 @@ export const questions: TestQuestionInput[] = [
   exact({
     id: 'geo-l03-t01-q14',
     lessonId: LESSON_ID,
-    concept: 'image-circle-polygon',
+    concept: 'construction-applications',
     difficulty: 'advanced',
     prompt: [
-      "مربع مساحته $16\\ \\mathrm{cm}^2$. صورته وفق انسحاب هي المربع $S'$. ما النسبة بين محيط المربع $S'$ ومحيط المربع الأصلي؟",
+      "القطعة $[MN]$ طولها $3.4\\ \\mathrm{cm}$، ونُقلت بانسحاب طول متجهته $2\\ \\mathrm{cm}$ في اتجاه غير موازٍ للمستقيم $(MN)$. ما محيط الشكل الرباعي $MNN'M'$ بالسنتيمتر؟ (اكتب كسراً أو عدداً عشرياً)",
     ],
-    numerator: 1,
-    denominator: 1,
+    numerator: 54,
+    denominator: 5,
     acceptEquivalentForms: true,
-    sourceRefs: [P14, P16],
+    sourceRefs: [P12, P16],
   }),
 
   /* ------------------------------------------------------------------ 15 */
@@ -302,13 +350,16 @@ export const questions: TestQuestionInput[] = [
     concept: 'image-parallel-perp',
     difficulty: 'advanced',
     prompt: [
-      "مستقيمان متقاطعان $(d_1)$ و $(d_2)$ في النقطة $I$. صُوِّرا بالانسحاب نفسه فنتج المستقيمان $(d_1')$ و $(d_2')$. في أي نقطة يتقاطع $(d_1')$ و $(d_2')$؟",
+      "مستقيمان $(d_1)$ و$(d_2)$ متقاطعان في النقطة $I$. صُوِّرا بالانسحاب نفسه فنتج المستقيمان $(d_1')$ و$(d_2')$. في أي نقطة يتقاطع المستقيمان $(d_1')$ و$(d_2')$؟",
     ],
     choices: [
-      { id: 'opt-a', text: "في النقطة $I'$ صورة النقطة $I$ وفق هذا الانسحاب" },
-      { id: 'opt-b', text: 'في النقطة $I$ نفسها لأن نقطة التقاطع لا تتغير' },
-      { id: 'opt-c', text: 'المستقيمان لا يتقاطعان بل يصبحان متوازيين' },
-      { id: 'opt-d', text: 'في نقطة منتصف مسافة الانسحاب' },
+      { id: 'opt-a', text: "في النقطة $I'$ صورة النقطة $I$ وفق هذا الانسحاب." },
+      {
+        id: 'opt-b',
+        text: 'في النقطة $I$ نفسها، لأن نقطة تقاطع المستقيمين لا تتغير بالانسحاب.',
+      },
+      { id: 'opt-c', text: 'لا يتقاطعان، بل يصيران متوازيين.' },
+      { id: 'opt-d', text: "في منتصف القطعة $[II']$." },
     ],
     answer: 'opt-a',
     sourceRefs: [P13, P15],
@@ -321,7 +372,7 @@ export const questions: TestQuestionInput[] = [
     concept: 'construction-applications',
     difficulty: 'advanced',
     prompt: [
-      'طُلب إنشاء صورة دائرة بالانسحاب، فقام تلميذ بتعيين صورة نقطة واحدة $K$ من محيط الدائرة ورسم دائرة مركزها $K$. أين وجه الخطأ؟',
+      'طُلب إنشاء صورة الدائرة $\\mathcal{C}$ مركزها $O$ ونصف قطرها $r$ وفق انسحاب، فعيّن أحد التلاميذ النقطة $K$ على محيطها واتخذها مركزاً للصورة. الحل المعروض أدناه يحتوي على خطأ. حدّد موضع الخطأ، ثم اختر التصحيح والتعليل.',
       figureBlock(
         testFigure({
           id: 'test-l03-q16-circle-center-and-rim',
@@ -340,21 +391,49 @@ export const questions: TestQuestionInput[] = [
       ),
     ],
     steps: [
-      { id: 'st1', text: "صورة دائرة تتحدد بنقل مركز الدائرة $O$ إلى $O'$ أولاً." },
-      {
-        id: 'st2',
-        text: 'نقل نقطة من المحيط وجعلها مركزاً يغيّر موضع مركز الدائرة كلياً ويُنتج دائرة خاطئة.',
-      },
+      { id: 's1', text: 'نُعيِّن النقطة $K$ على محيط الدائرة $\\mathcal{C}$.' },
+      { id: 's2', text: 'نرسم دائرة مركزها $K$ ونصف قطرها $r$.' },
+      { id: 's3', text: 'نعدّ الدائرة الناتجة صورة الدائرة $\\mathcal{C}$ وفق الانسحاب.' },
     ],
     choices: [
       {
-        id: 'c-err',
-        text: "الخطأ هو اعتبار نقطة المحيط مركزاً، فالقاعدة تقتضي نقل المركز الأصلي $O$ لتحديد المركز الجديد $O'$",
+        id: 'ch-centre',
+        text: "الخطوة 2: اتُّخذت النقطة $K$، وهي نقطة من المحيط، مركزاً للصورة بدل $O'$ صورة المركز $O$.",
       },
-      { id: 'c-ok', text: 'طريقة التلميذ صحيحة ومقبولة هندسياً' },
+      { id: 'ch-radius', text: 'الخطوة 2: نُقل نصف القطر خطأً، وكان يجب تغييره.' },
+      {
+        id: 'ch-none',
+        text: 'لا يوجد خطأ؛ صورة الدائرة دائرة مركزها أي نقطة من محيط الدائرة الأصلية.',
+      },
     ],
-    answer: 'c-err',
-    sourceRefs: [P14],
+    answer: 'ch-centre',
+    correction: choicePart({
+      id: 'correction',
+      prompt: ['اختر التصحيح الكامل للحل:'],
+      choices: [
+        {
+          id: 'centre-o-image',
+          text: "نعيّن $O'$ صورة $O$، ثم نرسم دائرة مركزها $O'$ ونصف قطرها $r$.",
+        },
+        { id: 'centre-k', text: 'نبقي المركز $K$ على المحيط ونصحّح نصف القطر فقط.' },
+        { id: 'centre-o', text: 'نرسم دائرة مركزها $O$ نفسه ونصف قطرها $r$.' },
+      ],
+      answer: 'centre-o-image',
+    }),
+    justification: choicePart({
+      id: 'reason',
+      prompt: ['اختر التعليل الصحيح:'],
+      choices: [
+        {
+          id: 'image-of-centre',
+          text: "صورة الدائرة هي مجموعة صور نقاطها، وصورة مركزها $O$ هي $O'$، والانسحاب يحفظ نصف القطر.",
+        },
+        { id: 'rim-centre', text: 'كل نقطة من المحيط تصبح مركزاً لدائرة جديدة مساوية.' },
+        { id: 'radius-doubles', text: 'الانسحاب يضاعف نصف القطر، فيتغيّر المركز تبعاً لذلك.' },
+      ],
+      answer: 'image-of-centre',
+    }),
+    sourceRefs: [P14, P15],
   }),
 
   /* ------------------------------------------------------------------ 17 */
@@ -364,13 +443,13 @@ export const questions: TestQuestionInput[] = [
     concept: 'image-circle-polygon',
     difficulty: 'advanced',
     prompt: [
-      'دائرتان متماستان في النقطة $T$. صُوِّر الشكل كاملاً وفق انسحاب فنتجت دائرتان جديدتان. ما العلاقة بين الدائرتين الجديدتين؟',
+      "دائرتان $\\mathcal{C}_1$ و$\\mathcal{C}_2$ متماستان في النقطة $T$. صُوِّرتا بالانسحاب نفسه فنتجت الدائرتان $\\mathcal{C}_1'$ و$\\mathcal{C}_2'$. ما وضع الدائرتين الجديدتين؟",
     ],
     choices: [
-      { id: 'opt-a', text: "دائرتان متماستان في النقطة $T'$ صورة النقطة $T$" },
-      { id: 'opt-b', text: 'دائرتان متقاطعتان في نقطتين' },
-      { id: 'opt-c', text: 'دائرتان متباعدتان لا تشتركان بأي نقطة' },
-      { id: 'opt-d', text: 'دائرتان متحدتان في المركز' },
+      { id: 'opt-a', text: "متماستان في النقطة $T'$ صورة $T$." },
+      { id: 'opt-b', text: 'متقاطعتان في نقطتين.' },
+      { id: 'opt-c', text: 'متباعدتان لا تشتركان في أي نقطة.' },
+      { id: 'opt-d', text: 'متحدتان في المركز نفسه.' },
     ],
     answer: 'opt-a',
     sourceRefs: [P14, P15],
@@ -383,13 +462,13 @@ export const questions: TestQuestionInput[] = [
     concept: 'image-line-segment',
     difficulty: 'advanced',
     prompt: [
-      "المستقيم $(d')$ هو صورة المستقيم $(d)$ وفق انسحاب ينقل $A$ إلى $B$. أيُّ الخصائص الآتية محققة دائماً؟ (اختر كل الإجابات الصحيحة)",
+      "المستقيم $(d')$ هو صورة المستقيم $(d)$ وفق انسحاب. أيُّ الخصائص الآتية محققة دائماً؟ (اختر كل الإجابات الصحيحة)",
     ],
     choices: [
-      { id: 'c1', text: "$(d') \\parallel (d)$ أو ينطبقان" },
-      { id: 'c2', text: "إذا كانت $M \\in (d)$ فإن صورتها $M' \\in (d')$" },
-      { id: 'c3', text: "المسافة العمودية بين $(d)$ و $(d')$ ثابتة على طول المستقيمين" },
-      { id: 'c4', text: "$(d') \\perp (d)$ دائماً" },
+      { id: 'c1', text: "$(d')\\parallel(d)$ أو $(d')=(d)$." },
+      { id: 'c2', text: "إذا كانت $M\\in(d)$ فإن صورتها $M'$ تنتمي إلى $(d')$." },
+      { id: 'c3', text: "البعد العمودي بين $(d)$ و$(d')$ ثابت على طول المستقيمين." },
+      { id: 'c4', text: "$(d')\\perp(d)$ دائماً." },
     ],
     answers: ['c1', 'c2', 'c3'],
     sourceRefs: [P12, P13],
@@ -402,39 +481,89 @@ export const questions: TestQuestionInput[] = [
     concept: 'construction-applications',
     difficulty: 'thinking',
     prompt: [
-      "زعم أحد التلاميذ: «إذا كان لدينا مستقيمان متوازيان $(d)$ و $(d')$، فإنه يوجد انسحاب واحد فقط ينقل $(d)$ إلى $(d')$». ما الخطأ في هذا الزعم؟",
+      "زعم تلميذ: «إذا كان $(d)$ و$(d')$ مستقيمين متوازيين ومتمايزين، فلا يوجد إلا انسحاب واحد ينقل $(d)$ إلى $(d')$». حلّل الزعم، ثم اختر التصحيح والتعليل.",
     ],
     steps: [
       {
         id: 's1',
-        text: "اختيار أي نقطة $A$ من $(d)$ ونقطة $B$ من $(d')$ يعيّن انسحاباً ينقل $(d)$ إلى $(d')$.",
+        text: 'المسافة بين المستقيمين المتوازيين ثابتة، وهي وحدها ما يحدد الانسحاب.',
       },
       {
         id: 's2',
-        text: "بما أنه توجد نقاط غير منتهية على $(d')$، فإنه توجد انسحابات لا نهائية تنقل $(d)$ إلى $(d')$.",
+        text: 'إذن متجهة الانسحاب محددة تحديداً تاماً بالاتجاه العمودي على المستقيمين.',
       },
+      { id: 's3', text: "إذن يوجد انسحاب واحد فقط ينقل $(d)$ إلى $(d')$." },
     ],
     choices: [
       {
-        id: 'ch-err',
-        text: 'الزعم خاطئ؛ إذ توجد انسحابات غير منتهية تنقل مستقيماً إلى موازٍ له باختلاف النقطة المختارة كهدف على المستقيم الموازي.',
+        id: 'ch-many',
+        text: "الخطوة 3: الزعم خاطئ؛ لكل نقطة $B$ على $(d')$ انسحاب ينقل نقطة $A$ من $(d)$ إليها، فتوجد انسحابات غير منتهية.",
       },
-      { id: 'ch-ok', text: 'الزعم صحيح، لا يوجد سوى انسحاب وحيد عمودي.' },
+      { id: 'ch-none', text: 'لا يوجد خطأ؛ الزعم صحيح تماماً.' },
+      {
+        id: 'ch-direction',
+        text: 'الخطوة 1: الانسحاب المطلوب هو الموازي للمستقيمين، والعمودي غير ممكن.',
+      },
     ],
-    answer: 'ch-err',
-    sourceRefs: [P12, P15],
+    answer: 'ch-many',
+    correction: choicePart({
+      id: 'correction',
+      prompt: ['اختر التصحيح الصحيح للزعم:'],
+      choices: [
+        {
+          id: 'any-pair',
+          text: "يوجد انسحاب لكل زوج من النقطتين $A\\in(d)$ و$B\\in(d')$، ومنها انسحابات مائلة غير عمودية.",
+        },
+        { id: 'perpendicular-only', text: 'الانسحاب الوحيد هو العمودي على المستقيمين.' },
+        { id: 'none', text: "لا يوجد أي انسحاب ينقل $(d)$ إلى $(d')$." },
+      ],
+      answer: 'any-pair',
+    }),
+    justification: choicePart({
+      id: 'reason',
+      prompt: ['اختر التعليل الصحيح:'],
+      choices: [
+        {
+          id: 'same-set',
+          text: "صورة $(d)$ هي المستقيم المار بـ$B$ والموازي لـ$(d)$، وهو $(d')$ نفسه أياً كان موضع $B$ عليها؛ فيتعدد الانسحاب.",
+        },
+        { id: 'distance-fixes', text: 'لأن المسافة بين المستقيمين تحدد الانسحاب تحديداً تاماً.' },
+        {
+          id: 'right-angle',
+          text: 'لأن الزاوية بين الانسحاب والمستقيم يجب أن تكون قائمة، وهذا يعطي حلاً واحداً.',
+        },
+      ],
+      answer: 'same-set',
+    }),
+    sourceRefs: [P11, P12],
   }),
 
   /* ------------------------------------------------------------------ 20 */
-  trueFalse({
+  trueFalseJustify({
     id: 'geo-l03-t01-q20',
     lessonId: LESSON_ID,
     concept: 'image-circle-polygon',
     difficulty: 'thinking',
     prompt: [
-      'إذا كان لدينا مستطيل $ABCD$، وأجرينا انسحاباً ينقل $A$ إلى $C$، فإن صورة المستطيل تطابقه تماماً ومساحته مساوية لمساحة المستطيل الأصلي، وجميع أضلاعه الجديدة توازي أضلاعه الأصلية.',
+      "مستطيل $ABCD$، والانسحاب ينقل $A$ إلى $C$، فتصبح صورة المستطيل هي $A'B'C'D'$. صورة المستطيل مستطيل يطابق $ABCD$، ومساحته تساوي مساحته، وكل ضلع فيه يوازي ضلعاً في $ABCD$.",
     ],
     answer: true,
+    justification: choicePart({
+      id: 'reason',
+      prompt: ['اختر التعليل الصحيح للحكم:'],
+      choices: [
+        {
+          id: 'preserve',
+          text: 'الانسحاب يحفظ الأطوال والزوايا والاتجاهات، فالصورة مستطيل مطابق وأضلاعه موازية لأضلاع الأصل.',
+        },
+        {
+          id: 'same-vertices',
+          text: 'لأن الصورة تشترك مع المستطيل الأصلي في الرؤوس نفسها فتطابقه.',
+        },
+        { id: 'equal-area', text: 'لأن تساوي المساحتين وحده يكفي ليطابق الشكلان.' },
+      ],
+      answer: 'preserve',
+    }),
     sourceRefs: [P14, P16],
   }),
 ];
