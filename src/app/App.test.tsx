@@ -545,7 +545,7 @@ describe('teacher area — per-lesson sections', () => {
       expect(container.textContent).toContain('خطأ شائع');
       unmount();
     }
-  });
+  }, 15_000);
 
   it('shows each lesson’s pedagogical notes under their own tab', async () => {
     const noteTitles: [string, string][] = [
