@@ -21,6 +21,7 @@ const LESSON_THEMES: Record<string, string> = {
   'lesson-05-unit-one-exercises': 'emerald',
   'lesson-06-unit-one-exercises-continuation': 'sunset',
   'lesson-07-unit-one-exercises-final': 'plum',
+  'lesson-08-triangle-midpoints': 'midline',
 };
 
 export function lessonTheme(lessonId: string | undefined): string | undefined {

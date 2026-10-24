@@ -2,7 +2,7 @@ import type { TestQuestion } from './schema';
 
 /**
  * ============================================================================
- *  VISUAL QUESTION AUDIT — all 200 authored Test Area questions
+ *  VISUAL QUESTION AUDIT — all 220 authored Test Area questions
  * ============================================================================
  *
  *  A = a real figure is needed to read the stated spatial configuration.
@@ -28,7 +28,7 @@ const bankIds = (prefix: string, count: number): string[] =>
   Array.from({ length: count }, (_, index) => `${prefix}-q${String(index + 1).padStart(2, '0')}`);
 
 export const ALL_AUDITED_QUESTION_IDS = [
-  ...Array.from({ length: 7 }, (_, index) =>
+  ...Array.from({ length: 8 }, (_, index) =>
     bankIds(`geo-l${String(index + 1).padStart(2, '0')}-t01`, 20),
   ).flat(),
   ...bankIds('geo-u01-t01', 60),
@@ -45,6 +45,7 @@ export const FIGURE_REQUIRED_QUESTION_IDS = [
   'geo-l04-t01-q17',
   'geo-l05-t01-q03',
   'geo-l06-t01-q06',
+  'geo-l08-t01-q17',
   'geo-u01-t01-q19',
   'geo-u01-t01-q37',
 ] as const;
@@ -54,6 +55,7 @@ export const FIGURE_BENEFICIAL_QUESTION_IDS = [
   'geo-l01-t01-q10',
   'geo-l01-t01-q15',
   'geo-l06-t01-q12',
+  'geo-l08-t01-q16',
   'geo-u01-t01-q38',
 ] as const;
 
@@ -72,6 +74,8 @@ const textOnlyRationaleByLesson: Record<string, string> = {
     'المسألة قاعدة أو حساب مكتمل؛ رسم النتيجة سيحوّل المظهر إلى دليل أو يكشف الإجابة.',
   'lesson-07-unit-one-exercises-final':
     'النص يكفي للاستدلال؛ إعادة رسم الخاصية أو علامة النتيجة ستتجاوز مهارة البرهان المقصودة.',
+  'lesson-08-triangle-midpoints':
+    'المعطيات (منتصفان وطول) تُكتب نصاً بدقة؛ ورسم القطعة المطلوبة سيكشف التوازي أو النصفية محلّ الاختبار.',
 };
 
 const textOnlyRationaleByQuestion: Record<string, string> = {
@@ -103,6 +107,8 @@ const requiredRationales: Record<(typeof FIGURE_REQUIRED_QUESTION_IDS)[number], 
     'موضع المثلثين المتقابلين عند تقاطع مستقيمين ضروري لقراءة الزاويتين المتقابلتين بالرأس.',
   'geo-l05-t01-q03': 'اتجاه المتجه داخل متوازي الأضلاع يعتمد على ترتيب الرؤوس المكاني.',
   'geo-l06-t01-q06': 'منصف الزاوية والضلع المشترك يحددان بنية البرهان في المثلثين المتجاورين.',
+  'geo-l08-t01-q17':
+    'موضع المنتصفات الخمسة على المثلثين المتشابكين لا يُحفظ ذهنياً؛ يلزم إظهار الشكل دون رسم القطع المطلوب مطابقتها.',
   'geo-u01-t01-q19': 'الإنشاء بالفرجار يعرض نقطتي تقاطع محتملتين؛ لا يُشار بصرياً إلى أي اختيار.',
   'geo-u01-t01-q37':
     'القطر AC يقسم الطائرة الورقية إلى مثلثين؛ العلامات لا تضيف إلا المساواة المذكورة.',
@@ -116,6 +122,8 @@ const beneficialRationales: Record<(typeof FIGURE_BENEFICIAL_QUESTION_IDS)[numbe
   'geo-l01-t01-q15':
     'شبكة مربعات مع سهمَي الانسحاب تدعم تطبيق التحويلين على النقطة المعطاة ذهنياً، دون رسم أي صورة لها تكشف الإحداثيات المطلوبة.',
   'geo-l06-t01-q12': 'مخطط متوازي الأضلاع والقطرين يساعد على تتبع خطوات البرهان دون علامات منتصف.',
+  'geo-l08-t01-q16':
+    'مستطيل ومنتصفات أضلاعه: الرسم يوضح أي ضلع من الرباعي يقابل أي قطر، ولا يضع طول القطر المطلوب حسابه.',
   'geo-u01-t01-q38':
     'مثلث قائم تخطيطي يحمل المساحة والضلع المعطيين فقط ولا يضع قياساً للضلع المطلوب.',
 };
@@ -176,6 +184,7 @@ function lessonIdForQuestionId(id: string): string {
   if (id.startsWith('geo-l05-')) return 'lesson-05-unit-one-exercises';
   if (id.startsWith('geo-l06-')) return 'lesson-06-unit-one-exercises-continuation';
   if (id.startsWith('geo-l07-')) return 'lesson-07-unit-one-exercises-final';
+  if (id.startsWith('geo-l08-')) return 'lesson-08-triangle-midpoints';
 
   const unitQuestionNumber = Number(id.match(/-q(\d+)$/)?.[1]);
   if (unitQuestionNumber <= 10) return 'lesson-01-translation-and-properties';

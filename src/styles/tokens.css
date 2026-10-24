@@ -158,6 +158,26 @@
   --color-reference-bg: #fffaf1;
 }
 
+/*
+ * Lesson 8 — «مثلثات ومنتصفات»: the identity of the first midline theorem.
+ * Slate ink, a mid-blue midline and a teal parallelogram. It differs from the
+ * congruent-triangles mulberry and from Lesson 3's indigo canvas, while keeping
+ * the same layout, spacing and typography.
+ */
+[data-lesson-theme='midline'] {
+  --color-primary: #1e40af;
+  --color-primary-hover: #1e3a8a;
+  --color-primary-soft: #e8edfd;
+  --color-accent: #0f766e;
+  --color-accent-bg: #e6f6f3;
+  --color-teaching-accent: #1e40af;
+  --color-teaching-border: #cfd9f4;
+  --color-teaching-bg: #f6f8ff;
+  --color-reference-accent: #b45309;
+  --color-reference-border: #f0dcc0;
+  --color-reference-bg: #fffbf3;
+}
+
 [data-lesson-theme='indigo'] {
   --color-primary: #4338ca;
   --color-primary-hover: #3730a3;

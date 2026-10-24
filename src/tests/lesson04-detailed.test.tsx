@@ -157,7 +157,7 @@ describe('Lesson 4 — rebuilt test contract («تطابق المثلثات»)',
         .filter((definition) => definition.solutionPolicy === 'detailed')
         .map((definition) => definition.id),
     ).toContain(TEST_ID);
-    expect(catalog.lessonTests).toHaveLength(7);
+    expect(catalog.lessonTests).toHaveLength(8);
     expect(catalog.unitTests).toHaveLength(1);
     expect(catalog.problems).toEqual([]);
 

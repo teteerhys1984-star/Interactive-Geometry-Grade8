@@ -118,14 +118,22 @@ describe('course shell', () => {
   });
 });
 
-describe('implementation boundary — Lessons 1–7 (Lessons 6 and 7 are the independent Q3–15 and Q16–28 continuations)', () => {
-  it('registers exactly one unit', () => {
-    expect(subject.units).toHaveLength(1);
-    expect(subject.units[0]?.id).toBe('unit-01-parallelograms-and-translation');
+describe('implementation boundary — Lessons 1–8 across Units 1–2 (Lessons 6 and 7 are the independent Q3–15 and Q16–28 continuations)', () => {
+  it('registers exactly two units, in curriculum order', () => {
+    expect(subject.units).toHaveLength(2);
+    expect(subject.units.map((unit) => unit.id)).toEqual([
+      'unit-01-parallelograms-and-translation',
+      'unit-02-triangles-midpoints-parallels',
+    ]);
+    // Page 30's «انطلاقة نشطة» opens Unit 2 but is not a lesson: the unit holds
+    // exactly one authored lesson, and the source prints no unit assessment.
+    expect(subject.units[1]?.lessons.map((lesson) => lesson.id)).toEqual([
+      'lesson-08-triangle-midpoints',
+    ]);
   });
 
-  it('registers exactly seven lessons in curriculum order', () => {
-    expect(allLessons).toHaveLength(7);
+  it('registers exactly eight lessons in curriculum order', () => {
+    expect(allLessons).toHaveLength(8);
     expect(allLessons[0]?.lesson.id).toBe('lesson-01-translation-and-properties');
     expect(allLessons[1]?.lesson.id).toBe('lesson-02-image-of-a-point');
     expect(allLessons[2]?.lesson.id).toBe('lesson-03-image-of-a-shape');
@@ -133,6 +141,10 @@ describe('implementation boundary — Lessons 1–7 (Lessons 6 and 7 are the ind
     expect(allLessons[4]?.lesson.id).toBe('lesson-05-unit-one-exercises');
     expect(allLessons[5]?.lesson.id).toBe('lesson-06-unit-one-exercises-continuation');
     expect(allLessons[6]?.lesson.id).toBe('lesson-07-unit-one-exercises-final');
+    expect(allLessons[7]?.lesson.id).toBe('lesson-08-triangle-midpoints');
+    expect(allLessons[7]?.unit.id).toBe('unit-02-triangles-midpoints-parallels');
+    // Unit 2 holds exactly one lesson, so it is first in its unit too.
+    expect(subject.units[1]?.lessons[0]?.id).toBe('lesson-08-triangle-midpoints');
   });
 
   it('draws only on verified lesson pages or the supplied exercise images', () => {
@@ -166,6 +178,11 @@ describe('implementation boundary — Lessons 1–7 (Lessons 6 and 7 are the ind
           '17',
           '18',
           '19',
+          // Unit 2 — Lesson 1: the activity, the theorem, the example, the
+          // «اكتساب معارف», «تحقّق من فهمك» and «تدرّب» (pages 31–33).
+          '31',
+          '32',
+          '33',
           'صورة المصدر 1',
           'صورة المصدر 2',
           'صورة المصدر 3',

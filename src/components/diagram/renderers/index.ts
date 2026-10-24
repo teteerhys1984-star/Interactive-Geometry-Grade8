@@ -24,6 +24,7 @@ import {
   CongruenceProofLab,
   KitePairLab,
 } from './lesson4';
+import { MidlineExplorer, MidlineFigure } from './lesson8';
 
 /**
  * ============================================================================
@@ -79,6 +80,11 @@ registerInteractiveRenderer('case-justify-lab', CaseJustifyLab);
 registerInteractiveRenderer('kite-pair-lab', KitePairLab);
 registerInteractiveRenderer('congruence-proof-lab', CongruenceProofLab);
 
+/* Unit 2 — «منتصفا ضلعين في المثلث»: the reconstructed figures of pages 31–33
+ * and the lab that makes the page-31 observation dynamic. */
+registerConstructedRenderer('midline-figure', MidlineFigure);
+registerInteractiveRenderer('midline-explorer', MidlineExplorer);
+
 export {
   TranslationFigure,
   GridFigure,
@@ -104,6 +110,8 @@ export {
   CaseJustifyLab,
   KitePairLab,
   CongruenceProofLab,
+  MidlineFigure,
+  MidlineExplorer,
 };
 
 registerInteractiveRenderer('lesson-one-lab', LessonOneLab);
