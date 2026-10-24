@@ -19,9 +19,10 @@ import { unit02 } from './unit-02-triangles-midpoints-parallels';
  *    • Unit 1 «تتمة الدرس الخامس (1)» — independent continuation, questions 3–15.
  *    • Unit 1 «تتمة الدرس الخامس (2)» — independent continuation, questions 16–28.
  *    • Unit 2 «مثلثات ومنصفات أضلاع ومستقيمات متوازية» — Lesson 1, pages 31–33.
+ *    • Unit 2 «مثلثات ومنصفات أضلاع ومستقيمات متوازية» — Lesson 2, pages 34–35.
  *
  *  NOT yet authored (deliberately):
- *    • The rest of Unit 2, and Units 3–5             page 34 onwards
+ *    • The rest of Unit 2, and Units 3–5             page 36 onwards
  *
  *  TO ADD THE NEXT LESSON: append it to its unit's `lessons` in curriculum order,
  *  built strictly from the real pages, with a `source` on the lesson and on

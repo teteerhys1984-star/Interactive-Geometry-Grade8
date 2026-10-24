@@ -16,7 +16,7 @@ import {
 } from './visualAudit';
 import type { MultiPartItem, TestQuestion } from './schema';
 
-const EXPECTED_AUDIT_COUNTS = { A: 13, B: 6, C: 201 } as const;
+const EXPECTED_AUDIT_COUNTS = { A: 14, B: 7, C: 219 } as const;
 
 interface AuditedFigure {
   question: TestQuestion;
@@ -175,15 +175,15 @@ function normalizeNotation(text: string): string {
     .toLowerCase();
 }
 
-describe('Visual Question Audit — 220-question inventory', () => {
+describe('Visual Question Audit — 240-question inventory', () => {
   it('classifies every live lesson and unit question exactly once as A, B or C', () => {
     const liveIds = testQuestions.map((question) => question.id).sort();
-    expect(liveIds).toHaveLength(220);
-    expect(new Set(liveIds).size).toBe(220);
+    expect(liveIds).toHaveLength(240);
+    expect(new Set(liveIds).size).toBe(240);
     expect(liveIds).toEqual([...ALL_AUDITED_QUESTION_IDS].sort());
-    expect(visualAuditByQuestion.size).toBe(220);
+    expect(visualAuditByQuestion.size).toBe(240);
     expect(visualAuditCounts(testQuestions)).toEqual(EXPECTED_AUDIT_COUNTS);
-    expect(Object.values(EXPECTED_AUDIT_COUNTS).reduce((sum, value) => sum + value, 0)).toBe(220);
+    expect(Object.values(EXPECTED_AUDIT_COUNTS).reduce((sum, value) => sum + value, 0)).toBe(240);
 
     for (const question of testQuestions) {
       const entry = visualAuditByQuestion.get(question.id);

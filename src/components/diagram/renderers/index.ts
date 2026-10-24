@@ -25,6 +25,7 @@ import {
   KitePairLab,
 } from './lesson4';
 import { MidlineExplorer, MidlineFigure } from './lesson8';
+import { ParallelMidpointLab } from './lesson9';
 
 /**
  * ============================================================================
@@ -85,6 +86,10 @@ registerInteractiveRenderer('congruence-proof-lab', CongruenceProofLab);
 registerConstructedRenderer('midline-figure', MidlineFigure);
 registerInteractiveRenderer('midline-explorer', MidlineExplorer);
 
+/* Unit 2, Lesson 2 — «موازٍ لضلع من منتصف ضلع آخر»: interactive lab for
+ * Salim's freehand parallel activity and the Second Midpoint Theorem (p. 34). */
+registerInteractiveRenderer('parallel-midpoint-lab', ParallelMidpointLab);
+
 export {
   TranslationFigure,
   GridFigure,
@@ -112,6 +117,7 @@ export {
   CongruenceProofLab,
   MidlineFigure,
   MidlineExplorer,
+  ParallelMidpointLab,
 };
 
 registerInteractiveRenderer('lesson-one-lab', LessonOneLab);

@@ -178,6 +178,25 @@
   --color-reference-bg: #fffbf3;
 }
 
+/*
+ * Lesson 9 — «موازٍ لضلع من منتصف ضلع آخر»: deep sea-teal primary paired with
+ * burnt-coral accents, evoking the interplay between the parallel line and the
+ * bisected third side while staying distinct from Lesson 8's royal blue.
+ */
+[data-lesson-theme='parallel'] {
+  --color-primary: #0e5a6f;
+  --color-primary-hover: #094455;
+  --color-primary-soft: #e6f4f7;
+  --color-accent: #c2410c;
+  --color-accent-bg: #fff2eb;
+  --color-teaching-accent: #0e5a6f;
+  --color-teaching-border: #c5e2ea;
+  --color-teaching-bg: #f5fbfd;
+  --color-reference-accent: #b45309;
+  --color-reference-border: #f0dcc0;
+  --color-reference-bg: #fffbf3;
+}
+
 [data-lesson-theme='indigo'] {
   --color-primary: #4338ca;
   --color-primary-hover: #3730a3;

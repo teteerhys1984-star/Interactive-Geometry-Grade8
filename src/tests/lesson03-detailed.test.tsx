@@ -117,7 +117,7 @@ describe('Lesson 3 — rebuilt test contract', () => {
         .map((definition) => definition.id),
     ).toContain(TEST_ID);
     // The rebuild adds no lesson test, no unit test and no new bank.
-    expect(catalog.lessonTests).toHaveLength(8);
+    expect(catalog.lessonTests).toHaveLength(9);
     expect(catalog.unitTests).toHaveLength(1);
     expect(catalog.problems).toEqual([]);
   });
