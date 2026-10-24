@@ -22,8 +22,12 @@ beforeEach(() => lockTeacherArea());
 
 describe('Lesson 7 — independent Q16–Q28 exercise lab', () => {
   it('follows Lesson 6 in the registry without touching Lessons 5 and 6', () => {
-    expect(allLessons.at(-1)?.lesson.id).toBe(lesson.id);
-    expect(allLessons.at(-2)?.lesson.id).toBe(lessonSix.id);
+    // Positional assertions are resolved by id, so appending Lesson 8 to the
+    // course cannot turn this into a tautology or a false failure.
+    const order = allLessons.map((entry) => entry.lesson.id);
+    const index = order.indexOf(lesson.id);
+    expect(order[index - 1]).toBe(lessonSix.id);
+    expect(order[index + 1]).toBe('lesson-08-triangle-midpoints');
     expect(lessonSix.steps).toHaveLength(13);
     expect(lessonSix.teacherResources?.textbookSolutions).toHaveLength(13);
     // Lesson 5 presents its two printed questions as two source steps,

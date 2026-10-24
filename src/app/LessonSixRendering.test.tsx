@@ -22,8 +22,10 @@ beforeEach(() => lockTeacherArea());
 
 describe('Lesson 6 — independent Q3–Q15 exercise lab', () => {
   it('follows Lesson 5 in the registry without changing the Q1–Q2 lesson', () => {
-    expect(allLessons.at(-3)?.lesson.id).toBe(lessonFive.id);
-    expect(allLessons.at(-2)?.lesson.id).toBe(lesson.id);
+    const order = allLessons.map((entry) => entry.lesson.id);
+    const index = order.indexOf(lesson.id);
+    expect(order[index - 1]).toBe(lessonFive.id);
+    expect(order[index + 1]).toBe('lesson-07-unit-one-exercises-final');
     // Lesson 5 presents its two printed questions as two source steps,
     // still carrying all nineteen printed parts and nineteen solutions.
     expect(

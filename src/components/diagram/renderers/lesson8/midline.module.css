@@ -1,0 +1,182 @@
+/*
+ * ============================================================================
+ *  LESSON 8 — «منتصفا ضلعين في المثلث» lab stylesheet
+ * ============================================================================
+ *  A quiet, graph-paper identity: slate ink, a mid-blue midline, and a teal
+ *  parallelogram. All colours are tokens or lab-local variables, so the theme
+ *  and the dark palette still apply.
+ * ============================================================================
+ */
+
+.lab {
+  --l8-paper: #fbfcff;
+  --l8-ink: #22314b;
+  --l8-blue: #1d4ed8;
+  --l8-teal: #0f766e;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  inline-size: 100%;
+  padding: var(--space-4);
+  color: var(--color-text);
+  background:
+    repeating-linear-gradient(0deg, rgba(29, 78, 216, 0.05) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(90deg, rgba(29, 78, 216, 0.05) 0 1px, transparent 1px 22px),
+    linear-gradient(180deg, #fbfcff 0%, #f6f9ff 100%);
+  border: 1px solid var(--color-teaching-border);
+  border-inline-start: 4px solid var(--l8-blue);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--l8-blue);
+  font-size: var(--font-xs);
+  font-weight: 700;
+}
+
+.title {
+  margin: 0.15rem 0 0;
+  color: var(--l8-ink);
+  font-size: var(--font-lg);
+}
+
+.caseBadge {
+  padding: 0.2rem 0.6rem;
+  color: var(--l8-teal);
+  font-size: var(--font-xs);
+  font-weight: 700;
+  background: rgba(15, 118, 110, 0.1);
+  border: 1px solid rgba(15, 118, 110, 0.35);
+  border-radius: 999px;
+}
+
+.intro {
+  margin: 0;
+  line-height: 1.8;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.preset,
+.presetActive {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.7rem;
+  font: inherit;
+  font-size: var(--font-sm);
+  color: var(--l8-ink);
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid rgba(34, 49, 75, 0.25);
+  border-radius: var(--radius-sm);
+}
+
+.presetActive {
+  color: #fff;
+  background: var(--l8-blue);
+  border-color: var(--l8-blue);
+}
+
+.presetLabel {
+  font-weight: 700;
+}
+
+.sliderRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sliderLabel {
+  font-size: var(--font-sm);
+  font-weight: 600;
+}
+
+.slider {
+  flex: 1 1 12rem;
+  min-inline-size: 8rem;
+  accent-color: var(--l8-blue);
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: var(--font-sm);
+  cursor: pointer;
+}
+
+.figure {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.caption {
+  color: var(--color-text-muted);
+  font-size: var(--font-xs);
+  text-align: center;
+}
+
+.readout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.readoutItem {
+  padding: 0.5rem 0.65rem;
+  background: #fff;
+  border: 1px solid rgba(34, 49, 75, 0.18);
+  border-radius: var(--radius-sm);
+}
+
+.readoutItem dt {
+  color: var(--color-text-muted);
+  font-size: var(--font-xs);
+}
+
+.readoutItem dd {
+  margin: 0.15rem 0 0;
+  color: var(--l8-ink);
+  font-size: var(--font-md);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.readoutKey {
+  border-color: rgba(29, 78, 216, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(29, 78, 216, 0.18);
+}
+
+.footnote {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+  line-height: 1.8;
+}
