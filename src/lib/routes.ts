@@ -25,6 +25,10 @@ export const routes = {
   testSolutions: () => '/tests/solutions',
   /** One test's worked solutions, grouped for reading. */
   testSolutionSet: (testId: string) => `/tests/solutions/${testId}`,
+  /** School Worksheets («أوراق عمل مدرسية») catalog. */
+  worksheets: () => '/worksheets',
+  /** One school worksheet view. */
+  worksheet: (worksheetId: string) => `/worksheets/${worksheetId}`,
 } as const;
 
 /** Route path patterns used by the router definition. */
@@ -42,5 +46,7 @@ export const routePatterns = {
   test: '/tests/:testId',
   testSolutions: '/tests/solutions',
   testSolutionSet: '/tests/solutions/:testId',
+  worksheets: '/worksheets',
+  worksheet: '/worksheets/:worksheetId',
   notFound: '*',
 } as const;

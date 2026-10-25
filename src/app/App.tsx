@@ -16,6 +16,8 @@ import {
   TestSolutionsIndexPage,
   TestsPage,
   UnitPage,
+  WorksheetDetailPage,
+  WorksheetsPage,
 } from '@/routes';
 import { ScrollToTop } from './ScrollToTop';
 import { ErrorBoundary } from './ErrorBoundary';
@@ -56,6 +58,8 @@ export function App() {
             <Route path={routePatterns.test} element={<TestRunnerPage />} />
             <Route path={routePatterns.testSolutions} element={<TestSolutionsIndexPage />} />
             <Route path={routePatterns.testSolutionSet} element={<TestSolutionDetailPage />} />
+            <Route path={routePatterns.worksheets} element={<WorksheetsPage />} />
+            <Route path={routePatterns.worksheet} element={<WorksheetDetailPage />} />
             <Route path={routePatterns.notFound} element={<NotFoundPage />} />
           </Routes>
         </ErrorBoundary>
