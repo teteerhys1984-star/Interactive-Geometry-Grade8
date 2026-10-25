@@ -197,6 +197,26 @@
   --color-reference-bg: #fffbf3;
 }
 
+/*
+ * Lesson 10 — «مستقيمات متوازية وقاطعان»: the identity of equal ratios and
+ * proportional triangles (Thales). Deep pine green reads as a measured,
+ * ratio-driven lesson distinct from Lesson 8's royal blue and Lesson 9's sea
+ * teal, with amber accents marking the moving section points.
+ */
+[data-lesson-theme='ratio'] {
+  --color-primary: #166534;
+  --color-primary-hover: #14532d;
+  --color-primary-soft: #e9f7ee;
+  --color-accent: #b45309;
+  --color-accent-bg: #fdf6ec;
+  --color-teaching-accent: #166534;
+  --color-teaching-border: #c4e6d2;
+  --color-teaching-bg: #f4fbf6;
+  --color-reference-accent: #7e22ce;
+  --color-reference-border: #e3d2f5;
+  --color-reference-bg: #faf7ff;
+}
+
 [data-lesson-theme='indigo'] {
   --color-primary: #4338ca;
   --color-primary-hover: #3730a3;
