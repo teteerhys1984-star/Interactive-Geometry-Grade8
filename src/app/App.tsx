@@ -18,6 +18,8 @@ import {
   UnitPage,
   WorksheetDetailPage,
   WorksheetsPage,
+  WorksheetSolutionsIndexPage,
+  WorksheetSolutionDetailPage,
 } from '@/routes';
 import { ScrollToTop } from './ScrollToTop';
 import { ErrorBoundary } from './ErrorBoundary';
@@ -60,6 +62,14 @@ export function App() {
             <Route path={routePatterns.testSolutionSet} element={<TestSolutionDetailPage />} />
             <Route path={routePatterns.worksheets} element={<WorksheetsPage />} />
             <Route path={routePatterns.worksheet} element={<WorksheetDetailPage />} />
+            <Route
+              path={routePatterns.worksheetSolutions}
+              element={<WorksheetSolutionsIndexPage />}
+            />
+            <Route
+              path={routePatterns.worksheetSolutionSet}
+              element={<WorksheetSolutionDetailPage />}
+            />
             <Route path={routePatterns.notFound} element={<NotFoundPage />} />
           </Routes>
         </ErrorBoundary>

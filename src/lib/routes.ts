@@ -27,6 +27,8 @@ export const routes = {
   testSolutionSet: (testId: string) => `/tests/solutions/${testId}`,
   /** School Worksheets («أوراق عمل مدرسية») catalog. */
   worksheets: () => '/worksheets',
+  worksheetSolutions: () => '/worksheets/solutions',
+  worksheetSolutionSet: (worksheetId: string) => `/worksheets/solutions/${worksheetId}`,
   /** One school worksheet view. */
   worksheet: (worksheetId: string) => `/worksheets/${worksheetId}`,
 } as const;
@@ -48,5 +50,7 @@ export const routePatterns = {
   testSolutionSet: '/tests/solutions/:testId',
   worksheets: '/worksheets',
   worksheet: '/worksheets/:worksheetId',
+  worksheetSolutions: '/worksheets/solutions',
+  worksheetSolutionSet: '/worksheets/solutions/:worksheetId',
   notFound: '*',
 } as const;

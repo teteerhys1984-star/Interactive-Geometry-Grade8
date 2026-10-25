@@ -13,6 +13,7 @@ import {
   getSchoolWorksheet,
 } from '@/worksheets/registry';
 import type { WorksheetPage, WorksheetQuestionGroup } from '@/worksheets/schema';
+import { WorksheetSectionNav } from './WorksheetSectionNav';
 import styles from './WorksheetDetailPage.module.css';
 
 type ViewMode = 'all' | 'page-1' | 'page-2' | 'scans';
@@ -100,9 +101,7 @@ export function WorksheetDetailPage() {
                         return (
                           <label
                             key={opt.id}
-                            className={
-                              isChosen ? styles.mcqOptionSelected : styles.mcqOptionLabel
-                            }
+                            className={isChosen ? styles.mcqOptionSelected : styles.mcqOptionLabel}
                           >
                             <input
                               type="radio"
@@ -324,6 +323,7 @@ export function WorksheetDetailPage() {
         { label: worksheet.title },
       ]}
     >
+      <WorksheetSectionNav />
       {/* Printed header reproduction */}
       <header className={styles.printedSheetHeader} aria-label="ترويسة ورقة العمل المطبوعة">
         <div className={styles.institutionCol}>{worksheet.institutionLabel}</div>
@@ -336,8 +336,7 @@ export function WorksheetDetailPage() {
             عدد الصفحات: <strong dir="ltr">{worksheet.pages.length}</strong>
           </span>
           <span className={styles.metaChip}>
-            الأسئلة الرئيسية:{' '}
-            <strong dir="ltr">{countWorksheetQuestionGroups(worksheet)}</strong>
+            الأسئلة الرئيسية: <strong dir="ltr">{countWorksheetQuestionGroups(worksheet)}</strong>
           </span>
           <span className={styles.metaChip}>
             إجمالي البنود: <strong dir="ltr">{countWorksheetItems(worksheet)}</strong>

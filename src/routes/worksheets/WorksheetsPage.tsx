@@ -7,6 +7,7 @@ import {
   countWorksheetQuestionGroups,
   schoolWorksheets,
 } from '@/worksheets/registry';
+import { WorksheetSectionNav } from './WorksheetSectionNav';
 import styles from './WorksheetsPage.module.css';
 
 /**
@@ -31,6 +32,7 @@ export function WorksheetsPage() {
       lead="قسم مخصّص لأوراق العمل المدرسية المرقمنة بأمانة عن النسخ الأصلية، مع الحفاظ على ترتيب الأسئلة والرموز الرياضية والأشكال الهندسية والصفحات المرجعية."
       crumbs={[{ label: 'الرئيسية', to: routes.home() }, { label: 'أوراق عمل مدرسية' }]}
     >
+      <WorksheetSectionNav />
       <div className={styles.statsRow}>
         <div className={styles.statCard}>
           <span className={styles.statValue} dir="ltr">
