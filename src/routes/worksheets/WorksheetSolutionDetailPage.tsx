@@ -36,11 +36,17 @@ function WorkedSolution({
         </Callout>
       ) : (
         <>
+          {entry.sourceNote ? (
+            <Callout variant="warning" title="تنبيه حول المصدر">
+              <RichText text={entry.sourceNote} />
+            </Callout>
+          ) : null}
           <div className={styles.answer}>
-            <strong>الإجابة: </strong>
+            <strong>{entry.sourceNote ? 'قراءة الحل مع مراعاة التنبيه: ' : 'الإجابة: '}</strong>
             {entry.optionId ? (
               <>
-                الخيار <LtrIsolate>{entry.optionId}</LtrIsolate> —{' '}
+                {entry.sourceNote ? 'الخيار المقترح' : 'الخيار'}{' '}
+                <LtrIsolate>{entry.optionId}</LtrIsolate> —{' '}
               </>
             ) : null}
             {entry.verdict ? <strong>{entry.verdict} — </strong> : null}
@@ -54,11 +60,6 @@ function WorkedSolution({
               </li>
             ))}
           </ol>
-          {entry.sourceNote ? (
-            <Callout variant="warning" title="تنبيه حول المصدر">
-              <RichText text={entry.sourceNote} />
-            </Callout>
-          ) : null}
         </>
       )}
     </article>

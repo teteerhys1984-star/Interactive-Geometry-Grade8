@@ -63,7 +63,7 @@ question text, and diagrams are read from the **unchanged student definition**.
 | 2 / `ws01-q4-p3` | `2`           | NAB ≅ MBA, SSS; AN = BM by segment addition                                          |
 | 2 / `ws01-q4-p3` | `3`           | CAB is isosceles at C because AC = BC                                                |
 
-Every entry includes a final answer and explanatory steps, not only the answer
+Every entry includes an answer or explicitly qualified interpretation and explanatory steps, not only the answer
 in this audit table. Geometry proofs use printed markings and incidence, never
 lengths measured from the drawing. Independent coordinate witnesses check the
 existing reconstructed diagrams but do not replace the general written proofs.
@@ -72,16 +72,20 @@ existing reconstructed diagrams but do not replace the general written proofs.
 
 1. **Q1/1:** A (rectangle) is the most specific intended classification, but C
    (parallelogram) is also true as a superclass. The single-choice formulation
-   is not logically exclusive. Teacher confirmation of intended marking is
-   requested; the original options were not edited.
+   is not logically exclusive. Both valid classifications appear in the answer itself; the rectangle is
+   described as the likely intended, most specific classification, not the
+   uniquely correct choice. Accepting only one requires a teacher decision;
+   the original options were not edited.
 2. **Q1/8:** B uses the curriculum's “تسايرها” (same direction). Coincident
    supporting lines are possible; equal length is also preserved. A says
    “تساويها فقط”, which is not the complete property.
 3. **Q1/10:** The printed sentence does not explicitly repeat “وفق انسحاب”.
    B (25 m²) is conditional on translation, consistent with the surrounding
    worksheet. A different unspecified transformation need not preserve area.
-   The assumption is visible in both answer and source note; teacher
-   confirmation is requested. This is not presented as an unconditional answer.
+   The answer begins “إذا كان التحويل انسحاباً” and explicitly says it is
+   conditional, not definitive. Each calculation repeats the assumption;
+   preservation of area is explained only under translation. The notice
+   requests teacher confirmation before adopting the proposed option.
 4. **Q4/problem 3/part 2:** The source names triangles NAB and MAB. These are
    indeed congruent triangles, but an ordered congruence statement must be
    **NAB ≅ MBA** (N ↔ M, A ↔ B, B ↔ A), not NAB ≅ MAB. The solution explicitly
@@ -112,8 +116,8 @@ same listing and detail components.
 ## Verification
 
 - Targeted: `npx vitest run src/worksheets/solutions/solutions.test.tsx src/worksheets/worksheets.test.tsx`
-  — **2 files / 26 tests passed**.
-- Full: `npm run verify` — **67 files / 1021 tests passed**, typecheck, lint and
+  — **2 files / 28 tests passed**.
+- Full: `npm run verify` — **67 files / 1023 tests passed**, typecheck, lint and
   production build passed. Existing >500 kB chunk warning remains.
 - Tests cover complete ordered linkage, future sets, unresolved records,
   malformed records, expected answer selections and verdicts, independent
@@ -125,8 +129,38 @@ same listing and detail components.
   diagrams; opened source scan; returned to student worksheet and selected an
   option via its visible label; back/reload preserved solution routing.
 - Browser metrics: RTL; document width = viewport width (1366 px); 32 solutions;
-  292 rendered math nodes; 3 SVG diagrams; zero KaTeX errors, zero detected
+  KaTeX-rendered maths; 3 SVG diagrams; zero KaTeX errors, zero detected
   overflowing solution blocks, zero page errors; original scan loaded.
 - Browser tooling was installed outside the repository only. Initial Chromium
   launch lacked NSS libraries; extracting the bundled runtime resolved it.
   No browser dependency or binary was added to the project.
+
+## PR #37 pre-merge review follow-up (2026-10-25)
+
+- Before changes: branch `arena/f6a3a424-interactive-geometry-grade8`, clean
+  worktree, HEAD `efd8405ed58b9e759486be4076837c9da42dc1e2`; PR #37 OPEN,
+  `mergedAt: null`. Its then-current verify CI check succeeded; build/deploy
+  jobs were skipped as configured for pull requests.
+- Reused the existing `sourceNote` field and warning Callout. Source warnings
+  now appear **before** the answer, not after the proof. For entries carrying
+  a source note, the heading is “قراءة الحل مع مراعاة التنبيه” and an option
+  is labelled “الخيار المقترح”, not an unconditional single correct answer.
+  This also moves the existing Q1/8 and Q4/problem 3 correspondence notes ahead
+  of their explanations; their mathematical content remains unchanged.
+- Q1/1 explicitly identifies both rectangle (A) and parallelogram (C) as valid
+  and leaves adopting one answer to the teacher. Q1/10 explicitly conditions
+  25 m² on translation and requests teacher confirmation.
+- Two new scoped detail-page tests assert the visible warning content, warning
+  order before the answer, teacher decision/confirmation, qualified headings,
+  both Q1/1 options and the condition within Q1/10's answer itself. Existing
+  assertions and mathematical tests remain intact.
+- Re-ran `npm run verify`: typecheck, lint, 67 files / 1023 tests and production
+  build passed; the existing large-chunk warning remains. Targeted worksheet
+  tests: 2 files / 28 passed. `git diff --check` passed.
+- Re-inspected actual Chromium screenshots of **both changed entries** at
+  1366 × 900, independently of jsdom. Both warnings are readable ahead of the
+  proposed answer. RTL and equations remain readable, document width equals
+  viewport width (1366 px), 32 solution entries remain, and no KaTeX or browser
+  page errors were observed. Browser tools stayed outside the repository.
+- No student worksheet definition, scan, question ID, schema, registry, route,
+  permission model or dependency was changed in this follow-up.

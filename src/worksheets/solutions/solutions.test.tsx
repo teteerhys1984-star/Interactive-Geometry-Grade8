@@ -271,6 +271,53 @@ describe('worksheet solutions — actual navigation and rendering (jsdom, not vi
     expect(screen.getAllByText('تنبيه حول المصدر', { selector: 'p' })).toHaveLength(4);
   });
 
+  it('shows Q1/1 as nonexclusive and awaiting the teacher decision, before any proposed answer', () => {
+    const { container } = renderAt(routes.worksheetSolutionSet(ws.id));
+    const article = container.querySelector('[data-solution-id="ws01-q1-01"]')!;
+    const scope = within(article as HTMLElement);
+    const notice = scope.getByRole('complementary');
+    expect(notice).toBeVisible();
+    expect(notice).toHaveTextContent('الخيارات ليست متنافية');
+    expect(notice).toHaveTextContent('كل مستطيل متوازي أضلاع');
+    expect(notice).toHaveTextContent('لا تُحسم إجابة واحدة قبل قرار المعلم');
+    const answer = scope.getByText('قراءة الحل مع مراعاة التنبيه:').parentElement!;
+    expect(answer).toHaveTextContent('الخيار المقترح');
+    expect(answer).toHaveTextContent('الوصف الأكثر تحديداً والمقصود على الأرجح');
+    expect(answer).toHaveTextContent('صحيح أيضاً');
+    expect(answer).toHaveTextContent('اعتماد إجابة واحدة يحتاج قرار المعلم');
+    expect(answer.querySelectorAll('.katex')).toHaveLength(2); // Options A AND C, not a unique key.
+    expect(notice.compareDocumentPosition(answer) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(scope.queryByText('الإجابة:', { exact: true })).not.toBeInTheDocument();
+  });
+
+  it('shows Q1/10 as explicitly conditional on translation with a visible request for teacher confirmation', () => {
+    const { container } = renderAt(routes.worksheetSolutionSet(ws.id));
+    const article = container.querySelector('[data-solution-id="ws01-q1-10"]')!;
+    const scope = within(article as HTMLElement);
+    const notice = scope.getByRole('complementary');
+    expect(notice).toBeVisible();
+    expect(notice).toHaveTextContent('مطلوب تأكيد المعلم');
+    expect(notice).toHaveTextContent('نص السؤال لا يحدد نوع التحويل صراحةً');
+    expect(notice).toHaveTextContent('تأكيد أن المقصود هو الانسحاب قبل اعتماد الخيار المقترح');
+    const answer = scope.getByText('قراءة الحل مع مراعاة التنبيه:').parentElement!;
+    expect(answer).toHaveTextContent('الخيار المقترح');
+    expect(answer).toHaveTextContent('إذا كان التحويل انسحاباً');
+    expect(answer).toHaveTextContent('هذه إجابة مشروطة وليست قطعية');
+    expect(answer).toHaveTextContent('ما دام نوع التحويل غير محدد');
+    expect(answer.querySelector('annotation[encoding="application/x-tex"]')).toHaveTextContent(
+      '25\\,m^2',
+    );
+    expect(scope.getByRole('list')).toHaveTextContent('فالانسحاب يحفظ الأطوال والمساحات');
+    expect(scope.getByRole('list')).toHaveTextContent('تحت فرض الانسحاب');
+    expect(notice.compareDocumentPosition(answer) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(scope.queryByText('الإجابة:', { exact: true })).not.toBeInTheDocument();
+    expect(article.querySelector('.katex-error')).toBeNull();
+    expect(article.textContent).not.toContain('$');
+    const entry = set.entries.find((e) => e.questionId === 'ws01-q1-10')!;
+    if (entry.status !== 'solved') throw new Error('Expected conditional explanation');
+    expect(entry.answer).toMatch(/^إذا كان التحويل انسحاباً/);
+  });
+
   it('supports direct links and return to the intact student worksheet with no answer key beside questions', () => {
     const { container } = renderAt(routes.worksheetSolutionSet(ws.id));
     fireEvent.click(screen.getByRole('link', { name: 'العودة إلى ورقة العمل الأصلية' }));
