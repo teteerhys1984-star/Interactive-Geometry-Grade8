@@ -217,6 +217,25 @@
   --color-reference-bg: #faf7ff;
 }
 
+/*
+ * Lesson 4 of Unit 2 — «تساوي ثلاث نسب»: three equal ratios, proved on the
+ * thirds of a side. Oxblood ink reads as a proof-heavy capstone distinct from
+ * Lesson 10's pine, with a deep-slate accent for the auxiliary construction.
+ */
+[data-lesson-theme='three-ratios'] {
+  --color-primary: #7f1d3a;
+  --color-primary-hover: #651729;
+  --color-primary-soft: #fbeaf0;
+  --color-accent: #0f5f6b;
+  --color-accent-bg: #e7f5f7;
+  --color-teaching-accent: #7f1d3a;
+  --color-teaching-border: #efd3dd;
+  --color-teaching-bg: #fff9fb;
+  --color-reference-accent: #b45309;
+  --color-reference-border: #f0dcc0;
+  --color-reference-bg: #fffbf3;
+}
+
 [data-lesson-theme='indigo'] {
   --color-primary: #4338ca;
   --color-primary-hover: #3730a3;

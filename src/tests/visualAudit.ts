@@ -2,7 +2,7 @@ import type { TestQuestion } from './schema';
 
 /**
  * ============================================================================
- *  VISUAL QUESTION AUDIT — all 260 authored Test Area questions
+ *  VISUAL QUESTION AUDIT — all 280 authored Test Area questions
  * ============================================================================
  *
  *  A = a real figure is needed to read the stated spatial configuration.
@@ -28,7 +28,7 @@ const bankIds = (prefix: string, count: number): string[] =>
   Array.from({ length: count }, (_, index) => `${prefix}-q${String(index + 1).padStart(2, '0')}`);
 
 export const ALL_AUDITED_QUESTION_IDS = [
-  ...Array.from({ length: 10 }, (_, index) =>
+  ...Array.from({ length: 11 }, (_, index) =>
     bankIds(`geo-l${String(index + 1).padStart(2, '0')}-t01`, 20),
   ).flat(),
   ...bankIds('geo-u01-t01', 60),
@@ -85,6 +85,8 @@ const textOnlyRationaleByLesson: Record<string, string> = {
     'معطيات المنتصف والتوازي محدّدة نصاً؛ ورسم نقطة التقاطع على الضلع الثالث سيكشف التناصف المطلوب استنتاجه.',
   'lesson-10-parallel-lines-transversals':
     'معطيات التوازي والأطوال تُكتب نصاً بدقة؛ ورسم المثلث الصغير أو النسبة المطلوبة سيكشف التناسب أو الطول المجهول محلّ الاختبار.',
+  'lesson-11-three-ratios':
+    'كل سؤال إمّا قاعدة مبرهنة أو حساب من أعداد مطبوعة صريحة؛ ورسم نشاط الأثلاث سيعرض التناصفات الخمسة التي يطلب السؤال إثباتها فيحسم الجواب، لذا يبقى النص وحده أمتن خيار.',
 };
 
 const textOnlyRationaleByQuestion: Record<string, string> = {
@@ -206,6 +208,7 @@ function lessonIdForQuestionId(id: string): string {
   if (id.startsWith('geo-l08-')) return 'lesson-08-triangle-midpoints';
   if (id.startsWith('geo-l09-')) return 'lesson-09-parallel-from-midpoint';
   if (id.startsWith('geo-l10-')) return 'lesson-10-parallel-lines-transversals';
+  if (id.startsWith('geo-l11-')) return 'lesson-11-three-ratios';
 
   const unitQuestionNumber = Number(id.match(/-q(\d+)$/)?.[1]);
   if (unitQuestionNumber <= 10) return 'lesson-01-translation-and-properties';

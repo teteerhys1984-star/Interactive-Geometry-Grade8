@@ -24,6 +24,7 @@ const LESSON_THEMES: Record<string, string> = {
   'lesson-08-triangle-midpoints': 'midline',
   'lesson-09-parallel-from-midpoint': 'parallel',
   'lesson-10-parallel-lines-transversals': 'ratio',
+  'lesson-11-three-ratios': 'three-ratios',
 };
 
 export function lessonTheme(lessonId: string | undefined): string | undefined {

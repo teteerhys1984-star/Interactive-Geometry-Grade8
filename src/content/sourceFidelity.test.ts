@@ -118,7 +118,7 @@ describe('course shell', () => {
   });
 });
 
-describe('implementation boundary — Lessons 1–9 across Units 1–2 (Lessons 6 and 7 are the independent Q3–15 and Q16–28 continuations)', () => {
+describe('implementation boundary — Lessons 1–11 across Units 1–2 (Lessons 6 and 7 are the independent Q3–15 and Q16–28 continuations)', () => {
   it('registers exactly two units, in curriculum order', () => {
     expect(subject.units).toHaveLength(2);
     expect(subject.units.map((unit) => unit.id)).toEqual([
@@ -126,16 +126,19 @@ describe('implementation boundary — Lessons 1–9 across Units 1–2 (Lessons 
       'unit-02-triangles-midpoints-parallels',
     ]);
     // Page 30's «انطلاقة نشطة» opens Unit 2 but is not a lesson: the unit holds
-    // Lessons 1–3 in curriculum order, and the source prints no unit assessment.
+    // its four lessons in curriculum order, and the source prints no unit
+    // assessment. Registering the fourth (last) lesson does not complete the
+    // unit — there is no completion gate and no unit-level assessment.
     expect(subject.units[1]?.lessons.map((lesson) => lesson.id)).toEqual([
       'lesson-08-triangle-midpoints',
       'lesson-09-parallel-from-midpoint',
       'lesson-10-parallel-lines-transversals',
+      'lesson-11-three-ratios',
     ]);
   });
 
-  it('registers exactly ten lessons in curriculum order', () => {
-    expect(allLessons).toHaveLength(10);
+  it('registers exactly eleven lessons in curriculum order', () => {
+    expect(allLessons).toHaveLength(11);
     expect(allLessons[0]?.lesson.id).toBe('lesson-01-translation-and-properties');
     expect(allLessons[1]?.lesson.id).toBe('lesson-02-image-of-a-point');
     expect(allLessons[2]?.lesson.id).toBe('lesson-03-image-of-a-shape');
@@ -149,9 +152,12 @@ describe('implementation boundary — Lessons 1–9 across Units 1–2 (Lessons 
     expect(allLessons[8]?.unit.id).toBe('unit-02-triangles-midpoints-parallels');
     expect(allLessons[9]?.lesson.id).toBe('lesson-10-parallel-lines-transversals');
     expect(allLessons[9]?.unit.id).toBe('unit-02-triangles-midpoints-parallels');
+    expect(allLessons[10]?.lesson.id).toBe('lesson-11-three-ratios');
+    expect(allLessons[10]?.unit.id).toBe('unit-02-triangles-midpoints-parallels');
     expect(subject.units[1]?.lessons[0]?.id).toBe('lesson-08-triangle-midpoints');
     expect(subject.units[1]?.lessons[1]?.id).toBe('lesson-09-parallel-from-midpoint');
     expect(subject.units[1]?.lessons[2]?.id).toBe('lesson-10-parallel-lines-transversals');
+    expect(subject.units[1]?.lessons[3]?.id).toBe('lesson-11-three-ratios');
   });
 
   it('draws only on verified lesson pages or the supplied exercise images', () => {
@@ -185,8 +191,9 @@ describe('implementation boundary — Lessons 1–9 across Units 1–2 (Lessons 
           '17',
           '18',
           '19',
-          // Unit 2 — Lesson 1 (pages 31–33), Lesson 2 (pages 34–35) and
-          // Lesson 3 «مستقيمات متوازية وقاطعان» (pages 36–38).
+          // Unit 2 — Lesson 1 (pages 31–33), Lesson 2 (pages 34–35),
+          // Lesson 3 «مستقيمات متوازية وقاطعان» (pages 36–38) and Lesson 4
+          // «تساوي ثلاث نسب» (pages 39–41).
           '31',
           '32',
           '33',
@@ -195,6 +202,10 @@ describe('implementation boundary — Lessons 1–9 across Units 1–2 (Lessons 
           '36',
           '37',
           '38',
+          '39',
+          '40',
+          '41',
+          '39–41',
           'صورة المصدر 1',
           'صورة المصدر 2',
           'صورة المصدر 3',

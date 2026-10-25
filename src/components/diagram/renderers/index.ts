@@ -27,6 +27,7 @@ import {
 import { MidlineExplorer, MidlineFigure } from './lesson8';
 import { ParallelMidpointLab } from './lesson9';
 import { ThalesRatioLab } from './lesson10';
+import { ThreeRatiosLab } from './lesson11';
 
 /**
  * ============================================================================
@@ -95,6 +96,10 @@ registerInteractiveRenderer('parallel-midpoint-lab', ParallelMidpointLab);
  * for the page-36 discovery activity and Thales proportionality (p. 36–38). */
 registerInteractiveRenderer('thales-ratio-lab', ThalesRatioLab);
 
+/* Unit 2, Lesson 4 — «تساوي ثلاث نسب»: the page-39 activity rebuilt at any
+ * ratio k, so the student sees which printed conclusions belong to 2/3 alone. */
+registerInteractiveRenderer('three-ratios-lab', ThreeRatiosLab);
+
 export {
   TranslationFigure,
   GridFigure,
@@ -124,6 +129,7 @@ export {
   MidlineExplorer,
   ParallelMidpointLab,
   ThalesRatioLab,
+  ThreeRatiosLab,
 };
 
 registerInteractiveRenderer('lesson-one-lab', LessonOneLab);
