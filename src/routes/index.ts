@@ -14,3 +14,6 @@ export { TestsPage } from './tests/TestsPage';
 export { TestRunnerPage } from './tests/TestRunnerPage';
 export { TestSolutionsIndexPage } from './tests/TestSolutionsIndexPage';
 export { TestSolutionDetailPage } from './tests/TestSolutionDetailPage';
+
+// Independent School Worksheets routes («أوراق عمل مدرسية»)
+export { WorksheetsPage, WorksheetDetailPage } from './worksheets';

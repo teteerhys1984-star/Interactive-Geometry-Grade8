@@ -110,6 +110,20 @@ export function HomePage() {
           دخول الاختبارات
         </Link>
       </section>
+
+      <section className={styles.testsSection} aria-labelledby="worksheets-section-heading">
+        <div>
+          <h2 id="worksheets-section-heading" className={styles.sectionTitle}>
+            أوراق عمل مدرسية
+          </h2>
+          <p className={styles.teacherText}>
+            أوراق عمل مدرسية مرقمنة بأمانة عن النسخ الأصلية مع الأشكال الهندسية والصفحات المرجعية.
+          </p>
+        </div>
+        <Link className={styles.ctaPrimary} to={routes.worksheets()}>
+          تصفّح أوراق العمل
+        </Link>
+      </section>
     </div>
   );
 }

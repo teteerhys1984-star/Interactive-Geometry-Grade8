@@ -57,6 +57,12 @@ export function Header() {
             الاختبارات
           </NavLink>
           <NavLink
+            to={routes.worksheets()}
+            className={({ isActive }) => (isActive ? styles.activeLink : styles.link)}
+          >
+            أوراق عمل مدرسية
+          </NavLink>
+          <NavLink
             to={routes.teacher()}
             className={({ isActive }) => (isActive ? styles.activeLink : styles.link)}
           >
