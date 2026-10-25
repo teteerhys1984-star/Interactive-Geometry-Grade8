@@ -17,3 +17,6 @@ export { TestSolutionDetailPage } from './tests/TestSolutionDetailPage';
 
 // Independent School Worksheets routes («أوراق عمل مدرسية»)
 export { WorksheetsPage, WorksheetDetailPage } from './worksheets';
+
+export { WorksheetSolutionsIndexPage } from './worksheets/WorksheetSolutionsIndexPage';
+export { WorksheetSolutionDetailPage } from './worksheets/WorksheetSolutionDetailPage';
