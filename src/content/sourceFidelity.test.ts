@@ -126,15 +126,16 @@ describe('implementation boundary — Lessons 1–9 across Units 1–2 (Lessons 
       'unit-02-triangles-midpoints-parallels',
     ]);
     // Page 30's «انطلاقة نشطة» opens Unit 2 but is not a lesson: the unit holds
-    // Lessons 1 and 2 in curriculum order, and the source prints no unit assessment.
+    // Lessons 1–3 in curriculum order, and the source prints no unit assessment.
     expect(subject.units[1]?.lessons.map((lesson) => lesson.id)).toEqual([
       'lesson-08-triangle-midpoints',
       'lesson-09-parallel-from-midpoint',
+      'lesson-10-parallel-lines-transversals',
     ]);
   });
 
-  it('registers exactly nine lessons in curriculum order', () => {
-    expect(allLessons).toHaveLength(9);
+  it('registers exactly ten lessons in curriculum order', () => {
+    expect(allLessons).toHaveLength(10);
     expect(allLessons[0]?.lesson.id).toBe('lesson-01-translation-and-properties');
     expect(allLessons[1]?.lesson.id).toBe('lesson-02-image-of-a-point');
     expect(allLessons[2]?.lesson.id).toBe('lesson-03-image-of-a-shape');
@@ -146,8 +147,11 @@ describe('implementation boundary — Lessons 1–9 across Units 1–2 (Lessons 
     expect(allLessons[7]?.unit.id).toBe('unit-02-triangles-midpoints-parallels');
     expect(allLessons[8]?.lesson.id).toBe('lesson-09-parallel-from-midpoint');
     expect(allLessons[8]?.unit.id).toBe('unit-02-triangles-midpoints-parallels');
+    expect(allLessons[9]?.lesson.id).toBe('lesson-10-parallel-lines-transversals');
+    expect(allLessons[9]?.unit.id).toBe('unit-02-triangles-midpoints-parallels');
     expect(subject.units[1]?.lessons[0]?.id).toBe('lesson-08-triangle-midpoints');
     expect(subject.units[1]?.lessons[1]?.id).toBe('lesson-09-parallel-from-midpoint');
+    expect(subject.units[1]?.lessons[2]?.id).toBe('lesson-10-parallel-lines-transversals');
   });
 
   it('draws only on verified lesson pages or the supplied exercise images', () => {
@@ -181,12 +185,16 @@ describe('implementation boundary — Lessons 1–9 across Units 1–2 (Lessons 
           '17',
           '18',
           '19',
-          // Unit 2 — Lesson 1 (pages 31–33) and Lesson 2 (pages 34–35).
+          // Unit 2 — Lesson 1 (pages 31–33), Lesson 2 (pages 34–35) and
+          // Lesson 3 «مستقيمات متوازية وقاطعان» (pages 36–38).
           '31',
           '32',
           '33',
           '34',
           '35',
+          '36',
+          '37',
+          '38',
           'صورة المصدر 1',
           'صورة المصدر 2',
           'صورة المصدر 3',

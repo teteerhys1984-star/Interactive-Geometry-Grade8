@@ -23,6 +23,7 @@ const LESSON_THEMES: Record<string, string> = {
   'lesson-07-unit-one-exercises-final': 'plum',
   'lesson-08-triangle-midpoints': 'midline',
   'lesson-09-parallel-from-midpoint': 'parallel',
+  'lesson-10-parallel-lines-transversals': 'ratio',
 };
 
 export function lessonTheme(lessonId: string | undefined): string | undefined {

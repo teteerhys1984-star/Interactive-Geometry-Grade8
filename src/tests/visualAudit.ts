@@ -2,7 +2,7 @@ import type { TestQuestion } from './schema';
 
 /**
  * ============================================================================
- *  VISUAL QUESTION AUDIT — all 240 authored Test Area questions
+ *  VISUAL QUESTION AUDIT — all 260 authored Test Area questions
  * ============================================================================
  *
  *  A = a real figure is needed to read the stated spatial configuration.
@@ -28,7 +28,7 @@ const bankIds = (prefix: string, count: number): string[] =>
   Array.from({ length: count }, (_, index) => `${prefix}-q${String(index + 1).padStart(2, '0')}`);
 
 export const ALL_AUDITED_QUESTION_IDS = [
-  ...Array.from({ length: 9 }, (_, index) =>
+  ...Array.from({ length: 10 }, (_, index) =>
     bankIds(`geo-l${String(index + 1).padStart(2, '0')}-t01`, 20),
   ).flat(),
   ...bankIds('geo-u01-t01', 60),
@@ -47,6 +47,8 @@ export const FIGURE_REQUIRED_QUESTION_IDS = [
   'geo-l06-t01-q06',
   'geo-l08-t01-q17',
   'geo-l09-t01-q16',
+  'geo-l10-t01-q10',
+  'geo-l10-t01-q16',
   'geo-u01-t01-q19',
   'geo-u01-t01-q37',
 ] as const;
@@ -58,6 +60,7 @@ export const FIGURE_BENEFICIAL_QUESTION_IDS = [
   'geo-l06-t01-q12',
   'geo-l08-t01-q16',
   'geo-l09-t01-q10',
+  'geo-l10-t01-q13',
   'geo-u01-t01-q38',
 ] as const;
 
@@ -80,6 +83,8 @@ const textOnlyRationaleByLesson: Record<string, string> = {
     'المعطيات (منتصفان وطول) تُكتب نصاً بدقة؛ ورسم القطعة المطلوبة سيكشف التوازي أو النصفية محلّ الاختبار.',
   'lesson-09-parallel-from-midpoint':
     'معطيات المنتصف والتوازي محدّدة نصاً؛ ورسم نقطة التقاطع على الضلع الثالث سيكشف التناصف المطلوب استنتاجه.',
+  'lesson-10-parallel-lines-transversals':
+    'معطيات التوازي والأطوال تُكتب نصاً بدقة؛ ورسم المثلث الصغير أو النسبة المطلوبة سيكشف التناسب أو الطول المجهول محلّ الاختبار.',
 };
 
 const textOnlyRationaleByQuestion: Record<string, string> = {
@@ -115,6 +120,10 @@ const requiredRationales: Record<(typeof FIGURE_REQUIRED_QUESTION_IDS)[number], 
     'موضع المنتصفات الخمسة على المثلثين المتشابكين لا يُحفظ ذهنياً؛ يلزم إظهار الشكل دون رسم القطع المطلوب مطابقتها.',
   'geo-l09-t01-q16':
     'انقسام المثلث ABC بالقطعة الداخلية AM إلى المثلثين AMB وAMC مع كون R منتصف AM وM غير منتصف BC ضروري لقراءة المطابقة دون رسم المستقيم الموازي الكاشف.',
+  'geo-l10-t01-q10':
+    'تحديد زوج المثلثين اللذين يفصلهما المستقيمان المتوازيان والقاطعان هو مهارة قراءة شكلية لا يمكن حلّها من النص وحده دون رؤية تقاطع القاطعين في الرأس المشترك A.',
+  'geo-l10-t01-q16':
+    'موضع النقطتين M وN على ضلعين مختلفين وتقاطع القطعة الموازية (MN) معهما ضروري لاختيار المثلثين الصحيحين JMN وJKL قبل تجميع JL = 12.',
   'geo-u01-t01-q19': 'الإنشاء بالفرجار يعرض نقطتي تقاطع محتملتين؛ لا يُشار بصرياً إلى أي اختيار.',
   'geo-u01-t01-q37':
     'القطر AC يقسم الطائرة الورقية إلى مثلثين؛ العلامات لا تضيف إلا المساواة المذكورة.',
@@ -132,6 +141,8 @@ const beneficialRationales: Record<(typeof FIGURE_BENEFICIAL_QUESTION_IDS)[numbe
     'مستطيل ومنتصفات أضلاعه: الرسم يوضح أي ضلع من الرباعي يقابل أي قطر، ولا يضع طول القطر المطلوب حسابه.',
   'geo-l09-t01-q10':
     'مثلث قائم في B مع M منتصف AB والعمود MN على AB: يوضّح الشكل تعامد المستقيمين على AB دون وضع علامات تساوٍ أو أطوال على الوتر AC.',
+  'geo-l10-t01-q13':
+    'الشكل يثبّت موقع E وF على ضلعي المثلث والتوازي (EF) ∥ (BC) والقيم المعطاة 3 و4 و12 فقط، دون إظهار الطول المطلوب AB.',
   'geo-u01-t01-q38':
     'مثلث قائم تخطيطي يحمل المساحة والضلع المعطيين فقط ولا يضع قياساً للضلع المطلوب.',
 };
@@ -194,6 +205,7 @@ function lessonIdForQuestionId(id: string): string {
   if (id.startsWith('geo-l07-')) return 'lesson-07-unit-one-exercises-final';
   if (id.startsWith('geo-l08-')) return 'lesson-08-triangle-midpoints';
   if (id.startsWith('geo-l09-')) return 'lesson-09-parallel-from-midpoint';
+  if (id.startsWith('geo-l10-')) return 'lesson-10-parallel-lines-transversals';
 
   const unitQuestionNumber = Number(id.match(/-q(\d+)$/)?.[1]);
   if (unitQuestionNumber <= 10) return 'lesson-01-translation-and-properties';

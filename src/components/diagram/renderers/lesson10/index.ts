@@ -1,0 +1,1 @@
+export { ThalesRatioLab } from './ThalesRatioLab';

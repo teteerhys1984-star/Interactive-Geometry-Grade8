@@ -26,6 +26,7 @@ import {
 } from './lesson4';
 import { MidlineExplorer, MidlineFigure } from './lesson8';
 import { ParallelMidpointLab } from './lesson9';
+import { ThalesRatioLab } from './lesson10';
 
 /**
  * ============================================================================
@@ -90,6 +91,10 @@ registerInteractiveRenderer('midline-explorer', MidlineExplorer);
  * Salim's freehand parallel activity and the Second Midpoint Theorem (p. 34). */
 registerInteractiveRenderer('parallel-midpoint-lab', ParallelMidpointLab);
 
+/* Unit 2, Lesson 3 — «مستقيمات متوازية وقاطعان»: interactive equal-ratio lab
+ * for the page-36 discovery activity and Thales proportionality (p. 36–38). */
+registerInteractiveRenderer('thales-ratio-lab', ThalesRatioLab);
+
 export {
   TranslationFigure,
   GridFigure,
@@ -118,6 +123,7 @@ export {
   MidlineFigure,
   MidlineExplorer,
   ParallelMidpointLab,
+  ThalesRatioLab,
 };
 
 registerInteractiveRenderer('lesson-one-lab', LessonOneLab);
