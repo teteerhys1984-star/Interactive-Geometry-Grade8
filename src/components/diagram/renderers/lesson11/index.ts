@@ -1,0 +1,1 @@
+export { ThreeRatiosLab } from './ThreeRatiosLab';
