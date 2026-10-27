@@ -26,7 +26,7 @@ const note = (title: string, text: string): ContentBlock => ({
   type: 'callout', variant: 'note', title, blocks: [p(text)],
 });
 function solutionFigures(reference: string): ContentBlock[] {
-  const match = reference.match(/السؤال (\\d+)/);
+  const match = reference.match(/السؤال (\d+)/);
   const questionNumber = match ? Number(match[1]) : 0;
   const caseOne = reference.includes('الحالة ①');
   const caseTwo = reference.includes('الحالة ②');
