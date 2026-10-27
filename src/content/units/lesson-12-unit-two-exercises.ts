@@ -5,6 +5,7 @@ import { lesson12Batch1TeacherNotes } from './lesson-12-batch1-teacher';
 import { lesson12Steps } from './lesson-12-steps';
 import { lesson12TeacherResources } from './lesson-12-teacher';
 import { lesson12DerivedSolutions } from './lesson-12-solutions';
+import { lesson12Batch1Solutions } from './lesson-12-batch1-solutions';
 
 /**
  * ============================================================================
@@ -58,7 +59,7 @@ export const lesson12: LessonInput = {
   steps: lesson12AllSteps,
   teacherResources: {
     ...lesson12TeacherResources,
-    textbookSolutions: [...(lesson12TeacherResources.textbookSolutions ?? []), ...lesson12DerivedSolutions],
+    textbookSolutions: [...(lesson12TeacherResources.textbookSolutions ?? []), ...lesson12Batch1Solutions, ...lesson12DerivedSolutions],
     notes: [...lesson12Batch1TeacherNotes, ...(lesson12TeacherResources.notes ?? [])],
   },
   estimatedMinutes: 120,
