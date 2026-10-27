@@ -185,7 +185,7 @@ describe('the student view carries no answer', () => {
   });
 
   it('keeps teacher solution records separate from the student steps', () => {
-    expect(lesson12.teacherResources?.textbookSolutions.length).toBeGreaterThan(0);
+    expect((lesson12.teacherResources?.textbookSolutions ?? []).length).toBeGreaterThan(0);
   });
 
   it('renders the three circled sub-items ①–③ beneath the Question 20 flowchart in the student view', () => {
