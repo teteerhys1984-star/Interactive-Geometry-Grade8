@@ -25,8 +25,25 @@ const list = (...items: string[]): ContentBlock => ({ type: 'list', ordered: tru
 const note = (title: string, text: string): ContentBlock => ({
   type: 'callout', variant: 'note', title, blocks: [p(text)],
 });
+function solutionFigures(reference: string): ContentBlock[] {
+  const match = reference.match(/السؤال (\\d+)/);
+  const questionNumber = match ? Number(match[1]) : 0;
+  const caseOne = reference.includes('الحالة ①');
+  const caseTwo = reference.includes('الحالة ②');
+  const figures: Record<number, readonly DiagramSpec[]> = {
+    18: [caseOne ? fig12Q18CaseOne : fig12Q18CaseTwo],
+    19: [fig12Q19], 20: [fig12Q20], 21: [fig12Q21],
+    24: [fig12Q24], 26: [fig12Q26], 27: [fig12Q27],
+    28: [fig12Q28], 29: [fig12Q29], 30: [fig12Q30], 31: [fig12Q31],
+    32: [fig12Q32],
+    33: [caseOne ? fig12Q33CaseOne : fig12Q33CaseTwo],
+  };
+  if (questionNumber === 18 && !caseOne && !caseTwo) return [];
+  if (questionNumber === 33 && !caseOne && !caseTwo) return [];
+  return (figures[questionNumber] ?? []).map((diagram) => ({ type: 'figure', diagram }));
+}
 function solution(id: string, reference: string, question: string, blocks: ContentBlock[], limitation?: string): TeacherSolution {
-  return { id, reference, question, blocks, ...(limitation ? { limitation } : {}) };
+  return { id, reference, question, blocks: [...solutionFigures(reference), ...blocks], ...(limitation ? { limitation } : {}) };
 }
 
 /**
