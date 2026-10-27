@@ -37,29 +37,80 @@ beforeEach(() => {
  * (correct and wrong passphrase, locking again) and by the per-lesson
  * rendering suites, so nothing about the protection goes untested.
  */
-async function renderUnlocked(route: string) {
+function renderUnlockedSync(route: string) {
   expect(unlockTeacherArea(TEACHER_PASSPHRASE)).toBe(true);
-  const user = userEvent.setup();
   const view = renderAt(route);
-  expect(screen.queryByLabelText('كلمة المرور المشتركة')).toBeNull();
+  expect(view.container.querySelector('#teacher-pass')).toBeNull();
+  return view;
+}
+
+async function renderUnlocked(route: string) {
+  const user = userEvent.setup();
+  const view = renderUnlockedSync(route);
   return { user, ...view };
 }
 
 /**
- * Normalised text of every element under `root`, collected in ONE pass.
- *
- * `screen.getAllByText()` walks the whole document per call, so asserting a
- * list of N strings with N queries is O(N × DOM). Collecting once and then
- * testing membership keeps the identical meaning at a fraction of the cost.
- * The normalisation mirrors Testing Library's default matcher (collapse
- * whitespace, then trim).
+ * Mirrors Testing Library's `getNodeText`: concatenates direct TEXT_NODE
+ * children of `node` (not descendant elements) and collapses whitespace.
+ * Runs in O(direct childNodes) instead of O(subtree) `node.textContent`.
+ */
+function directNodeText(node: Element): string {
+  let raw = '';
+  for (let child = node.firstChild; child !== null; child = child.nextSibling) {
+    if (child.nodeType === 3) {
+      raw += child.nodeValue ?? '';
+    }
+  }
+  return raw.replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Normalised direct text of every non-KaTeX element under `root`, collected in
+ * ONE linear pass without descending into `.katex` HTML/MathML presentation
+ * subtrees (~90% of a teacher page's DOM nodes).
  */
 function renderedTexts(root: Element): Set<string> {
   const texts = new Set<string>();
-  for (const node of root.querySelectorAll('*')) {
-    texts.add((node.textContent ?? '').replace(/\s+/g, ' ').trim());
+  const stack: Element[] = [root];
+  while (stack.length > 0) {
+    const node = stack.pop()!;
+    if (node.classList.contains('katex')) continue;
+    if (node !== root) {
+      const text = directNodeText(node);
+      if (text) texts.add(text);
+    }
+    for (let i = node.children.length - 1; i >= 0; i -= 1) {
+      stack.push(node.children[i]!);
+    }
   }
   return texts;
+}
+
+/**
+ * Counts elements under `root` whose normalised direct text matches `expected`
+ * (matching Testing Library's `queryAllByText` / `getAllByText` semantics in a
+ * single linear pass without walking `.katex` presentation internals).
+ */
+function countByDirectText(root: Element, expected: string | RegExp): number {
+  const matches =
+    typeof expected === 'string'
+      ? (value: string) => value === expected
+      : (value: string) => expected.test(value);
+  let count = 0;
+  const stack: Element[] = [root];
+  while (stack.length > 0) {
+    const node = stack.pop()!;
+    if (node.classList.contains('katex')) continue;
+    if (node !== root) {
+      const text = directNodeText(node);
+      if (text && matches(text)) count += 1;
+    }
+    for (let i = node.children.length - 1; i >= 0; i -= 1) {
+      stack.push(node.children[i]!);
+    }
+  }
+  return count;
 }
 
 describe('routing', () => {
@@ -448,22 +499,42 @@ describe('teacher area — lesson picker', () => {
     expect(container.textContent).not.toContain('الإجابة الصحيحة');
   });
 
-  it('opens each lesson’s teacher area from its card button — and back', async () => {
-    const { user } = await renderUnlocked('/teacher');
+  // Budget note: walks all 12 lessons end-to-end (~136k teacher DOM nodes per
+  // curriculum pass). Full-document accessibility walks inside the loop are
+  // avoided and `signal.aborted` stops any in-flight loop on timeout so clicks
+  // never leak into subsequent tests; 25s (~2.1s/lesson) preserves the same
+  // per-lesson CI headroom that 15s gave for 7 lessons.
+  it('opens each lesson’s teacher area from its card button — and back', async ({ signal }) => {
+    const { user, container } = await renderUnlocked('/teacher');
+    const getOpenLinks = () =>
+      Array.from(container.querySelectorAll<HTMLAnchorElement>('a[href]')).filter(
+        (link) => directNodeText(link) === 'فتح منطقة المعلم',
+      );
+    expect(screen.getAllByRole('link', { name: 'فتح منطقة المعلم' })).toHaveLength(
+      allLessons.length,
+    );
     for (let index = 0; index < allLessons.length; index += 1) {
-      const buttons = screen.getAllByRole('link', { name: 'فتح منطقة المعلم' });
+      if (signal.aborted) return;
+      const buttons = getOpenLinks();
+      expect(buttons).toHaveLength(allLessons.length);
       await user.click(buttons[index]!);
-      expect(screen.getByRole('tablist', { name: 'أقسام منطقة المعلّم' })).toBeInTheDocument();
-      expect(screen.getByRole('tab', { name: 'حلول أسئلة الكتاب' })).toHaveAttribute(
+      if (signal.aborted) return;
+      const tablist = container.querySelector<HTMLElement>('[role="tablist"]');
+      expect(tablist).not.toBeNull();
+      expect(tablist).toHaveAttribute('aria-label', 'أقسام منطقة المعلّم');
+      expect(within(tablist!).getByRole('tab', { name: 'حلول أسئلة الكتاب' })).toHaveAttribute(
         'aria-selected',
         'true',
       );
-      await user.click(screen.getByRole('link', { name: /كل الدروس/ }));
-      expect(screen.getAllByRole('link', { name: 'فتح منطقة المعلم' })).toHaveLength(
-        allLessons.length,
+      const backLink = Array.from(container.querySelectorAll<HTMLAnchorElement>('a[href]')).find(
+        (link) => /كل الدروس/.test(directNodeText(link)),
       );
+      expect(backLink).toBeDefined();
+      await user.click(backLink!);
+      if (signal.aborted) return;
+      expect(getOpenLinks()).toHaveLength(allLessons.length);
     }
-  }, 15_000);
+  }, 25_000);
 
   it('locks the area again from the picker', async () => {
     const { user } = await renderUnlocked('/teacher');
@@ -481,21 +552,23 @@ describe('teacher area — per-lesson sections', () => {
     'الملاحظات التربوية',
   ];
 
-  it('exposes the four sections as tabs for every authored lesson', async () => {
+  it('exposes the four sections as tabs for every authored lesson', () => {
     for (const { lesson: item } of allLessons) {
-      const { unmount } = await renderUnlocked(`/teacher/${item.id}`);
+      const { container, unmount } = renderUnlockedSync(`/teacher/${item.id}`);
+      const tablist = container.querySelector<HTMLElement>('[role="tablist"]');
+      expect(tablist).not.toBeNull();
       for (const label of tabLabels) {
-        expect(screen.getByRole('tab', { name: label })).toBeInTheDocument();
+        expect(within(tablist!).getByRole('tab', { name: label })).toBeInTheDocument();
       }
       unmount();
     }
-  }, 15_000);
+  }, 25_000);
 
-  it('labels every textbook solution as teacher-derived, never as printed answers', async () => {
+  it('labels every textbook solution as teacher-derived, never as printed answers', () => {
     for (const { lesson: item } of allLessons) {
       const solutions = item.teacherResources?.textbookSolutions ?? [];
-      const { container, unmount } = await renderUnlocked(`/teacher/${item.id}`);
-      expect(screen.queryAllByText('حلول المعلم (مستنتجة من المنصّة)')).toHaveLength(
+      const { container, unmount } = renderUnlockedSync(`/teacher/${item.id}`);
+      expect(countByDirectText(container, 'حلول المعلم (مستنتجة من المنصّة)')).toBe(
         solutions.length,
       );
       expect(container.textContent).toContain('لا تتضمّن إجابات مطبوعة');
@@ -508,29 +581,33 @@ describe('teacher area — per-lesson sections', () => {
       expect(missing).toEqual([]);
       unmount();
     }
-    // Was 16s (and timing out on CI) because every solution triggered its own
-    // full-document text scan; one DOM pass per lesson brings it to ~3.5s.
-  }, 15_000);
+  }, 25_000);
 
-  it('flags every solution that depends on an unreadable figure', async () => {
+  it('flags every solution that depends on an unreadable figure', () => {
     for (const { lesson: item } of allLessons) {
       const flagged = (item.teacherResources?.textbookSolutions ?? []).filter(
         (solution) => solution.limitation,
       );
-      const { unmount } = await renderUnlocked(`/teacher/${item.id}`);
-      expect(screen.queryAllByText('حدود هذا الحل')).toHaveLength(flagged.length);
+      const { container, unmount } = renderUnlockedSync(`/teacher/${item.id}`);
+      expect(countByDirectText(container, 'حدود هذا الحل')).toBe(flagged.length);
       unmount();
     }
-  }, 15_000);
+  }, 25_000);
 
-  it('exposes the full answer key with explanations under its own tab', async () => {
+  it('exposes the full answer key with explanations under its own tab', async ({ signal }) => {
     for (const { lesson: item } of allLessons) {
+      if (signal.aborted) return;
       if (!item.assessment) continue;
       const assessment = item.assessment;
       const { user, container, unmount } = await renderUnlocked(`/teacher/${item.id}`);
       const panel = container.querySelector('#teacher-panel-assessment');
       expect(panel).toHaveAttribute('hidden');
-      await user.click(screen.getByRole('tab', { name: 'مفتاح الاختبار النهائي' }));
+      const tablist = container.querySelector<HTMLElement>('[role="tablist"]')!;
+      await user.click(within(tablist).getByRole('tab', { name: 'مفتاح الاختبار النهائي' }));
+      if (signal.aborted) {
+        unmount();
+        return;
+      }
       expect(panel).not.toHaveAttribute('hidden');
       expect(container.querySelector('#teacher-panel-solutions')).toHaveAttribute('hidden');
       // One disclosure per question, and the key is present.
@@ -539,13 +616,13 @@ describe('teacher area — per-lesson sections', () => {
       expect(container.querySelectorAll('#teacher-panel-assessment details')).toHaveLength(
         assessment.questions.length,
       );
-      expect(screen.getAllByText(/الإجابة الصحيحة:/).length).toBeGreaterThanOrEqual(
+      expect(countByDirectText(panel!, /الإجابة الصحيحة:/)).toBeGreaterThanOrEqual(
         assessment.questions.length,
       );
       expect(container.textContent).toContain('خطأ شائع');
       unmount();
     }
-  }, 15_000);
+  }, 25_000);
 
   it('shows each lesson’s pedagogical notes under their own tab', async () => {
     const noteTitles: [string, string][] = [

@@ -12,6 +12,41 @@ interface MathProps {
   label?: string;
 }
 
+interface RenderedMath {
+  html: string;
+  failed: boolean;
+}
+
+const MAX_KATEX_CACHE_ENTRIES = 4096;
+const katexRenderCache = new Map<string, RenderedMath>();
+
+function renderLatexCached(latex: string, display: boolean): RenderedMath {
+  const key = `${display ? '1' : '0'}:${latex}`;
+  const cached = katexRenderCache.get(key);
+  if (cached !== undefined) return cached;
+
+  let rendered: RenderedMath;
+  try {
+    rendered = {
+      html: katex.renderToString(latex, {
+        displayMode: display,
+        throwOnError: false,
+        strict: false,
+        output: 'htmlAndMathml',
+      }),
+      failed: false,
+    };
+  } catch {
+    rendered = { html: '', failed: true };
+  }
+
+  if (katexRenderCache.size >= MAX_KATEX_CACHE_ENTRIES) {
+    katexRenderCache.clear();
+  }
+  katexRenderCache.set(key, rendered);
+  return rendered;
+}
+
 /**
  * The ONLY component allowed to render mathematics.
  *
@@ -25,21 +60,7 @@ interface MathProps {
  * decision is a single change in this file plus `styles/tokens.css`.
  */
 export function Math({ latex, display = false, label }: MathProps) {
-  const { html, failed } = useMemo(() => {
-    try {
-      return {
-        html: katex.renderToString(latex, {
-          displayMode: display,
-          throwOnError: false,
-          strict: false,
-          output: 'htmlAndMathml',
-        }),
-        failed: false,
-      };
-    } catch {
-      return { html: '', failed: true };
-    }
-  }, [latex, display]);
+  const { html, failed } = useMemo(() => renderLatexCached(latex, display), [latex, display]);
 
   if (failed) {
     return (
