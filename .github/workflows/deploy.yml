@@ -54,8 +54,29 @@ jobs:
       - name: Test (includes source-fidelity suite)
         run: npm run test
 
+  # Pull requests must prove the production bundle compiles, but must never
+  # configure Pages, upload a deployment artifact, or deploy.
+  build-check:
+    name: Build (pull request)
+    needs: verify
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --include=dev
+
+      - name: Build
+        run: npm run build
+
   # Build and deploy only for main (push or manual dispatch). Pull requests
-  # stop at the verify gate above and never touch the Pages environment.
+  # use build-check above and never touch the Pages environment.
   build:
     name: Build
     needs: verify
