@@ -236,7 +236,7 @@ describe('Batch 1 solutions remain teacher-only', () => {
       step.blocks.filter((block) => block.type === 'teaching'),
     );
     expect(teachingBlocks).toHaveLength(0);
-    expect(lesson12.teacherResources?.textbookSolutions.length).toBeGreaterThan(0);
+    expect((lesson12.teacherResources?.textbookSolutions ?? []).length).toBeGreaterThan(0);
   });
 
   it('adds no editorial commentary inside the exercise cards or student captions', () => {
