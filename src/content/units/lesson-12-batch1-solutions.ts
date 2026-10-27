@@ -28,8 +28,22 @@ import {
 const p = (text: string): ContentBlock => ({ type: 'paragraph', text });
 const list = (...items: string[]): ContentBlock => ({ type: 'list', ordered: true, items });
 const note = (title: string, text: string): ContentBlock => ({ type: 'callout', variant: 'note', title, blocks: [p(text)] });
+function solutionFigures(reference: string): ContentBlock[] {
+  const match = reference.match(/السؤال (\\d+)/);
+  const questionNumber = match ? Number(match[1]) : 0;
+  // Q1 item ① has no printed figure; the other Q1 items refer to the figures below.
+  if (questionNumber === 1 && reference.includes('البند ①')) return [];
+  const figures: Record<number, readonly DiagramSpec[]> = {
+    1: [fig12bQ1, fig12bQ1CaseOne, fig12bQ1CaseTwo, fig12bQ1CaseThree, fig12bQ1Thales],
+    2: [fig12bQ2Circles, fig12bQ2Triangle, fig12bQ2Quadrilateral],
+    3: [fig12bQ3], 4: [fig12bQ4], 5: [fig12bQ5], 6: [fig12bQ6],
+    9: [fig12bQ9], 10: [fig12bQ10CaseOne, fig12bQ10CaseTwo],
+    13: [fig12bQ13], 14: [fig12bQ14], 15: [fig12bQ15], 16: [fig12bQ16], 17: [fig12bQ17],
+  };
+  return (figures[questionNumber] ?? []).map((diagram) => ({ type: 'figure', diagram }));
+}
 function solution(id: string, reference: string, question: string, blocks: ContentBlock[], limitation?: string): TeacherSolution {
-  return { id, reference, question, blocks, ...(limitation ? { limitation } : {}) };
+  return { id, reference, question, blocks: [...solutionFigures(reference), ...blocks], ...(limitation ? { limitation } : {}) };
 }
 
 /** Platform-derived solutions for Batch 1 (Q1–Q17), not a printed answer key. */
