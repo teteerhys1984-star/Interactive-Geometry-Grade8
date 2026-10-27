@@ -1,4 +1,4 @@
-import type { ContentBlock, TeacherSolution } from '../schema';
+import type { ContentBlock, DiagramSpec, TeacherSolution } from '../schema';
 import {
   L12B_Q1_STEM, L12B_Q1_ITEM_1, L12B_Q1_ITEM_1_OPTION_1, L12B_Q1_ITEM_1_OPTION_2, L12B_Q1_ITEM_1_OPTION_3,
   L12B_Q1_ITEM_2, L12B_Q1_ITEM_3, L12B_Q1_ITEM_4, L12B_Q1_ITEM_5,
@@ -18,6 +18,12 @@ import {
   L12B_Q16_STEM, L12B_Q16_ITEM_1, L12B_Q16_ITEM_2,
   L12B_Q17_STEM,
 } from './lesson-12-batch1-questions';
+import {
+  fig12bQ1, fig12bQ1CaseOne, fig12bQ1CaseTwo, fig12bQ1CaseThree, fig12bQ1Thales,
+  fig12bQ2Circles, fig12bQ2Triangle, fig12bQ2Quadrilateral,
+  fig12bQ3, fig12bQ4, fig12bQ5, fig12bQ6, fig12bQ9,
+  fig12bQ10CaseOne, fig12bQ10CaseTwo, fig12bQ13, fig12bQ14, fig12bQ15, fig12bQ16, fig12bQ17,
+} from './lesson-12-batch1-figures';
 
 const p = (text: string): ContentBlock => ({ type: 'paragraph', text });
 const list = (...items: string[]): ContentBlock => ({ type: 'list', ordered: true, items });
