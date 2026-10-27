@@ -230,13 +230,13 @@ describe('the Batch 1 exercises of the set', () => {
   });
 });
 
-describe('the student view of Batch 1 carries no authored solution', () => {
-  it('contains no platform teaching block and no solution record', () => {
+describe('Batch 1 solutions remain teacher-only', () => {
+  it('keeps platform teaching blocks out of the student steps while exposing teacher resources separately', () => {
     const teachingBlocks = steps.flatMap((step) =>
       step.blocks.filter((block) => block.type === 'teaching'),
     );
     expect(teachingBlocks).toHaveLength(0);
-    expect(lesson12.teacherResources?.textbookSolutions ?? []).toHaveLength(0);
+    expect(lesson12.teacherResources?.textbookSolutions.length).toBeGreaterThan(0);
   });
 
   it('adds no editorial commentary inside the exercise cards or student captions', () => {
