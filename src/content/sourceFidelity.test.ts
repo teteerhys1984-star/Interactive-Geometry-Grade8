@@ -1052,13 +1052,11 @@ describe('teacher resources', () => {
         }
       }
       const solved = new Set(lesson.teacherResources!.textbookSolutions.map((s) => s.question));
-      // The Unit 2 exercise set is the one lesson whose printed questions are
-      // NOT accompanied by teacher solutions: this pass reproduces the
-      // exercises verbatim and authors no solution, no answer key and no
-      // worked proof. The exemption is explicit, and the lesson publishes no
-      // `textbookSolutions` at all.
+      // Unit 2 solutions are platform-derived teaching resources, not a
+      // verbatim printed answer key. Their questions group source items, so
+      // they are audited separately from the exact-match lessons below.
       if (lesson.id === 'lesson-12-unit-two-exercises') {
-        expect(lesson.teacherResources!.textbookSolutions).toHaveLength(0);
+        expect(lesson.teacherResources!.textbookSolutions.length).toBeGreaterThan(0);
         continue;
       }
       for (const question of printed) {
