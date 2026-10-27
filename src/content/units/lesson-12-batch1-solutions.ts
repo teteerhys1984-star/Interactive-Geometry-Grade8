@@ -29,7 +29,7 @@ const p = (text: string): ContentBlock => ({ type: 'paragraph', text });
 const list = (...items: string[]): ContentBlock => ({ type: 'list', ordered: true, items });
 const note = (title: string, text: string): ContentBlock => ({ type: 'callout', variant: 'note', title, blocks: [p(text)] });
 function solutionFigures(reference: string): ContentBlock[] {
-  const match = reference.match(/السؤال (\\d+)/);
+  const match = reference.match(/السؤال (\d+)/);
   const questionNumber = match ? Number(match[1]) : 0;
   // Q1 item ① has no printed figure; the other Q1 items refer to the figures below.
   if (questionNumber === 1 && reference.includes('البند ①')) return [];
