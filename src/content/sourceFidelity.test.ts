@@ -134,11 +134,12 @@ describe('implementation boundary — Lessons 1–11 across Units 1–2 (Lessons
       'lesson-09-parallel-from-midpoint',
       'lesson-10-parallel-lines-transversals',
       'lesson-11-three-ratios',
+      'lesson-12-unit-two-exercises',
     ]);
   });
 
-  it('registers exactly eleven lessons in curriculum order', () => {
-    expect(allLessons).toHaveLength(11);
+  it('registers exactly twelve lessons in curriculum order', () => {
+    expect(allLessons).toHaveLength(12);
     expect(allLessons[0]?.lesson.id).toBe('lesson-01-translation-and-properties');
     expect(allLessons[1]?.lesson.id).toBe('lesson-02-image-of-a-point');
     expect(allLessons[2]?.lesson.id).toBe('lesson-03-image-of-a-shape');
@@ -154,10 +155,13 @@ describe('implementation boundary — Lessons 1–11 across Units 1–2 (Lessons
     expect(allLessons[9]?.unit.id).toBe('unit-02-triangles-midpoints-parallels');
     expect(allLessons[10]?.lesson.id).toBe('lesson-11-three-ratios');
     expect(allLessons[10]?.unit.id).toBe('unit-02-triangles-midpoints-parallels');
+    expect(allLessons[11]?.lesson.id).toBe('lesson-12-unit-two-exercises');
+    expect(allLessons[11]?.unit.id).toBe('unit-02-triangles-midpoints-parallels');
     expect(subject.units[1]?.lessons[0]?.id).toBe('lesson-08-triangle-midpoints');
     expect(subject.units[1]?.lessons[1]?.id).toBe('lesson-09-parallel-from-midpoint');
     expect(subject.units[1]?.lessons[2]?.id).toBe('lesson-10-parallel-lines-transversals');
     expect(subject.units[1]?.lessons[3]?.id).toBe('lesson-11-three-ratios');
+    expect(subject.units[1]?.lessons[4]?.id).toBe('lesson-12-unit-two-exercises');
   });
 
   it('draws only on verified lesson pages or the supplied exercise images', () => {
@@ -216,6 +220,10 @@ describe('implementation boundary — Lessons 1–11 across Units 1–2 (Lessons
           'صور المصدر 1–3',
           'صور المصدر 4–5',
           ...Array.from({ length: 26 }, (_, index) => `صورة المصدر — السؤال ${index + 3}`),
+          // Unit 2 — «تمارين الوحدة الثانية». The supplied pages carry no
+          // printed page numbers, so every exercise is cited by its scan.
+          'صور المصدر (الوحدة الثانية)',
+          ...Array.from({ length: 34 }, (_, index) => `صورة المصدر (الوحدة الثانية) — السؤال ${index + 1}`),
         ],
         `unexpected source page: ${page}`,
       ).toContain(page);
@@ -387,13 +395,26 @@ describe('diagram contracts', () => {
     }
   });
 
-  it('ships only the 22 approved, page-located Lesson 3 source crops as images', () => {
+  it('ships only the approved, source-located scans as images', () => {
     const images = allDiagrams().filter((diagram) => diagram.kind === 'image');
-    expect(images).toHaveLength(22);
+    // 22 Lesson 3 crops + the photograph Question 31 prints.
+    expect(images).toHaveLength(23);
     for (const diagram of images) {
       expect(diagram.origin).toBe('textbook');
+      expect(diagram.source).toBeDefined();
+    }
+    const lesson03 = images.filter((diagram) => diagram.src.startsWith('diagrams/unit-01/lesson-03/'));
+    expect(lesson03).toHaveLength(22);
+    for (const diagram of lesson03) {
       expect(diagram.src).toMatch(/^diagrams\/unit-01\/lesson-03\/[^/]+\.png$/);
       expect([11, 12, 13, 14, 15, 16]).toContain(diagram.source?.page);
+    }
+    // The Unit 2 exercise set contributes exactly one image: the photograph
+    // Question 31 prints. It is a scan, so it is cited by its scan.
+    const unit02 = images.filter((diagram) => diagram.src.startsWith('diagrams/unit-02/exercises/'));
+    expect(unit02.map((diagram) => diagram.id)).toEqual(['fig-u2-q31-tower-photo']);
+    for (const diagram of unit02) {
+      expect(diagram.source?.page).toBe('صورة المصدر (الوحدة الثانية) — السؤال 31');
     }
   });
 
@@ -522,6 +543,52 @@ const VERIFIED_TEXTBOOK_FIGURES = [
   'fig-19-kite',
   'fig-19-pairs',
   'fig-19-isosceles',
+  // Unit 2 exercise-set reconstructions carry only what the printed page
+  // states: incidence, the order of the points along a line, the printed
+  // equality ticks, the printed parallel arrowheads and the printed
+  // measurements. No measured angle or distance is asserted. The
+  // justification per figure is in docs/UNIT-02-EXERCISES-FIGURES.md.
+  'fig-u2-q20-flowchart',
+  'fig-u2-q21-midpoint-quadrilateral',
+  'fig-u2-q24-altitude-bisector',
+  'fig-u2-q26-parallel-segment',
+  'fig-u2-q27-unknowns',
+  'fig-u2-q28-midpoint-parallel',
+  'fig-u2-q29-equal-ratios',
+  'fig-u2-q30-divide-segment',
+  'fig-u2-q32-distance-towers',
+  'fig-u2-q33-case-one',
+  'fig-u2-q33-case-two',
+  // Batch 1 — the figures printed with Questions 1 to 17. They carry only
+  // what the printed page states: incidence, the order of the points along a
+  // line, the printed equality ticks, the printed right-angle squares and
+  // angle arcs, the printed parallel arrowheads and the printed
+  // measurements. The justification per figure is in
+  // docs/UNIT-02-EXERCISES-FIGURES.md.
+  'fig-u2-q1-quadrilateral',
+  'fig-u2-q1-case-three',
+  'fig-u2-q1-case-two',
+  'fig-u2-q1-case-one',
+  'fig-u2-q1-thales-triangle',
+  'fig-u2-q2-circles',
+  'fig-u2-q2-triangle',
+  'fig-u2-q2-quadrilateral',
+  'fig-u2-q3-rectangle',
+  'fig-u2-q4-triangle',
+  'fig-u2-q5-medial-triangle',
+  'fig-u2-q6-parallelogram',
+  'fig-u2-q9-triangle',
+  'fig-u2-q10-case-one',
+  'fig-u2-q10-case-two',
+  'fig-u2-q13-hidden-vertex',
+  'fig-u2-q14-triangle',
+  'fig-u2-q15-triangle',
+  'fig-u2-q16-triangle',
+  'fig-u2-q17-triangle',
+  // Batch 2 — the three figures printed with Questions 18 and 19.
+  'fig-u2-q18-case-one',
+  'fig-u2-q18-case-two',
+  'fig-u2-q19-proof-draft',
 ];
 
 /** The eleven verbatim steps of Lesson 2, in printed order (pages 8–10). */
@@ -647,8 +714,14 @@ describe('authored material never displaces the source', () => {
     // placeholders with eight natively reconstructed textbook figures plus two
     // badged platform drawings (page 17's unmeasured sketches), so the textbook
     // total is now 58 — and no Lesson 4 figure is a placeholder any more.
-    expect(textbookFigures).toHaveLength(58);
-    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(58);
+    // 58 before the Unit 2 exercise set was added. That set brings eleven
+    // reconstructed textbook figures and one approved source photograph of
+    // Question 31, so the textbook total is now 70.
+    // Batch 1 of the same set adds the twenty figures printed with
+    // Questions 1 to 17, and Batch 2 adds the three figures printed with
+    // Questions 18 and 19, so the textbook total is now 93.
+    expect(textbookFigures).toHaveLength(93);
+    expect(new Set(textbookFigures.map((d) => d.id)).size).toBe(93);
     for (const diagram of textbookFigures) {
       if (diagram.kind === 'image') {
         expect(diagram.source, `${diagram.id} crop needs a printed-page source`).toBeDefined();
@@ -979,6 +1052,15 @@ describe('teacher resources', () => {
         }
       }
       const solved = new Set(lesson.teacherResources!.textbookSolutions.map((s) => s.question));
+      // The Unit 2 exercise set is the one lesson whose printed questions are
+      // NOT accompanied by teacher solutions: this pass reproduces the
+      // exercises verbatim and authors no solution, no answer key and no
+      // worked proof. The exemption is explicit, and the lesson publishes no
+      // `textbookSolutions` at all.
+      if (lesson.id === 'lesson-12-unit-two-exercises') {
+        expect(lesson.teacherResources!.textbookSolutions).toHaveLength(0);
+        continue;
+      }
       for (const question of printed) {
         expect(solved, `no teacher solution for: ${question}`).toContain(question);
       }

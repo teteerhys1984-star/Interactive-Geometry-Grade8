@@ -109,13 +109,14 @@ const sourceSteps = allSteps.filter((step) => step.origin === 'source');
 const authoredSteps = allSteps.filter((step) => step.origin === 'authored');
 
 describe('Unit 2 registration and Lesson 11 metadata', () => {
-  it('registers Lesson 11 in the fourth position of Unit 2 right after Lesson 10', () => {
+  it('registers Lesson 11 in the fourth position of Unit 2 right after Lesson 10 (the exercise set follows)', () => {
     const unitLessons = unit02.lessons ?? [];
     expect(unitLessons.map((lesson) => lesson.id)).toEqual([
       'lesson-08-triangle-midpoints',
       'lesson-09-parallel-from-midpoint',
       'lesson-10-parallel-lines-transversals',
       'lesson-11-three-ratios',
+      'lesson-12-unit-two-exercises',
     ]);
     expect(unitLessons[3]).toBe(lesson11);
     expect(lesson11.title).toBe('تساوي ثلاث نسب');

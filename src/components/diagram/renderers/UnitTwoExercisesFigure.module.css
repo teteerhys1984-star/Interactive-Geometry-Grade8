@@ -1,0 +1,232 @@
+.wrap {
+  width: min(100%, 50rem);
+}
+
+.wrap svg {
+  display: block;
+  /* The point names and the printed measurements are Latin: the figure reads
+     left-to-right whatever direction the surrounding Arabic text has. */
+  direction: ltr;
+  width: 100%;
+  height: auto;
+  color: var(--color-text);
+  font-family: var(--font-arabic);
+}
+
+/* ── points and labels ─────────────────────────────────────────────────── */
+
+.dot {
+  fill: var(--color-text);
+}
+
+.label,
+.labelRed {
+  fill: var(--color-text);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 21px;
+  font-style: italic;
+}
+
+.labelRed {
+  fill: #c84432;
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* ── strokes ───────────────────────────────────────────────────────────── */
+
+.outline {
+  fill: none;
+  stroke: var(--color-text);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.blueLine {
+  fill: none;
+  stroke: #2f6fd0;
+  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.redLine {
+  fill: none;
+  stroke: #c84432;
+  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.tickBlue line {
+  stroke: #2f6fd0;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+.tickRed line {
+  stroke: #c84432;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+.arrowBlack {
+  fill: var(--color-text);
+}
+
+.arrowRed {
+  fill: #c84432;
+}
+
+/* ── the printed flowchart of Question 20 ─────────────────────────────────── */
+
+.flowBox {
+  fill: none;
+  stroke: #2f6fd0;
+  stroke-width: 2.6;
+}
+
+.flowArrowLine {
+  stroke: #2f6fd0;
+  stroke-width: 2.2;
+}
+
+.flowBlank {
+  stroke: var(--color-text);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 9;
+}
+
+.flowText {
+  fill: var(--color-text);
+  font-family: var(--font-arabic);
+  font-size: 21px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+/* The boxes that mix Arabic prose with Latin point names keep the printed
+   right-to-left order: the Latin run stays on the right, as on the page. */
+.flowTextRtl {
+  direction: rtl;
+  unicode-bidi: isolate;
+}
+
+.arrowBlue {
+  fill: #2f6fd0;
+}
+
+/* ── the printed right-angle marks ───────────────────────────────────────── */
+
+.rightAngleBlue {
+  fill: none;
+  stroke: #2f6fd0;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.rightAngleRed {
+  fill: none;
+  stroke: #c84432;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── the Batch 1 figures (Q1–Q17) ────────────────────────────────────────── */
+
+/* The printed point names of these exercises: black italic, or red italic
+   where the page prints the name in red (the I and J of Question 4). */
+.labelRedItalic {
+  fill: #c84432;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 21px;
+  font-style: italic;
+}
+
+.labelBlue {
+  fill: #2f6fd0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 21px;
+  font-style: italic;
+}
+
+.labelBlueNumber {
+  fill: #2f6fd0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 21px;
+  font-style: normal;
+}
+
+.tickBlack line {
+  stroke: var(--color-text);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+.labelGreen {
+  fill: #2e8b57;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 21px;
+  font-style: italic;
+}
+
+/* The printed green line of Question 10. */
+.greenLine {
+  fill: none;
+  stroke: #2e8b57;
+  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+/* The printed yellow badge that carries the number of a figure. */
+.badgeYellow {
+  fill: #f7d846;
+  stroke: #a8842a;
+  stroke-width: 2;
+}
+
+.badgeText {
+  fill: #4a3a00;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 20px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* The printed angle arcs of Question 10. */
+.arcRed {
+  fill: none;
+  stroke: #c84432;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+.arcBlue {
+  fill: none;
+  stroke: #2f6fd0;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+/* The printed dashed measurement arrows. */
+.dashedBlue {
+  fill: none;
+  stroke: #2f6fd0;
+  stroke-width: 2.4;
+  stroke-dasharray: 9 7;
+  stroke-linecap: round;
+}
+
+.dashedBlack {
+  fill: none;
+  stroke: var(--color-text);
+  stroke-width: 2.4;
+  stroke-dasharray: 9 7;
+  stroke-linecap: round;
+}

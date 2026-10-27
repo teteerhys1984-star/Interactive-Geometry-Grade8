@@ -28,6 +28,7 @@ import { MidlineExplorer, MidlineFigure } from './lesson8';
 import { ParallelMidpointLab } from './lesson9';
 import { ThalesRatioLab } from './lesson10';
 import { ThreeRatiosLab } from './lesson11';
+import { UnitTwoExercisesFigure } from './UnitTwoExercisesFigure';
 
 /**
  * ============================================================================
@@ -100,6 +101,11 @@ registerInteractiveRenderer('thales-ratio-lab', ThalesRatioLab);
  * ratio k, so the student sees which printed conclusions belong to 2/3 alone. */
 registerInteractiveRenderer('three-ratios-lab', ThreeRatiosLab);
 
+/* Unit 2 — «تمارين الوحدة الثانية»: the reconstructed figures of the exercise
+ * set (Questions 28–34). They are drawn from coordinates measured in the
+ * supplied scans; the verification record is in docs/UNIT-02-EXERCISES-FIGURES.md. */
+registerInteractiveRenderer('unit-two-exercises-figure', UnitTwoExercisesFigure);
+
 export {
   TranslationFigure,
   GridFigure,
@@ -130,6 +136,7 @@ export {
   ParallelMidpointLab,
   ThalesRatioLab,
   ThreeRatiosLab,
+  UnitTwoExercisesFigure,
 };
 
 registerInteractiveRenderer('lesson-one-lab', LessonOneLab);
