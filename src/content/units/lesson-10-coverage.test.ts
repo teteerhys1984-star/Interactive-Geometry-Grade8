@@ -83,13 +83,14 @@ const sourceSteps = allSteps.filter((step) => step.origin === 'source');
 const authoredSteps = allSteps.filter((step) => step.origin === 'authored');
 
 describe('Unit 2 registration and Lesson 10 metadata', () => {
-  it('registers Lesson 10 in the third position of Unit 2 right after Lesson 9 (Lesson 11 follows)', () => {
+  it('registers Lesson 10 in the third position of Unit 2 right after Lesson 9 (Lesson 11 and the exercise set follow)', () => {
     const unitLessons = unit02.lessons ?? [];
     expect(unitLessons.map((lesson) => lesson.id)).toEqual([
       'lesson-08-triangle-midpoints',
       'lesson-09-parallel-from-midpoint',
       'lesson-10-parallel-lines-transversals',
       'lesson-11-three-ratios',
+      'lesson-12-unit-two-exercises',
     ]);
     expect(unitLessons[2]).toBe(lesson10);
     expect(lesson10.title).toBe('مستقيمات متوازية وقاطعان');
