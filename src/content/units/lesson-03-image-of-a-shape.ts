@@ -9,6 +9,7 @@ import {
 } from './lesson-03-teaching';
 import { lesson03Assessment } from './lesson-03-assessment';
 import { lesson03TeacherResources } from './lesson-03-teacher';
+import { lesson03Notebook } from './lesson-03-notebook';
 
 /**
  * Unit 1 — Lesson 3: «صورة شكل وفق انسحاب» (textbook pages 11–16).
@@ -838,6 +839,8 @@ export const lesson03: LessonInput = {
     },
 
     teachingLessonThreeRecap,
+    // Final copying station, after every source/teaching step and before assessment.
+    lesson03Notebook,
   ],
   assessment: lesson03Assessment,
   teacherResources: lesson03TeacherResources,

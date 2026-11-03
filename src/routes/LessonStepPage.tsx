@@ -19,12 +19,13 @@ import styles from './LessonStepPage.module.css';
 import { LessonOnePanel } from './LessonOnePanel';
 import type { HasLocalState } from './LessonOnePanel';
 
-/** Only these two pilot lessons retain stateful blocks from visited panels.
+/** Only these explicit opt-ins retain stateful blocks from visited panels.
  * Every other lesson keeps the original one-panel-at-a-time rendering.
  */
 const RETAINED_LESSON_IDS = new Set([
   'lesson-01-translation-and-properties',
   'lesson-02-image-of-a-point',
+  'lesson-03-image-of-a-shape',
 ]);
 
 /** Lesson 2 only: exactly the blocks that really own learner state.
@@ -59,15 +60,46 @@ const lessonTwoHasLocalState: HasLocalState = (block: ContentBlock): boolean => 
   return block.type === 'callout' && block.blocks.some(lessonTwoHasLocalState);
 };
 
+/** Lesson 3 only: shape/phase controls, grouped answers, three stepped
+ * constructions, and two disclosures. Fixed source crops, constructed SVGs
+ * and non-collapsible static teaching are not retained. Stateful descendants
+ * keep their containing block, as in Lessons 1/2, to preserve React identity.
+ */
+export const lessonThreeHasLocalState: HasLocalState = (block) => {
+  if (block.type === 'figure') {
+    const diagram = block.diagram;
+    if (diagram.kind !== 'interactive') return false;
+    if (
+      diagram.renderer === 'shape-translation-lab' ||
+      diagram.renderer === 'translation-challenges'
+    ) {
+      return true;
+    }
+    return (
+      diagram.renderer === 'construction-figure' &&
+      Array.isArray(diagram.params.steps) &&
+      diagram.params.steps.length > 0
+    );
+  }
+  if (block.type === 'teaching') {
+    return Boolean(block.collapsible) || block.blocks.some(lessonThreeHasLocalState);
+  }
+  return block.type === 'callout' && block.blocks.some(lessonThreeHasLocalState);
+};
+
 export function LessonStepPage() {
   const { lessonId, step } = useParams();
   const entry = lessonId ? getLesson(lessonId) : undefined;
   const stepNumber = Number(step);
-  // Only the two pilot lessons retain stateful blocks from visited panels.
+  // Only opted-in lessons retain stateful blocks from visited panels.
   // Static content is removed when inactive; labs/disclosures keep their keys.
   const retainPanels = lessonId ? RETAINED_LESSON_IDS.has(lessonId) : false;
   const hasState =
-    lessonId === 'lesson-02-image-of-a-point' ? lessonTwoHasLocalState : undefined;
+    lessonId === 'lesson-02-image-of-a-point'
+      ? lessonTwoHasLocalState
+      : lessonId === 'lesson-03-image-of-a-shape'
+        ? lessonThreeHasLocalState
+        : undefined;
   const [visited, setVisited] = useState({ lessonId, numbers: [stepNumber] });
   if (visited.lessonId !== lessonId) {
     setVisited({ lessonId, numbers: [stepNumber] });
