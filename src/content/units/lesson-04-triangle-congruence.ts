@@ -1,5 +1,6 @@
 import type { ContentBlock, DiagramSpec, LessonInput } from '../schema';
 import { lesson04Assessment } from './lesson-04-assessment';
+import { lesson04Notebook } from './lesson-04-notebook';
 import { lesson04TeacherResources } from './lesson-04-teacher';
 import {
   teachCasesLab,
@@ -314,6 +315,7 @@ export const lesson04: LessonInput = {
 
     /* ── شرح المنصّة — مراجعة ─────────────────────────────────────────── */
     teachRecap,
+    lesson04Notebook,
   ],
 
   assessment: lesson04Assessment,

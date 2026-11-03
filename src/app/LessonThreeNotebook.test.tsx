@@ -243,7 +243,7 @@ describe('Lesson 3 notebook — existing navigation and styling', () => {
     expect(container.querySelector('article > div[hidden]')).toBeNull();
   });
 
-  it('recognizes only the three explicit notebook IDs; Lessons 1/2 retain their content and counts', () => {
+  it('recognizes exactly the four explicit notebook IDs; Lessons 1/2 retain their content and counts', () => {
     const first = getLesson('lesson-01-translation-and-properties')!.lesson;
     const second = getLesson('lesson-02-image-of-a-point')!.lesson;
     expect(first.steps).toHaveLength(18);
@@ -252,7 +252,8 @@ describe('Lesson 3 notebook — existing navigation and styling', () => {
     expect(second.steps.at(-1)).toEqual(lessonStepSchema.parse(lesson02Notebook));
     for (const prior of [first, second, lesson])
       expect(isNotebookStep(prior.steps.at(-1)!)).toBe(true);
-    expect(isNotebookStep({ id: 'lesson-04-student-notebook' })).toBe(false);
+    expect(isNotebookStep({ id: 'lesson-04-student-notebook' })).toBe(true);
+    expect(isNotebookStep({ id: 'teach-04-08-recap' })).toBe(false);
     expect(isNotebookStep({ id: 'teach-03-06-recap' })).toBe(false);
   });
 });

@@ -78,7 +78,7 @@ describe('lesson 4 covers pages 17-19 in printed order', () => {
       expect(source, step.id).toBeDefined();
       expect(source?.page as number, step.id).toBeGreaterThanOrEqual(17);
       expect(source?.page as number, step.id).toBeLessThanOrEqual(19);
-      expect((source?.locator ?? "").trim().length, step.id).toBeGreaterThan(0);
+      expect((source?.locator ?? '').trim().length, step.id).toBeGreaterThan(0);
     }
   });
 
@@ -87,8 +87,12 @@ describe('lesson 4 covers pages 17-19 in printed order', () => {
     expect(pages).toEqual([...pages].sort((a, b) => a - b));
   });
 
-  it('has eight authored steps, each badged «شرح المنصّة» and page-free', () => {
-    expect(authoredSteps).toHaveLength(8);
+  it('has eight authored teaching steps and one authored notebook, each badged «شرح المنصّة» and page-free', () => {
+    const notebook = allSteps.find((step) => step.id === 'lesson-04-student-notebook');
+    const teaching = authoredSteps.filter((step) => step.id !== 'lesson-04-student-notebook');
+    expect(teaching).toHaveLength(8);
+    expect(authoredSteps).toHaveLength(9);
+    expect(notebook?.origin).toBe('authored');
     for (const step of authoredSteps) {
       expect(step.kicker, step.id).toBe('شرح المنصّة');
       // A platform explanation must never claim a printed page.
@@ -96,11 +100,13 @@ describe('lesson 4 covers pages 17-19 in printed order', () => {
     }
   });
 
-  it('places each authored step before the printed work it prepares', () => {
+  it('places each teaching step before the printed work it prepares; the notebook closes the lesson', () => {
     const origins = allSteps.map((step) => step.origin);
-    const lastAuthored = origins.lastIndexOf('authored');
-    expect(lastAuthored).toBe(origins.length - 1);
-    for (let index = 0; index < lastAuthored; index += 1) {
+    const recapIndex = allSteps.findIndex((step) => step.id === 'teach-04-08-recap');
+    expect(recapIndex).toBe(origins.length - 2);
+    expect(allSteps.at(-1)?.id).toBe('lesson-04-student-notebook');
+    // The notebook is not a preparation step: it is exempt from the source-adjacency rule.
+    for (let index = 0; index < recapIndex; index += 1) {
       if (origins[index] === 'authored') expect(origins[index + 1]).toBe('source');
     }
   });
@@ -149,7 +155,10 @@ describe('lesson 4 never falls back on the book', () => {
     ];
     for (const id of figureSteps) {
       const step = sourceSteps.find((entry) => entry.id === id)!;
-      expect(blocksOf(step.blocks).map((block) => block.type), id).toContain('figure');
+      expect(
+        blocksOf(step.blocks).map((block) => block.type),
+        id,
+      ).toContain('figure');
     }
   });
 

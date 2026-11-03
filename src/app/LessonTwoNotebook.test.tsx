@@ -61,7 +61,7 @@ describe('lesson 2 student notebook — placement and isolation', () => {
         .filter(({ lesson: other }) => other.steps.some((step) => step.id === NOTEBOOK_ID))
         .map(({ lesson: other }) => other.id),
     ).toEqual([lesson.id]);
-    // Exact course-wide membership: Lesson 3 now also ships its own notebook.
+    // Exact course-wide membership: Lessons 3 and 4 now also ship their own notebooks.
     // Lesson 1 and Lesson 2 keep their original notebook IDs and behavior.
     expect(
       allLessons
@@ -71,6 +71,7 @@ describe('lesson 2 student notebook — placement and isolation', () => {
       'lesson-01-translation-and-properties',
       lesson.id,
       'lesson-03-image-of-a-shape',
+      'lesson-04-triangle-congruence',
     ]);
     expect(allLessons[0]!.lesson.steps.at(-1)?.id).toBe('student-notebook');
     expect(lesson02Notebook.id).toBe(NOTEBOOK_ID);
