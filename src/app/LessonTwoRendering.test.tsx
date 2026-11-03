@@ -37,10 +37,10 @@ function renderAt(route: string) {
 }
 
 describe('Lesson 2 — every step renders', () => {
-  it('has eighteen steps: eleven from the book, seven from the platform', () => {
-    expect(lesson.steps).toHaveLength(18);
+  it('has nineteen steps: eleven from the book, seven from the platform and the notebook', () => {
+    expect(lesson.steps).toHaveLength(19);
     expect(lesson.steps.filter((step) => step.origin === 'source')).toHaveLength(11);
-    expect(lesson.steps.filter((step) => step.origin === 'authored')).toHaveLength(7);
+    expect(lesson.steps.filter((step) => step.origin === 'authored')).toHaveLength(8);
   });
 
   it('renders each step without a missing-renderer notice and without raw $ markers', () => {

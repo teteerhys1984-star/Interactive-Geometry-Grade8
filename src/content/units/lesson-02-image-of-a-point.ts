@@ -22,6 +22,7 @@ import {
 } from './lesson-02-figures';
 import { lesson02Assessment } from './lesson-02-assessment';
 import { lesson02TeacherResources } from './lesson-02-teacher';
+import { lesson02Notebook } from './lesson-02-notebook';
 
 /**
  * ============================================================================
@@ -404,6 +405,9 @@ export const lesson02: LessonInput = {
 
     /* ── 18 · شرح المنصّة — الخلاصة ── */
     teachingRecap,
+
+    /* ── 19 · 📒 دفتر الطالب — محطة التدوين الأخيرة، قبل الاختبار النهائي ── */
+    lesson02Notebook,
   ],
 
   assessment: lesson02Assessment,

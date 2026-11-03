@@ -1,23 +1,73 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { Breadcrumbs } from '@/components/layout';
-import { LessonSidebar, PrevNext, ProgressBar, StepRail } from '@/components/navigation';
+import {
+  LessonSidebar,
+  PrevNext,
+  ProgressBar,
+  StepRail,
+  isNotebookStep,
+} from '@/components/navigation';
 import { Blocks } from '@/components/content';
 import { getLesson, subject } from '@/content/registry';
+import type { ContentBlock } from '@/content/schema';
 import { routes } from '@/lib/routes';
 import { loadProgress, markStepViewed } from '@/lib/progress';
 import { lessonTheme } from '@/lib/lessonTheme';
 import { NotFoundPage } from './NotFoundPage';
 import styles from './LessonStepPage.module.css';
 import { LessonOnePanel } from './LessonOnePanel';
+import type { HasLocalState } from './LessonOnePanel';
+
+/** Only these two pilot lessons retain stateful blocks from visited panels.
+ * Every other lesson keeps the original one-panel-at-a-time rendering.
+ */
+const RETAINED_LESSON_IDS = new Set([
+  'lesson-01-translation-and-properties',
+  'lesson-02-image-of-a-point',
+]);
+
+/** Lesson 2 only: exactly the blocks that really own learner state.
+ * The four labs have controls; `grid-figure` has state only with reveals and
+ * `construction-figure` only with steps (Lesson 2 uses neither), so the fixed
+ * explanatory drawings are unmounted with their inactive panel. Collapsible
+ * teaching cards keep their open/closed state. No lab implementation changes.
+ */
+const LESSON_TWO_STATEFUL_RENDERERS = new Set([
+  'compass-lab',
+  'point-image-lab',
+  'lattice-placement',
+  'vector-chain',
+]);
+
+const lessonTwoHasLocalState: HasLocalState = (block: ContentBlock): boolean => {
+  if (block.type === 'figure') {
+    const diagram = block.diagram;
+    if (diagram.kind !== 'interactive') return false;
+    if (LESSON_TWO_STATEFUL_RENDERERS.has(diagram.renderer)) return true;
+    if (diagram.renderer === 'grid-figure') {
+      return Array.isArray(diagram.params.reveals) && diagram.params.reveals.length > 0;
+    }
+    if (diagram.renderer === 'construction-figure') {
+      return Array.isArray(diagram.params.steps) && diagram.params.steps.length > 0;
+    }
+    return false;
+  }
+  if (block.type === 'teaching') {
+    return Boolean(block.collapsible) || block.blocks.some(lessonTwoHasLocalState);
+  }
+  return block.type === 'callout' && block.blocks.some(lessonTwoHasLocalState);
+};
 
 export function LessonStepPage() {
   const { lessonId, step } = useParams();
   const entry = lessonId ? getLesson(lessonId) : undefined;
   const stepNumber = Number(step);
-  // Only this pilot lesson retains stateful blocks from visited panels.
+  // Only the two pilot lessons retain stateful blocks from visited panels.
   // Static content is removed when inactive; labs/disclosures keep their keys.
-  const retainPanels = lessonId === 'lesson-01-translation-and-properties';
+  const retainPanels = lessonId ? RETAINED_LESSON_IDS.has(lessonId) : false;
+  const hasState =
+    lessonId === 'lesson-02-image-of-a-point' ? lessonTwoHasLocalState : undefined;
   const [visited, setVisited] = useState({ lessonId, numbers: [stepNumber] });
   if (visited.lessonId !== lessonId) {
     setVisited({ lessonId, numbers: [stepNumber] });
@@ -121,7 +171,8 @@ export function LessonStepPage() {
                   key={`${lesson.id}-${panel.id}`}
                   blocks={panel.blocks}
                   active={index + 1 === stepNumber}
-                  className={panel.id === 'student-notebook' ? styles.notebook : undefined}
+                  hasState={hasState}
+                  className={isNotebookStep(panel) ? styles.notebook : undefined}
                 />
               ) : null,
             )
