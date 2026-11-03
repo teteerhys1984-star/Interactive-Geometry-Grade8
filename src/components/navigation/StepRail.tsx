@@ -22,12 +22,12 @@ export function StepRail({ lessonId, steps, activeStep }: StepRailProps) {
             <li key={step.id}>
               <Link
                 to={routes.lessonStep(lessonId, number)}
-                className={isActive ? styles.activeItem : styles.item}
+                className={`${isActive ? styles.activeItem : styles.item} ${step.id === 'student-notebook' ? styles.notebook : ''}`}
                 aria-current={isActive ? 'step' : undefined}
                 title={step.title}
               >
                 <span className="numeric" dir="ltr">
-                  {number}
+                  {step.id === 'student-notebook' ? step.title : number}
                 </span>
               </Link>
             </li>

@@ -1,3 +1,4 @@
+import { lesson01Notebook } from './lesson-01-notebook';
 import type { UnitInput } from '../schema';
 import { launchSteps, lesson01Figure, reasoning } from './lesson-01-start';
 import {
@@ -217,6 +218,7 @@ export const unit01: UnitInput = {
         teachingCommonMistakes,
         // ── شرح المنصّة ──
         teachingRecap,
+        lesson01Notebook,
       ],
 
       /** Platform-authored final assessment (10 questions). */
