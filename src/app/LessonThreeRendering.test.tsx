@@ -16,10 +16,11 @@ function renderAt(route: string) {
 }
 
 describe('Lesson 3 — source and flow', () => {
-  it('has sixteen source steps and six clearly authored teaching steps', () => {
-    expect(lesson.steps).toHaveLength(22);
+  it('has sixteen source steps, six teaching steps and the final authored notebook', () => {
+    expect(lesson.steps).toHaveLength(23);
     expect(lesson.steps.filter((step) => step.origin === 'source')).toHaveLength(16);
-    expect(lesson.steps.filter((step) => step.origin === 'authored')).toHaveLength(6);
+    expect(lesson.steps.filter((step) => step.origin === 'authored')).toHaveLength(7);
+    expect(lesson.steps.at(-1)?.id).toBe('lesson-03-student-notebook');
   });
 
   it('renders every step with no missing renderer and no raw math delimiters', () => {
@@ -34,7 +35,7 @@ describe('Lesson 3 — source and flow', () => {
   it('shows Lesson 3 on its outline and ends at the shared final assessment', () => {
     const { unmount } = renderAt(`/lesson/${lesson.id}`);
     expect(screen.getByRole('heading', { name: lesson.title })).toBeInTheDocument();
-    expect(screen.getAllByText('22', { selector: '[dir="ltr"]' }).length).toBeGreaterThan(0);
+    expect(screen.getAllByText('23', { selector: '[dir="ltr"]' }).length).toBeGreaterThan(0);
     unmount();
 
     renderAt(`/lesson/${lesson.id}/step/${lesson.steps.length}`);
