@@ -61,13 +61,13 @@ describe('lesson 2 student notebook — placement and isolation', () => {
         .filter(({ lesson: other }) => other.steps.some((step) => step.id === NOTEBOOK_ID))
         .map(({ lesson: other }) => other.id),
     ).toEqual([lesson.id]);
-    // Exactly two lessons ship a notebook: Lesson 1's original one and this
-    // new one. No third lesson gained a notebook, and Lesson 1's is untouched.
+    // Exactly three lessons ship a notebook: the two originals and Lesson 3.
+    // No fourth lesson gained a notebook, and Lesson 1's is untouched.
     expect(
       allLessons
         .filter(({ lesson: other }) => other.steps.some((step) => step.title === NOTEBOOK_TITLE))
         .map(({ lesson: other }) => other.id),
-    ).toEqual(['lesson-01-translation-and-properties', lesson.id]);
+    ).toEqual(['lesson-01-translation-and-properties', lesson.id, 'lesson-03-image-of-a-shape']);
     expect(allLessons[0]!.lesson.steps.at(-1)?.id).toBe('student-notebook');
     expect(lesson02Notebook.id).toBe(NOTEBOOK_ID);
   });

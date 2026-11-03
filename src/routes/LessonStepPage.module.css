@@ -106,7 +106,7 @@
   }
 }
 
-/* Quiet school-notebook treatment, scoped to the final panel of the two
+/* Quiet school-notebook treatment, scoped to the final panel of the three
    lessons that actually ship a student notebook. */
 .notebook {
   line-height: 2;
