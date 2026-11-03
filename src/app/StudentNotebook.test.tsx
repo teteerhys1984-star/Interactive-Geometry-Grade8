@@ -27,7 +27,13 @@ describe('lesson 1 student notebook in existing navigation', () => {
     ).toBe(true);
     const { container } = render(<Blocks blocks={lesson.steps.at(-1)!.blocks} />);
     expect(container.querySelectorAll('.katex-error')).toHaveLength(0);
-    expect(container.querySelectorAll('.katex-display')).toHaveLength(6);
+    expect(container.querySelectorAll('.katex-display')).toHaveLength(3);
+    const properties = [...container.querySelectorAll('aside')].find((section) =>
+      section.textContent?.includes('٤. خواص الانسحاب'),
+    )!;
+    expect(properties.querySelectorAll('ol')).toHaveLength(1);
+    expect(properties.querySelectorAll('ol > li')).toHaveLength(4);
+    expect(properties.querySelector('ol')!.textContent).not.toMatch(/[٢٣٤]\./);
     for (const word of ['الأطوال', 'الاستقامة', 'الزوايا', 'المساحات'])
       expect(container.textContent).toContain(word);
   });
@@ -63,5 +69,31 @@ describe('lesson 1 student notebook in existing navigation', () => {
       expect(screen.getByRole('combobox')).toBe(select);
       expect(select).toHaveValue('EDGF');
     }
+  });
+  it('removes inactive static content while retaining only stateful blocks', () => {
+    const { container } = open(1);
+    for (let step = 2; step <= last; step++) {
+      fireEvent.click(within(sidebar()).getAllByRole('link')[step]!);
+    }
+    // A regression guard against the former 10,003-element accumulated DOM.
+    expect(container.querySelectorAll('*').length).toBeLessThan(3000);
+    const hidden = [...container.querySelectorAll('article > div[hidden]')];
+    expect(hidden.length).toBeGreaterThan(0);
+    for (const panel of hidden) {
+      expect(panel.querySelector('select, input, button')).not.toBeNull();
+    }
+    expect(container.textContent).not.toContain('حلّ السؤال 2 — كيف نضمن أننا لم ننسَ شكلاً؟');
+  });
+
+  it('preserves an opened explanation without retaining the station prose', () => {
+    const intro = lesson.steps.findIndex((s) => s.id === 'teach-01-what-is-a-translation') + 1;
+    open(intro);
+    fireEvent.click(screen.getByRole('button', { name: /فكّر أولاً، ثم اكشف الإجابة/ }));
+    fireEvent.click(within(sidebar()).getByRole('link', { name: /📒 دفتر الطالب/ }));
+    fireEvent.click(within(sidebar()).getAllByRole('link')[intro]!);
+    expect(screen.getByRole('button', { name: /إخفاء الشرح/ })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
   });
 });
