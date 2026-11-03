@@ -105,3 +105,21 @@
     border-radius: var(--radius-lg);
   }
 }
+
+/* Quiet school-notebook treatment, scoped to the final panel of lesson 1. */
+.notebook {
+  line-height: 2;
+  max-inline-size: 46rem;
+  margin-inline: auto;
+}
+
+.notebook > aside {
+  margin-block: var(--space-6);
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  box-shadow: none;
+}
+
+.notebook li + li {
+  margin-block-start: var(--space-2);
+}

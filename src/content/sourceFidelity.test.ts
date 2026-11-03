@@ -672,7 +672,7 @@ describe('authored material never displaces the source', () => {
     // Each authored step must be adjacent to source steps only — i.e. the
     // source sequence read on its own is still the printed sequence.
     expect(lesson.steps.filter((s) => s.origin === 'authored').length).toBeGreaterThan(0);
-    expect(lesson.steps).toHaveLength(17);
+    expect(lesson.steps).toHaveLength(18);
   });
 
   it('still contains every checked verbatim sentence, character for character', () => {

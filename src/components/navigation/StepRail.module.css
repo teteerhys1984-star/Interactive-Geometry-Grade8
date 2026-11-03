@@ -48,3 +48,10 @@
 .activeItem {
   box-shadow: 0 0 0 4px var(--color-primary-soft);
 }
+
+.notebook {
+  inline-size: max-content;
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-md);
+  white-space: nowrap;
+}

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { Breadcrumbs } from '@/components/layout';
 import { LessonSidebar, PrevNext, ProgressBar, StepRail } from '@/components/navigation';
@@ -9,11 +9,21 @@ import { loadProgress, markStepViewed } from '@/lib/progress';
 import { lessonTheme } from '@/lib/lessonTheme';
 import { NotFoundPage } from './NotFoundPage';
 import styles from './LessonStepPage.module.css';
+import { LessonOnePanel } from './LessonOnePanel';
 
 export function LessonStepPage() {
   const { lessonId, step } = useParams();
   const entry = lessonId ? getLesson(lessonId) : undefined;
   const stepNumber = Number(step);
+  // Only this pilot lesson retains stateful blocks from visited panels.
+  // Static content is removed when inactive; labs/disclosures keep their keys.
+  const retainPanels = lessonId === 'lesson-01-translation-and-properties';
+  const [visited, setVisited] = useState({ lessonId, numbers: [stepNumber] });
+  if (visited.lessonId !== lessonId) {
+    setVisited({ lessonId, numbers: [stepNumber] });
+  } else if (retainPanels && !visited.numbers.includes(stepNumber)) {
+    setVisited({ lessonId, numbers: [...visited.numbers, stepNumber] });
+  }
 
   const stepId =
     entry && Number.isInteger(stepNumber) ? entry.lesson.steps[stepNumber - 1]?.id : undefined;
@@ -104,7 +114,20 @@ export function LessonStepPage() {
             ) : null}
           </header>
 
-          <Blocks blocks={currentStep.blocks} />
+          {retainPanels ? (
+            lesson.steps.map((panel, index) =>
+              visited.numbers.includes(index + 1) ? (
+                <LessonOnePanel
+                  key={`${lesson.id}-${panel.id}`}
+                  blocks={panel.blocks}
+                  active={index + 1 === stepNumber}
+                  className={panel.id === 'student-notebook' ? styles.notebook : undefined}
+                />
+              ) : null,
+            )
+          ) : (
+            <Blocks blocks={currentStep.blocks} />
+          )}
         </article>
 
         <PrevNext previous={previous} next={next} />
