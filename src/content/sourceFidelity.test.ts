@@ -799,9 +799,11 @@ describe('Lesson 3 — authored material never displaces the source', () => {
     expect(sourceIds).toEqual(LESSON_3_SOURCE_STEP_IDS);
   });
 
-  it('interleaves six authored steps without reordering the source', () => {
-    expect(lesson.steps.filter((step) => step.origin === 'authored')).toHaveLength(6);
-    expect(lesson.steps).toHaveLength(22);
+  it('keeps six interleaved teaching steps and appends only the student notebook', () => {
+    expect(lesson.steps.slice(0, -1).filter((step) => step.origin === 'authored')).toHaveLength(6);
+    expect(lesson.steps.at(-1)?.id).toBe('lesson-03-student-notebook');
+    expect(lesson.steps.filter((step) => step.origin === 'authored')).toHaveLength(7);
+    expect(lesson.steps).toHaveLength(23);
   });
 
   it('still contains every checked sentence from pages 11–16 character for character', () => {

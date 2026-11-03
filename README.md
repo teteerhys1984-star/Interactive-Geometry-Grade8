@@ -115,10 +115,13 @@ Lesson 1 keeps the default palette and is untouched.
 
 ## Lesson 3 content model
 
-Lesson 3 («صورة شكل وفق انسحاب», pages 11–16) has **22 steps**: 16 source
-steps in printed order and 6 badged platform-teaching steps. It ends with a
-new **12-question** final assessment and includes 28 page- and branch-matched
-teacher solutions for every printed exercise branch.
+Lesson 3 («صورة شكل وفق انسحاب», pages 11–16) has **23 steps**: 16 source
+steps in printed order, 6 badged platform-teaching steps, and the final
+**📒 دفتر الطالب** station. The notebook precedes the unchanged
+**12-question** final assessment; the lesson includes 28 page- and branch-matched
+teacher solutions for every printed exercise branch. Its content sources,
+selective state retention and browser verification are recorded in
+[`docs/LESSON-03-STUDENT-NOTEBOOK.md`](docs/LESSON-03-STUDENT-NOTEBOOK.md).
 
 Its **22 textbook figures** are exact crops from the six supplied page scans,
 with printed page/locator metadata and no guessed redraws. The inventory and

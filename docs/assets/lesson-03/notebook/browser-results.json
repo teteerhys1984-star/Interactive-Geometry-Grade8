@@ -1,0 +1,586 @@
+{
+  "browser": "153.0.8010.0",
+  "toolchain": {
+    "playwrightCore": "1.64.1",
+    "sparticuzChromium": "153.0.0"
+  },
+  "baseUrl": "http://127.0.0.1:5173/Interactive-Geometry-Grade8/#",
+  "fonts": "Test-only Noto Naskh Arabic regular/bold and Noto Emoji under /tmp/fonts; application CSS unchanged.",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 1000,
+      "errors": [],
+      "warnings": [],
+      "requestFailures": [],
+      "httpErrors": [],
+      "state": {
+        "explorerBefore": {
+          "sliders": ["4", "-1"],
+          "shape": "true",
+          "phase": "true",
+          "status": "الحركة الحالية: (4, -1). كل نقطة وصورتها تفصل بينهما الحركة نفسها، وتبقى الأطوال والزوايا محفوظة."
+        },
+        "construction13Before": "2/4نطبّق الحركة نفسها على كل رأس.",
+        "construction15Before": "3/4نعيّن B′ وC′ بالمتجه نفسه.",
+        "challengesBefore": "النتيجة: 3 من 3محاولة جديدة",
+        "construction19Before": "2/2نعيّن E على [BA] بحيث BE=2؛ أي إن E منتصف [BA].",
+        "explorerAfter": {
+          "sliders": ["4", "-1"],
+          "shape": "true",
+          "phase": "true",
+          "status": "الحركة الحالية: (4, -1). كل نقطة وصورتها تفصل بينهما الحركة نفسها، وتبقى الأطوال والزوايا محفوظة.",
+          "sameNode": true
+        },
+        "construction13After": "2/4نطبّق الحركة نفسها على كل رأس.",
+        "construction13SameNode": true,
+        "construction15After": "3/4نعيّن B′ وC′ بالمتجه نفسه.",
+        "construction15SameNode": true,
+        "construction19After": "2/2نعيّن E على [BA] بحيث BE=2؛ أي إن E منتصف [BA].",
+        "construction19SameNode": true,
+        "challengesAfter": "النتيجة: 3 من 3محاولة جديدة",
+        "challengesSameNode": true,
+        "checkedAnswers": 3,
+        "lockedFieldsets": 3,
+        "__starterDisclosurePreserved": true,
+        "__recapDisclosurePreserved": true
+      },
+      "stationTitles": [
+        "من صورة نقطة إلى صورة شكل كامل",
+        "1. تخمين",
+        "2. إثبات: حالة مستقيمين غير متوازيين",
+        "لماذا تبقى صورة المستقيم موازية له؟",
+        "ارسم صور الأشكال الثلاثة",
+        "صورة مستقيم",
+        "أولاً: الحالة غير المتوازية",
+        "ثانياً: الحالة المتوازية",
+        "صورة مستقيمين متوازيين أو متعامدين",
+        "صورة قطعة مستقيمة",
+        "مختبر صورة الشكل",
+        "صورة نصف مستقيم وصورة دائرة",
+        "إنشاء صورة شكل خطوةً خطوة",
+        "كيف نرسم صورة مستقيم وفق انسحاب؟",
+        "كيف نستعمل خواص الانسحاب في إنشاء هندسي؟",
+        "صور المستقيمات المتوازية والمتعامدة",
+        "تحديات قبل التمرينات",
+        "صورة مستقيم والانسحاب المعاكس",
+        "صورة قطعة في مثلث قائم",
+        "صورة مستطيل",
+        "اكتشف خطأ الرسم",
+        "خلاصة قبل الاختبار النهائي",
+        "📒 دفتر الطالب"
+      ],
+      "outline": {
+        "count": 23,
+        "last": "23شرح المنصّة📒 دفتر الطالب",
+        "lastHref": "#/lesson/lesson-03-image-of-a-shape/step/23",
+        "assessmentAfter": "#/assessment/lesson-03-final-assessment"
+      },
+      "initialDomElements": 382,
+      "traversalMs": 4969,
+      "roundTripMs": [1142, 913, 1228, 1072, 2140],
+      "meanRoundTripMs": 1299,
+      "noFullReload": true,
+      "navigationBoundingBox": {
+        "x": 1024,
+        "y": 134,
+        "width": 272,
+        "height": 1444.3125
+      },
+      "layout": {
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "innerWidth": 1440,
+        "documentScrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "horizontalPageOverflow": false,
+        "direction": "rtl",
+        "title": "📒 دفتر الطالب",
+        "notebookClass": "_notebook_3z6od_111",
+        "notebookStyle": {
+          "lineHeight": "32.96px",
+          "maxInlineSize": "736px"
+        },
+        "sections": [
+          "✦١. صورة شكل وفق انسحاب",
+          "❯٢. صورة مستقيم والتوازي والتعامد",
+          "❯٣. صور الأشكال الأساسية",
+          "❯٤. إنشاء صورة مستقيم",
+          "❯٥. قواعد وتنبيهات"
+        ],
+        "orderedLists": 1,
+        "orderedItems": 4,
+        "unorderedLists": 3,
+        "mathRuns": 59,
+        "unisolatedMath": 0,
+        "katexErrors": 0,
+        "rawMathDelimiters": false,
+        "outsideViewport": [],
+        "clippedTextOrControls": [],
+        "controlsOverlap": false,
+        "controlRects": [
+          {
+            "x": 802.875,
+            "y": 1989.75,
+            "width": 189.125,
+            "height": 77.671875,
+            "right": 992,
+            "bottom": 2067.421875
+          },
+          {
+            "x": 144,
+            "y": 1987.75,
+            "width": 126.96875,
+            "height": 77.671875,
+            "right": 270.96875,
+            "bottom": 2065.421875
+          }
+        ],
+        "duplicateIds": [],
+        "domElements": 2357,
+        "hiddenPanels": 6,
+        "hiddenStaticImages": 0,
+        "hiddenPanelsWithoutControls": 0,
+        "staticIntroRetained": false,
+        "staticSummaryRetained": false,
+        "rail": null,
+        "nextAssessmentHref": "#/assessment/lesson-03-final-assessment",
+        "previousRecapHref": "#/lesson/lesson-03-image-of-a-shape/step/22",
+        "fontStatus": "loaded",
+        "platformFonts": {
+          "title": [
+            {
+              "familyName": "Noto Naskh Arabic",
+              "postScriptName": "NotoNaskhArabic-Bold",
+              "isCustomFont": false,
+              "glyphCount": 15
+            },
+            {
+              "familyName": "Noto Emoji",
+              "postScriptName": "NotoEmoji-Regular",
+              "isCustomFont": false,
+              "glyphCount": 1
+            }
+          ],
+          "arabic": [
+            {
+              "familyName": "Noto Naskh Arabic",
+              "postScriptName": "NotoNaskhArabic-Bold",
+              "isCustomFont": false,
+              "glyphCount": 28
+            }
+          ],
+          "math": [
+            {
+              "familyName": "KaTeX_Math",
+              "postScriptName": "KaTeX_Math-Italic",
+              "isCustomFont": true,
+              "glyphCount": 1
+            }
+          ]
+        }
+      },
+      "assessmentReached": true
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844,
+      "errors": [],
+      "warnings": [],
+      "requestFailures": [],
+      "httpErrors": [],
+      "state": {
+        "explorerBefore": {
+          "sliders": ["4", "-1"],
+          "shape": "true",
+          "phase": "true",
+          "status": "الحركة الحالية: (4, -1). كل نقطة وصورتها تفصل بينهما الحركة نفسها، وتبقى الأطوال والزوايا محفوظة."
+        },
+        "construction13Before": "2/4نطبّق الحركة نفسها على كل رأس.",
+        "construction15Before": "3/4نعيّن B′ وC′ بالمتجه نفسه.",
+        "challengesBefore": "النتيجة: 3 من 3محاولة جديدة",
+        "construction19Before": "2/2نعيّن E على [BA] بحيث BE=2؛ أي إن E منتصف [BA].",
+        "explorerAfter": {
+          "sliders": ["4", "-1"],
+          "shape": "true",
+          "phase": "true",
+          "status": "الحركة الحالية: (4, -1). كل نقطة وصورتها تفصل بينهما الحركة نفسها، وتبقى الأطوال والزوايا محفوظة.",
+          "sameNode": true
+        },
+        "construction13After": "2/4نطبّق الحركة نفسها على كل رأس.",
+        "construction13SameNode": true,
+        "construction15After": "3/4نعيّن B′ وC′ بالمتجه نفسه.",
+        "construction15SameNode": true,
+        "construction19After": "2/2نعيّن E على [BA] بحيث BE=2؛ أي إن E منتصف [BA].",
+        "construction19SameNode": true,
+        "challengesAfter": "النتيجة: 3 من 3محاولة جديدة",
+        "challengesSameNode": true,
+        "checkedAnswers": 3,
+        "lockedFieldsets": 3,
+        "__starterDisclosurePreserved": true,
+        "__recapDisclosurePreserved": true
+      },
+      "stationTitles": [
+        "من صورة نقطة إلى صورة شكل كامل",
+        "1. تخمين",
+        "2. إثبات: حالة مستقيمين غير متوازيين",
+        "لماذا تبقى صورة المستقيم موازية له؟",
+        "ارسم صور الأشكال الثلاثة",
+        "صورة مستقيم",
+        "أولاً: الحالة غير المتوازية",
+        "ثانياً: الحالة المتوازية",
+        "صورة مستقيمين متوازيين أو متعامدين",
+        "صورة قطعة مستقيمة",
+        "مختبر صورة الشكل",
+        "صورة نصف مستقيم وصورة دائرة",
+        "إنشاء صورة شكل خطوةً خطوة",
+        "كيف نرسم صورة مستقيم وفق انسحاب؟",
+        "كيف نستعمل خواص الانسحاب في إنشاء هندسي؟",
+        "صور المستقيمات المتوازية والمتعامدة",
+        "تحديات قبل التمرينات",
+        "صورة مستقيم والانسحاب المعاكس",
+        "صورة قطعة في مثلث قائم",
+        "صورة مستطيل",
+        "اكتشف خطأ الرسم",
+        "خلاصة قبل الاختبار النهائي",
+        "📒 دفتر الطالب"
+      ],
+      "outline": {
+        "count": 23,
+        "last": "23شرح المنصّة📒 دفتر الطالب",
+        "lastHref": "#/lesson/lesson-03-image-of-a-shape/step/23",
+        "assessmentAfter": "#/assessment/lesson-03-final-assessment"
+      },
+      "initialDomElements": 382,
+      "traversalMs": 4040,
+      "roundTripMs": [255, 302, 278, 323, 239],
+      "meanRoundTripMs": 279.4,
+      "noFullReload": true,
+      "navigationBoundingBox": {
+        "x": 12,
+        "y": 363.796875,
+        "width": 366,
+        "height": 52
+      },
+      "layout": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "innerWidth": 390,
+        "documentScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "horizontalPageOverflow": false,
+        "direction": "rtl",
+        "title": "📒 دفتر الطالب",
+        "notebookClass": "_notebook_3z6od_111",
+        "notebookStyle": {
+          "lineHeight": "32.96px",
+          "maxInlineSize": "736px"
+        },
+        "sections": [
+          "✦١. صورة شكل وفق انسحاب",
+          "❯٢. صورة مستقيم والتوازي والتعامد",
+          "❯٣. صور الأشكال الأساسية",
+          "❯٤. إنشاء صورة مستقيم",
+          "❯٥. قواعد وتنبيهات"
+        ],
+        "orderedLists": 1,
+        "orderedItems": 4,
+        "unorderedLists": 3,
+        "mathRuns": 59,
+        "unisolatedMath": 0,
+        "katexErrors": 0,
+        "rawMathDelimiters": false,
+        "outsideViewport": [],
+        "clippedTextOrControls": [],
+        "controlsOverlap": false,
+        "controlRects": [
+          {
+            "x": 12,
+            "y": 2815.203125,
+            "width": 366,
+            "height": 77.671875,
+            "right": 378,
+            "bottom": 2892.875
+          },
+          {
+            "x": 12,
+            "y": 2904.875,
+            "width": 366,
+            "height": 77.671875,
+            "right": 378,
+            "bottom": 2982.546875
+          }
+        ],
+        "duplicateIds": [],
+        "domElements": 2357,
+        "hiddenPanels": 6,
+        "hiddenStaticImages": 0,
+        "hiddenPanelsWithoutControls": 0,
+        "staticIntroRetained": false,
+        "staticSummaryRetained": false,
+        "rail": {
+          "x": 12,
+          "y": 363.796875,
+          "width": 366,
+          "height": 52,
+          "right": 378,
+          "bottom": 415.796875,
+          "scrollWidth": 1078,
+          "clientWidth": 366,
+          "notebook": {
+            "x": 11.6875,
+            "y": 363.796875,
+            "width": 110.3125,
+            "height": 36,
+            "right": 122,
+            "bottom": 399.796875
+          },
+          "notebookText": "📒 دفتر الطالب",
+          "notebookFullyVisible": true,
+          "active": "step"
+        },
+        "nextAssessmentHref": "#/assessment/lesson-03-final-assessment",
+        "previousRecapHref": "#/lesson/lesson-03-image-of-a-shape/step/22",
+        "fontStatus": "loaded",
+        "platformFonts": {
+          "title": [
+            {
+              "familyName": "Noto Naskh Arabic",
+              "postScriptName": "NotoNaskhArabic-Bold",
+              "isCustomFont": false,
+              "glyphCount": 15
+            },
+            {
+              "familyName": "Noto Emoji",
+              "postScriptName": "NotoEmoji-Regular",
+              "isCustomFont": false,
+              "glyphCount": 1
+            }
+          ],
+          "arabic": [
+            {
+              "familyName": "Noto Naskh Arabic",
+              "postScriptName": "NotoNaskhArabic-Bold",
+              "isCustomFont": false,
+              "glyphCount": 28
+            }
+          ],
+          "math": [
+            {
+              "familyName": "KaTeX_Math",
+              "postScriptName": "KaTeX_Math-Italic",
+              "isCustomFont": true,
+              "glyphCount": 1
+            }
+          ]
+        }
+      },
+      "assessmentReached": true
+    },
+    {
+      "name": "narrow-mobile",
+      "width": 320,
+      "height": 740,
+      "errors": [],
+      "warnings": [],
+      "requestFailures": [],
+      "httpErrors": [],
+      "state": {
+        "explorerBefore": {
+          "sliders": ["4", "-1"],
+          "shape": "true",
+          "phase": "true",
+          "status": "الحركة الحالية: (4, -1). كل نقطة وصورتها تفصل بينهما الحركة نفسها، وتبقى الأطوال والزوايا محفوظة."
+        },
+        "construction13Before": "2/4نطبّق الحركة نفسها على كل رأس.",
+        "construction15Before": "3/4نعيّن B′ وC′ بالمتجه نفسه.",
+        "challengesBefore": "النتيجة: 3 من 3محاولة جديدة",
+        "construction19Before": "2/2نعيّن E على [BA] بحيث BE=2؛ أي إن E منتصف [BA].",
+        "explorerAfter": {
+          "sliders": ["4", "-1"],
+          "shape": "true",
+          "phase": "true",
+          "status": "الحركة الحالية: (4, -1). كل نقطة وصورتها تفصل بينهما الحركة نفسها، وتبقى الأطوال والزوايا محفوظة.",
+          "sameNode": true
+        },
+        "construction13After": "2/4نطبّق الحركة نفسها على كل رأس.",
+        "construction13SameNode": true,
+        "construction15After": "3/4نعيّن B′ وC′ بالمتجه نفسه.",
+        "construction15SameNode": true,
+        "construction19After": "2/2نعيّن E على [BA] بحيث BE=2؛ أي إن E منتصف [BA].",
+        "construction19SameNode": true,
+        "challengesAfter": "النتيجة: 3 من 3محاولة جديدة",
+        "challengesSameNode": true,
+        "checkedAnswers": 3,
+        "lockedFieldsets": 3,
+        "__starterDisclosurePreserved": true,
+        "__recapDisclosurePreserved": true
+      },
+      "stationTitles": [
+        "من صورة نقطة إلى صورة شكل كامل",
+        "1. تخمين",
+        "2. إثبات: حالة مستقيمين غير متوازيين",
+        "لماذا تبقى صورة المستقيم موازية له؟",
+        "ارسم صور الأشكال الثلاثة",
+        "صورة مستقيم",
+        "أولاً: الحالة غير المتوازية",
+        "ثانياً: الحالة المتوازية",
+        "صورة مستقيمين متوازيين أو متعامدين",
+        "صورة قطعة مستقيمة",
+        "مختبر صورة الشكل",
+        "صورة نصف مستقيم وصورة دائرة",
+        "إنشاء صورة شكل خطوةً خطوة",
+        "كيف نرسم صورة مستقيم وفق انسحاب؟",
+        "كيف نستعمل خواص الانسحاب في إنشاء هندسي؟",
+        "صور المستقيمات المتوازية والمتعامدة",
+        "تحديات قبل التمرينات",
+        "صورة مستقيم والانسحاب المعاكس",
+        "صورة قطعة في مثلث قائم",
+        "صورة مستطيل",
+        "اكتشف خطأ الرسم",
+        "خلاصة قبل الاختبار النهائي",
+        "📒 دفتر الطالب"
+      ],
+      "outline": {
+        "count": 23,
+        "last": "23شرح المنصّة📒 دفتر الطالب",
+        "lastHref": "#/lesson/lesson-03-image-of-a-shape/step/23",
+        "assessmentAfter": "#/assessment/lesson-03-final-assessment"
+      },
+      "initialDomElements": 382,
+      "traversalMs": 3931,
+      "roundTripMs": [314, 266, 202, 268, 226],
+      "meanRoundTripMs": 255.2,
+      "noFullReload": true,
+      "navigationBoundingBox": {
+        "x": 12,
+        "y": 407.15625,
+        "width": 296,
+        "height": 52
+      },
+      "layout": {
+        "viewport": {
+          "width": 320,
+          "height": 740
+        },
+        "innerWidth": 320,
+        "documentScrollWidth": 320,
+        "bodyScrollWidth": 320,
+        "horizontalPageOverflow": false,
+        "direction": "rtl",
+        "title": "📒 دفتر الطالب",
+        "notebookClass": "_notebook_3z6od_111",
+        "notebookStyle": {
+          "lineHeight": "32.96px",
+          "maxInlineSize": "736px"
+        },
+        "sections": [
+          "✦١. صورة شكل وفق انسحاب",
+          "❯٢. صورة مستقيم والتوازي والتعامد",
+          "❯٣. صور الأشكال الأساسية",
+          "❯٤. إنشاء صورة مستقيم",
+          "❯٥. قواعد وتنبيهات"
+        ],
+        "orderedLists": 1,
+        "orderedItems": 4,
+        "unorderedLists": 3,
+        "mathRuns": 59,
+        "unisolatedMath": 0,
+        "katexErrors": 0,
+        "rawMathDelimiters": false,
+        "outsideViewport": [],
+        "clippedTextOrControls": [],
+        "controlsOverlap": false,
+        "controlRects": [
+          {
+            "x": 12,
+            "y": 3353.09375,
+            "width": 296,
+            "height": 77.671875,
+            "right": 308,
+            "bottom": 3430.765625
+          },
+          {
+            "x": 12,
+            "y": 3442.765625,
+            "width": 296,
+            "height": 77.671875,
+            "right": 308,
+            "bottom": 3520.4375
+          }
+        ],
+        "duplicateIds": [],
+        "domElements": 2357,
+        "hiddenPanels": 6,
+        "hiddenStaticImages": 0,
+        "hiddenPanelsWithoutControls": 0,
+        "staticIntroRetained": false,
+        "staticSummaryRetained": false,
+        "rail": {
+          "x": 12,
+          "y": 407.15625,
+          "width": 296,
+          "height": 52,
+          "right": 308,
+          "bottom": 459.15625,
+          "scrollWidth": 1078,
+          "clientWidth": 296,
+          "notebook": {
+            "x": 11.6875,
+            "y": 407.15625,
+            "width": 110.3125,
+            "height": 36,
+            "right": 122,
+            "bottom": 443.15625
+          },
+          "notebookText": "📒 دفتر الطالب",
+          "notebookFullyVisible": true,
+          "active": "step"
+        },
+        "nextAssessmentHref": "#/assessment/lesson-03-final-assessment",
+        "previousRecapHref": "#/lesson/lesson-03-image-of-a-shape/step/22",
+        "fontStatus": "loaded",
+        "platformFonts": {
+          "title": [
+            {
+              "familyName": "Noto Naskh Arabic",
+              "postScriptName": "NotoNaskhArabic-Bold",
+              "isCustomFont": false,
+              "glyphCount": 15
+            },
+            {
+              "familyName": "Noto Emoji",
+              "postScriptName": "NotoEmoji-Regular",
+              "isCustomFont": false,
+              "glyphCount": 1
+            }
+          ],
+          "arabic": [
+            {
+              "familyName": "Noto Naskh Arabic",
+              "postScriptName": "NotoNaskhArabic-Bold",
+              "isCustomFont": false,
+              "glyphCount": 28
+            }
+          ],
+          "math": [
+            {
+              "familyName": "KaTeX_Math",
+              "postScriptName": "KaTeX_Math-Italic",
+              "isCustomFont": true,
+              "glyphCount": 1
+            }
+          ]
+        }
+      },
+      "assessmentReached": true
+    }
+  ],
+  "passed": true
+}
