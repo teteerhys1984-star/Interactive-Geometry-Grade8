@@ -208,6 +208,10 @@ export function LessonStepPage() {
                 />
               ) : null,
             )
+          ) : isNotebookStep(currentStep) ? (
+            <div className={styles.notebook}>
+              <Blocks blocks={currentStep.blocks} />
+            </div>
           ) : (
             <Blocks blocks={currentStep.blocks} />
           )}

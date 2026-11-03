@@ -15,7 +15,8 @@ interface StepRailProps {
 export const isNotebookStep = (step: { id: string }): boolean =>
   step.id === 'student-notebook' ||
   step.id === 'lesson-02-student-notebook' ||
-  step.id === 'lesson-03-student-notebook';
+  step.id === 'lesson-03-student-notebook' ||
+  step.id === 'lesson-04-student-notebook';
 
 /** Compact jump-list of a lesson's steps; scrolls horizontally on mobile. */
 export function StepRail({ lessonId, steps, activeStep }: StepRailProps) {
