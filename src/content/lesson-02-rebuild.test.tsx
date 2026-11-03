@@ -75,15 +75,18 @@ function paramsOf(diagram: AnyDiagram): Record<string, unknown> {
 }
 
 describe('Lesson 2 — structure of the rebuild', () => {
-  it('is eighteen steps: eleven printed and seven platform steps', () => {
-    expect(lesson.steps).toHaveLength(18);
+  it('is nineteen steps: eleven printed, seven platform steps and the notebook', () => {
+    expect(lesson.steps).toHaveLength(19);
     expect(lesson.steps.filter((step) => step.origin === 'source')).toHaveLength(11);
-    expect(lesson.steps.filter((step) => step.origin === 'authored')).toHaveLength(7);
+    expect(lesson.steps.filter((step) => step.origin === 'authored')).toHaveLength(8);
   });
 
-  it('gives every platform step a teaching block, so each one teaches something', () => {
+  it('gives every platform teaching step a teaching block, so each one teaches something', () => {
     for (const step of lesson.steps) {
       if (step.origin !== 'authored') continue;
+      // The student notebook is a transcription station, not a teaching step:
+      // it uses the same definition/note callouts as the Lesson 1 notebook.
+      if (step.id === 'lesson-02-student-notebook') continue;
       const teaching = step.blocks.filter((block) => block.type === 'teaching');
       expect(teaching.length, `${step.id} has no teaching block`).toBeGreaterThan(0);
     }

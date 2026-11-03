@@ -741,9 +741,11 @@ describe('Lesson 2 — authored material never displaces the source', () => {
     expect(sourceIds).toEqual(LESSON_2_SOURCE_STEP_IDS);
   });
 
-  it('interleaves seven authored steps without reordering the source', () => {
-    expect(lesson.steps.filter((s) => s.origin === 'authored')).toHaveLength(7);
-    expect(lesson.steps).toHaveLength(18);
+  it('interleaves eight authored steps without reordering the source', () => {
+    // The eighth authored step is the Lesson 2 student notebook, appended after
+    // the recap; the eleven printed steps keep their order below.
+    expect(lesson.steps.filter((s) => s.origin === 'authored')).toHaveLength(8);
+    expect(lesson.steps).toHaveLength(19);
   });
 
   it('still contains every checked verbatim sentence, character for character', () => {

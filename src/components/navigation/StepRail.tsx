@@ -10,6 +10,11 @@ interface StepRailProps {
   activeStep: number;
 }
 
+/** The two student notebooks show their title instead of a number in the
+ * compact phone rail. Both are ordinary steps; no parallel tab system. */
+export const isNotebookStep = (step: { id: string }): boolean =>
+  step.id === 'student-notebook' || step.id === 'lesson-02-student-notebook';
+
 /** Compact jump-list of a lesson's steps; scrolls horizontally on mobile. */
 export function StepRail({ lessonId, steps, activeStep }: StepRailProps) {
   return (
@@ -22,12 +27,12 @@ export function StepRail({ lessonId, steps, activeStep }: StepRailProps) {
             <li key={step.id}>
               <Link
                 to={routes.lessonStep(lessonId, number)}
-                className={`${isActive ? styles.activeItem : styles.item} ${step.id === 'student-notebook' ? styles.notebook : ''}`}
+                className={`${isActive ? styles.activeItem : styles.item} ${isNotebookStep(step) ? styles.notebook : ''}`}
                 aria-current={isActive ? 'step' : undefined}
                 title={step.title}
               >
                 <span className="numeric" dir="ltr">
-                  {step.id === 'student-notebook' ? step.title : number}
+                  {isNotebookStep(step) ? step.title : number}
                 </span>
               </Link>
             </li>
