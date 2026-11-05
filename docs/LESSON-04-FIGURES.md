@@ -58,6 +58,12 @@ badged `origin: 'authored'`; they are never presented as printed distances.
    are computed as true perpendicular feet, so `MEB ≅ MFC` (ASA) and
    `MEA ≅ MFA` (hypotenuse–leg) are consequences of the coordinates, not
    assertions. `lesson-04-geometry.test.ts` proves both.
+3. **The kite bisects only one of its diagonals.** `BE = ED = 8` makes `E` the
+   midpoint of `[BD]`, while `AE = 12 ≠ CE = 6` makes it anything but the
+   midpoint of `[AC]`. The diagonals are perpendicular at `E`, but only `[BD]`
+   is cut in half there, so the Lesson 4 kite-lab prose must never say that
+   each diagonal bisects the other; `lesson-04-geometry.test.ts` asserts both
+   facts, and the prose is pinned to them there too.
 
 ## Student-facing platform diagrams (6)
 
