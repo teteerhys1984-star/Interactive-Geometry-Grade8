@@ -27,6 +27,7 @@ import {
   type Triangle,
 } from './lesson-04-geometry';
 import { authoredDefinition, authoredIntroTranslation } from './lesson-04-geometry';
+import { teachKiteLab } from './lesson-04-teaching';
 
 /**
  * ============================================================================
@@ -235,6 +236,21 @@ describe('page 19 — the paper kite', () => {
     expect(Math.abs(distance(kite.A, kite.B) - kite.printed.AB)).toBeLessThanOrEqual(0.05);
   });
 
+  it('bisects [BD] at E but leaves [AC] un-bisected', () => {
+    // Regression guard for the kite-lab prose, which used to open with
+    // «…وكل قطر ينصّف الآخر…». The printed numbers forbid that reading:
+    // BE = ED = 8 makes E the midpoint of [BD], while AE = 12 ≠ CE = 6 makes
+    // it anything but the midpoint of [AC]. The diagonals are perpendicular,
+    // yet only ONE of them is cut in half at the crossing.
+    expect(samePoint(midpoint(kite.B, kite.D), kite.E)).toBe(true);
+    expect(samePoint(midpoint(kite.A, kite.C), kite.E)).toBe(false);
+    // E really does lie on [AC] — it splits that diagonal into the two
+    // printed, unequal parts, so AC is 12 + 6 = 18 long.
+    expect(areCollinear(kite.A, kite.C, kite.E)).toBe(true);
+    close(distance(kite.A, kite.C), 18);
+    close(distance(kite.A, kite.E) - distance(kite.E, kite.C), 6);
+  });
+
   it('yields exactly the three congruent pairs the solution claims', () => {
     const abe = congruenceReport(
       triangle(kite.A, kite.B, kite.E),
@@ -262,6 +278,22 @@ describe('page 19 — the paper kite', () => {
     expect(wrong.sss).toBe(false);
     expect(wrong.sas).toBe(false);
     expect(wrong.asa).toBe(false);
+  });
+});
+
+describe('the kite-lab prose agrees with the measured kite', () => {
+  // The prose is measured here, next to the figure it describes, because the
+  // two once disagreed: the explanation opened by claiming that each diagonal
+  // bisects the other, which the printed AE = 12 / CE = 6 contradict.
+  const prose = JSON.stringify(teachKiteLab.blocks);
+
+  it('does not claim that each diagonal bisects the other', () => {
+    expect(prose).not.toContain('كل قطر ينصّف الآخر');
+  });
+
+  it('says instead that E is the midpoint of [BD] and is not the midpoint of [AC]', () => {
+    expect(prose).toContain('منتصف $[BD]$');
+    expect(prose).toContain('ليست منتصف $[AC]$');
   });
 });
 
