@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { isNotebookStep } from '../schema';
 import { lesson08 } from './lesson-08-midpoints';
 import { lesson08Assessment } from './lesson-08-assessment';
 import { lesson08TeacherResources } from './lesson-08-teacher';
@@ -79,6 +80,8 @@ const diagramsOf = (blocks: readonly unknown[]): Block[] => {
 const allSteps = lesson08.steps as NonNullable<typeof lesson08.steps>;
 const sourceSteps = allSteps.filter((step) => step.origin === 'source');
 const authoredSteps = allSteps.filter((step) => step.origin === 'authored');
+const teachingSteps = authoredSteps.filter((step) => !isNotebookStep(step));
+const notebookSteps = allSteps.filter((step) => isNotebookStep(step));
 
 describe('lesson 8 covers pages 31–33 in printed order', () => {
   it('numbers its eight source steps in sequence', () => {
@@ -109,19 +112,28 @@ describe('lesson 8 covers pages 31–33 in printed order', () => {
     expect(pages).toEqual([...pages].sort((a, b) => a - b));
   });
 
-  it('has five authored steps, each badged «شرح المنصّة» and page-free', () => {
-    expect(authoredSteps).toHaveLength(5);
+  it('has five authored teaching steps and one structurally marked final notebook, each badged «شرح المنصّة» and page-free', () => {
+    expect(teachingSteps).toHaveLength(5);
+    expect(notebookSteps).toHaveLength(1);
+    expect(authoredSteps).toHaveLength(6);
+    expect(notebookSteps[0]).toMatchObject({
+      id: 'lesson-08-student-notebook',
+      origin: 'authored',
+      role: 'notebook',
+      kicker: 'شرح المنصّة',
+    });
     for (const step of authoredSteps) {
       expect(step.kicker, step.id).toBe('شرح المنصّة');
       expect(step.source, step.id).toBeUndefined();
     }
   });
 
-  it('interleaves the platform steps without ever breaking the printed sequence', () => {
+  it('interleaves the platform steps without ever breaking the printed sequence, closing with the notebook', () => {
     const origins = allSteps.map((step) => step.origin);
-    const lastAuthored = origins.lastIndexOf('authored');
-    expect(lastAuthored).toBe(origins.length - 1);
-    for (let index = 0; index < lastAuthored; index += 1) {
+    const recapIndex = allSteps.findIndex((step) => step.id === 'l8-step-a05-recap');
+    expect(recapIndex).toBe(origins.length - 2);
+    expect(allSteps.at(-1)?.id).toBe('lesson-08-student-notebook');
+    for (let index = 0; index < recapIndex; index += 1) {
       if (origins[index] === 'authored') expect(origins[index + 1]).toBe('source');
     }
     // The printed pages, read on their own, are still 31 → 33.
@@ -173,12 +185,16 @@ describe('lesson 8 reproduces the printed prompts verbatim', () => {
   it('carries the theorem, the example and «اكتساب معارف» word for word', () => {
     const theorem = textOf(sourceSteps.find((step) => step.id === 'l8-step-03-theorem')!.blocks);
     expect(theorem).toContain('المستقيم المار بمنتصفي ضلعين في مثلث يوازي الضلع الثالث.');
-    expect(theorem).toContain('القطعة الواصلة بين منتصفي ضلعين في مثلث تساوي نصف طول الضلع الثالث.');
+    expect(theorem).toContain(
+      'القطعة الواصلة بين منتصفي ضلعين في مثلث تساوي نصف طول الضلع الثالث.',
+    );
 
     const example = textOf(sourceSteps.find((step) => step.id === 'l8-step-04-example')!.blocks);
     expect(example).toContain(L8_EXAMPLE_PROMPT.text);
 
-    const knowledge = textOf(sourceSteps.find((step) => step.id === 'l8-step-05-knowledge')!.blocks);
+    const knowledge = textOf(
+      sourceSteps.find((step) => step.id === 'l8-step-05-knowledge')!.blocks,
+    );
     expect(knowledge).toContain(L8_KNOWLEDGE_PROMPT.text);
 
     // Page 33 prints exactly one solution; it is reproduced, not re-derived.

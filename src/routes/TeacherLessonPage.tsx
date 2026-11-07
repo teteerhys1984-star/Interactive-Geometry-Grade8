@@ -5,6 +5,7 @@ import { Callout, EmptyState } from '@/components/ui';
 import { Blocks } from '@/components/content';
 import { RichText } from '@/components/math';
 import { TeacherGate } from '@/components/teacher';
+import { isNotebookStep } from '@/components/navigation';
 import { getLesson, lessonDiagrams } from '@/content/registry';
 import type { FlatLesson } from '@/content/registry';
 import type { DiagramSpec, Lesson } from '@/content/schema';
@@ -69,7 +70,9 @@ function LessonTeacherArea({ entry, onLock }: { entry: FlatLesson; onLock: () =>
   const [activeTab, setActiveTab] = useState<TabId>('solutions');
 
   const sourceSteps = lesson.steps.filter((step) => step.origin === 'source');
-  const authoredSteps = lesson.steps.filter((step) => step.origin === 'authored');
+  const authoredSteps = lesson.steps.filter(
+    (step) => step.origin === 'authored' && !isNotebookStep(step),
+  );
   const printedQuestionCount = sourceSteps.reduce(
     (total, step) =>
       total +

@@ -32,6 +32,7 @@ import {
   teachingProof,
   teachingRecap,
 } from './lesson-08-teaching';
+import { lesson08Notebook } from './lesson-08-notebook';
 
 /**
  * ============================================================================
@@ -308,4 +309,7 @@ export const lesson08Steps: LessonStepInput[] = [
 
   /* ─────────────────────────── شرح المنصّة: الخلاصة ─────────────────────── */
   teachingRecap,
+
+  /* ───────────────────── 📒 دفتر الطالب — محطة التدوين ──────────────────── */
+  lesson08Notebook,
 ];
