@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { isNotebookStep } from '../schema';
 import { unit02 } from './unit-02-triangles-midpoints-parallels';
 import { lesson09 } from './lesson-09-parallel-from-midpoint';
 import { lesson09Assessment } from './lesson-09-assessment';
@@ -74,6 +75,8 @@ const textOf = (blocks: readonly unknown[]): string => {
 const allSteps = lesson09.steps ?? [];
 const sourceSteps = allSteps.filter((step) => step.origin === 'source');
 const authoredSteps = allSteps.filter((step) => step.origin === 'authored');
+const teachingSteps = authoredSteps.filter((step) => !isNotebookStep(step));
+const notebookSteps = allSteps.filter((step) => isNotebookStep(step));
 
 describe('Unit 2 registration and Lesson 9 metadata', () => {
   it('registers Lesson 9 in the second position of Unit 2 right after Lesson 8 (Lessons 10, 11 and the exercise set follow)', () => {
@@ -93,7 +96,7 @@ describe('Unit 2 registration and Lesson 9 metadata', () => {
     });
   });
 
-  it('separates 6 verbatim source steps (pages 34–35) from 5 platform-authored teaching steps', () => {
+  it('separates 6 verbatim source steps (pages 34–35) from 5 authored teaching steps and one structurally marked final notebook', () => {
     expect(sourceSteps.map((step) => step.id)).toEqual([
       'l9-step-01-activity',
       'l9-step-02-theorem',
@@ -102,13 +105,26 @@ describe('Unit 2 registration and Lesson 9 metadata', () => {
       'l9-step-05-check',
       'l9-step-06-practice',
     ]);
-    expect(authoredSteps.map((step) => step.id)).toEqual([
+    expect(teachingSteps.map((step) => step.id)).toEqual([
       'l9-step-a01-orientation',
       'l9-step-a02-lab-and-proof',
       'l9-step-a03-method-guide',
       'l9-step-a04-subtriangle-strategy',
       'l9-step-a05-recap',
     ]);
+    expect(notebookSteps).toHaveLength(1);
+    expect(authoredSteps).toHaveLength(6);
+    expect(notebookSteps[0]).toMatchObject({
+      id: 'lesson-09-student-notebook',
+      origin: 'authored',
+      role: 'notebook',
+      kicker: 'شرح المنصّة',
+    });
+    // The notebook closes the lesson after the recap; the printed steps keep
+    // their order and the source pages still read 34 → 35.
+    expect(allSteps.at(-1)?.id).toBe('lesson-09-student-notebook');
+    expect(allSteps.at(-2)?.id).toBe('l9-step-a05-recap');
+    expect(sourceSteps.map((step) => step.source?.page)).toEqual([34, 34, 35, 35, 35, 35]);
 
     for (const step of sourceSteps) {
       expect(step.source).toBeDefined();

@@ -1,4 +1,4 @@
-import type { LessonStep } from '@/content/schema';
+import type { LessonStep, LessonStepInput } from '@/content/schema';
 import {
   fig09ActivityPanels,
   fig09CheckOne,
@@ -41,6 +41,7 @@ import {
   step09Recap,
   step09SubtriangleStrategy,
 } from './lesson-09-teaching';
+import { lesson09Notebook } from './lesson-09-notebook';
 
 /* -------------------------------------------------------------------------- */
 /*  Source steps — Page 34                                                     */
@@ -284,7 +285,7 @@ const step06Practice: LessonStep = {
   ],
 };
 
-export const lesson09Steps: LessonStep[] = [
+export const lesson09Steps: LessonStepInput[] = [
   step09Orientation,
   step01Activity,
   step09LabAndProof,
@@ -296,4 +297,7 @@ export const lesson09Steps: LessonStep[] = [
   step05Check,
   step06Practice,
   step09Recap,
+
+  /* ───────────────────── 📒 دفتر الطالب — محطة التدوين ──────────────────── */
+  lesson09Notebook,
 ];
