@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import { routes } from '@/lib/routes';
+import { isNotebookStep } from '@/content/schema';
 import type { LessonStep } from '@/content/schema';
 import styles from './StepRail.module.css';
+
+export { isNotebookStep };
 
 interface StepRailProps {
   lessonId: string;
@@ -9,14 +12,6 @@ interface StepRailProps {
   /** 1-based index of the active step. */
   activeStep: number;
 }
-
-/** Student notebooks show their title instead of a number in the compact
- * phone rail. They are ordinary steps; no parallel tab system. */
-export const isNotebookStep = (step: { id: string }): boolean =>
-  step.id === 'student-notebook' ||
-  step.id === 'lesson-02-student-notebook' ||
-  step.id === 'lesson-03-student-notebook' ||
-  step.id === 'lesson-04-student-notebook';
 
 /** Compact jump-list of a lesson's steps; scrolls horizontally on mobile. */
 export function StepRail({ lessonId, steps, activeStep }: StepRailProps) {
@@ -26,17 +21,22 @@ export function StepRail({ lessonId, steps, activeStep }: StepRailProps) {
         {steps.map((step, index) => {
           const number = index + 1;
           const isActive = number === activeStep;
+          const notebook = isNotebookStep(step);
           return (
             <li key={step.id}>
               <Link
                 to={routes.lessonStep(lessonId, number)}
-                className={`${isActive ? styles.activeItem : styles.item} ${isNotebookStep(step) ? styles.notebook : ''}`}
+                className={`${isActive ? styles.activeItem : styles.item} ${notebook ? styles.notebook : ''}`}
                 aria-current={isActive ? 'step' : undefined}
                 title={step.title}
               >
-                <span className="numeric" dir="ltr">
-                  {isNotebookStep(step) ? step.title : number}
-                </span>
+                {notebook ? (
+                  <span>{step.title}</span>
+                ) : (
+                  <span className="numeric" dir="ltr">
+                    {number}
+                  </span>
+                )}
               </Link>
             </li>
           );

@@ -61,18 +61,39 @@ describe('lesson 2 student notebook — placement and isolation', () => {
         .filter(({ lesson: other }) => other.steps.some((step) => step.id === NOTEBOOK_ID))
         .map(({ lesson: other }) => other.id),
     ).toEqual([lesson.id]);
-    // Exact course-wide membership: Lessons 3 and 4 now also ship their own notebooks.
-    // Lesson 1 and Lesson 2 keep their original notebook IDs and behavior.
-    expect(
-      allLessons
-        .filter(({ lesson: other }) => other.steps.some((step) => step.title === NOTEBOOK_TITLE))
-        .map(({ lesson: other }) => other.id),
-    ).toEqual([
-      'lesson-01-translation-and-properties',
-      lesson.id,
-      'lesson-03-image-of-a-shape',
-      'lesson-04-triangle-congruence',
-    ]);
+    // Explicit preservation of Lessons 1–4 notebooks: each exists in its lesson
+    // exactly once, carries its established ID, and sits at the final step —
+    // while allowing additional lessons (such as Lesson 8+) to ship notebooks.
+    const establishedNotebooks: readonly [string, string][] = [
+      ['lesson-01-translation-and-properties', 'student-notebook'],
+      [lesson.id, NOTEBOOK_ID],
+      ['lesson-03-image-of-a-shape', 'lesson-03-student-notebook'],
+      ['lesson-04-triangle-congruence', 'lesson-04-student-notebook'],
+    ];
+    for (const [expectedLessonId, expectedNotebookId] of establishedNotebooks) {
+      const target = allLessons.find(({ lesson: item }) => item.id === expectedLessonId)?.lesson;
+      expect(target, expectedLessonId).toBeDefined();
+      expect(
+        target!.steps.filter((step) => step.title === NOTEBOOK_TITLE),
+        `${expectedLessonId} must have exactly one notebook title`,
+      ).toHaveLength(1);
+      expect(
+        target!.steps.filter((step) => step.id === expectedNotebookId),
+        `${expectedLessonId} must have its expected notebook ID once`,
+      ).toHaveLength(1);
+      expect(target!.steps.at(-1)?.id, `${expectedLessonId} notebook must stay last`).toBe(
+        expectedNotebookId,
+      );
+    }
+    for (const { lesson: item } of allLessons) {
+      const notebooks = item.steps.filter((step) => step.title === NOTEBOOK_TITLE);
+      expect(notebooks.length, `${item.id} cannot have duplicate notebooks`).toBeLessThanOrEqual(1);
+      if (notebooks.length === 1) {
+        expect(item.steps.at(-1)?.id, `${item.id} notebook must be final step`).toBe(
+          notebooks[0]!.id,
+        );
+      }
+    }
     expect(allLessons[0]!.lesson.steps.at(-1)?.id).toBe('student-notebook');
     expect(lesson02Notebook.id).toBe(NOTEBOOK_ID);
   });

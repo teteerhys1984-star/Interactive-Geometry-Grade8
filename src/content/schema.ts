@@ -357,6 +357,12 @@ export const lessonStepSchema = z.object({
    * 'authored' — platform teaching material; has no textbook page.
    */
   origin: z.enum(['source', 'authored']).default('source'),
+  /**
+   * Structural role of the step within the lesson flow.
+   *   'notebook' — final student copying/reference station («دفتر الطالب»),
+   *                distinct from ordinary platform teaching explanations.
+   */
+  role: z.enum(['step', 'notebook']).optional(),
   /** Optional Arabic kicker shown above the title, e.g. the source section name. */
   kicker: z.string().min(1).optional(),
   blocks: z.array(contentBlockSchema).min(1),
@@ -366,6 +372,18 @@ export const lessonStepSchema = z.object({
 });
 export type LessonStep = z.infer<typeof lessonStepSchema>;
 export type LessonStepInput = z.input<typeof lessonStepSchema>;
+
+const CANONICAL_NOTEBOOK_ID = /^lesson-\d+-student-notebook$/;
+
+/**
+ * Identifies a student notebook step structurally via `role: 'notebook'`,
+ * while preserving compatibility with the existing Lesson 1–4 notebook IDs
+ * that predate the `role` field.
+ */
+export function isNotebookStep(step: { id: string; role?: 'step' | 'notebook' }): boolean {
+  if (step.role !== undefined) return step.role === 'notebook';
+  return step.id === 'student-notebook' || CANONICAL_NOTEBOOK_ID.test(step.id);
+}
 
 /**
  * `summary` and `objectives` are OPTIONAL.
