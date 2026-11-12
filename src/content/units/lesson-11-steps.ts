@@ -1,4 +1,4 @@
-import type { LessonStep } from '@/content/schema';
+import type { LessonStepInput } from '@/content/schema';
 import {
   fig11ActivityPanels,
   fig11CheckCases,
@@ -9,6 +9,7 @@ import {
   fig11PracticeTwoCases,
   fig11TheoremLine,
 } from './lesson-11-figures';
+import { lesson11Notebook } from './lesson-11-notebook';
 import {
   L11_ACTIVITY_GOAL,
   L11_ACTIVITY_SETUP,
@@ -82,7 +83,7 @@ import {
 /*  Source — page 39                                                          */
 /* -------------------------------------------------------------------------- */
 
-const step01Activity: LessonStep = {
+const step01Activity: LessonStepInput = {
   id: 'l11-step-01-activity',
   kicker: 'نشاط',
   title: 'إثبات الخاصّة السابقة في حالة خاصّة',
@@ -113,7 +114,7 @@ const step01Activity: LessonStep = {
   ],
 };
 
-const step02ActivityPartTwo: LessonStep = {
+const step02ActivityPartTwo: LessonStepInput = {
   id: 'l11-step-02-activity-part-two',
   kicker: 'نشاط — الجزء 2',
   title: 'الجزء 2: إنشاء النقطتين المساعدتين وإثبات النسبة الثانية',
@@ -141,7 +142,7 @@ const step02ActivityPartTwo: LessonStep = {
   ],
 };
 
-const step03ActivityPartThree: LessonStep = {
+const step03ActivityPartThree: LessonStepInput = {
   id: 'l11-step-03-activity-part-three',
   kicker: 'نشاط — الجزء 3',
   title: 'الجزء 3: إنشاء مستقيمين موازيين وإثبات النسبة الثالثة',
@@ -164,7 +165,7 @@ const step03ActivityPartThree: LessonStep = {
 /*  Source — page 40                                                          */
 /* -------------------------------------------------------------------------- */
 
-const step04Theorem: LessonStep = {
+const step04Theorem: LessonStepInput = {
   id: 'l11-step-04-theorem',
   kicker: 'تعلّم',
   title: L11_THEOREM_HEADING,
@@ -208,7 +209,7 @@ const step04Theorem: LessonStep = {
   ],
 };
 
-const step05Example: LessonStep = {
+const step05Example: LessonStepInput = {
   id: 'l11-step-05-example',
   kicker: 'مثال',
   title: 'مثال: حساب أطوال أضلاع المثلث الصغير',
@@ -232,7 +233,7 @@ const step05Example: LessonStep = {
 /*  Source — page 41                                                          */
 /* -------------------------------------------------------------------------- */
 
-const step06Solution: LessonStep = {
+const step06Solution: LessonStepInput = {
   id: 'l11-step-06-solution',
   kicker: 'مثال — الحل',
   title: 'الحل المطبوع للمثال خطوةً خطوة',
@@ -248,7 +249,7 @@ const step06Solution: LessonStep = {
   ],
 };
 
-const step07Check: LessonStep = {
+const step07Check: LessonStepInput = {
   id: 'l11-step-07-check',
   kicker: 'تحقّق من فهمك',
   title: 'كتابة ثلاث نسب متساوية في حالتين',
@@ -267,7 +268,7 @@ const step07Check: LessonStep = {
   ],
 };
 
-const step08Practice: LessonStep = {
+const step08Practice: LessonStepInput = {
   id: 'l11-step-08-practice',
   kicker: 'تدرّب',
   title: 'التحقّق من مساواة نسبية وكتابة النسب في ثلاثة أشكال',
@@ -295,7 +296,7 @@ const step08Practice: LessonStep = {
   ],
 };
 
-export const lesson11Steps: LessonStep[] = [
+export const lesson11Steps: LessonStepInput[] = [
   step11Orientation,
   step01Activity,
   step11Lab,
@@ -310,4 +311,7 @@ export const lesson11Steps: LessonStep[] = [
   step07Check,
   step08Practice,
   step11Recap,
+
+  /* ───────────────────── 📒 دفتر الطالب — محطة التدوين ──────────────────── */
+  lesson11Notebook,
 ];

@@ -169,6 +169,7 @@ export const fig11ActivityPanelsSpec: FigureSpec = {
     segment(at(panelOne, A), at(panelOne, B), { tone: 'ink' }),
     segment(at(panelOne, A), at(panelOne, C), { tone: 'ink' }),
     ...parallelChevron(at(panelOne, B), at(panelOne, C), 'ink'),
+    segment(at(panelOne, A), at(panelOne, I), { tone: 'given', ticks: 3 }),
     segment(at(panelOne, I), at(panelOne, M), { tone: 'given', ticks: 3 }),
     segment(at(panelOne, M), at(panelOne, B), { tone: 'given', ticks: 3 }),
     segment(at(panelOne, I), at(panelOne, J), { tone: 'given' }),
@@ -240,7 +241,7 @@ export const fig11ActivityPanels: ContentBlock = constructedBlock(
   {
     id: 'fig-l11-activity-panels',
     alt: 'اللوحات الأربع ① و② و③ و④ لنشاط الصفحة ٣٩: المثلث $ABC$ وفيه $I$ و$M$ على $[AB]$ و$N$ على $[AC]$ مع $(MN) \\parallel (BC)$، ثم الإنشاءات المساعدة $J$ و$P$ و$R$ و$S$',
-    caption: `صفحة ٣٩ — ${CAPTION_SCHEMATIC} اللوحة ① تحمل القطع الواصلة $[IJ]$ و$[MN]$، واللوحة ② تضيف $(BJ)$ ولقاءها مع $(MN)$ في $P$، واللوحة ③ تظهّر المثلثين الجزئيين، واللوحة ④ تضيف الموازيين من $J$ ومن $N$ إلى $[BC]$ في $R$ و$S$. العلامات الثلاثية على $[IM]$ و$[MB]$ هي علامات الأجزاء الثلاثة المتساوية المطبوعة على $[AB]$.`,
+    caption: `صفحة ٣٩ — ${CAPTION_SCHEMATIC} اللوحة ① تحمل القطع الواصلة $[IJ]$ و$[MN]$، واللوحة ② تضيف $(BJ)$ ولقاءها مع $(MN)$ في $P$، واللوحة ③ تظهّر المثلثين الجزئيين، واللوحة ④ تضيف الموازيين من $J$ ومن $N$ إلى $[BC]$ في $R$ و$S$. العلامات الثلاثية على $[AI]$ و$[IM]$ و$[MB]$ هي علامات الأجزاء الثلاثة المتساوية المطبوعة على $[AB]$.`,
     source: S39_ACTIVITY,
   },
   fig11ActivityPanelsSpec,

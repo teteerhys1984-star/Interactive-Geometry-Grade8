@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import '@/components/diagram/renderers';
 import { registeredRendererKeys } from '@/components/diagram/registry';
+import { isNotebookStep } from '../schema';
 import { unit02 } from './unit-02-triangles-midpoints-parallels';
 import { lesson10 } from './lesson-10-parallel-lines-transversals';
 import { lesson10Assessment } from './lesson-10-assessment';
@@ -81,6 +82,8 @@ const textOf = (blocks: readonly unknown[]): string => {
 const allSteps = lesson10.steps ?? [];
 const sourceSteps = allSteps.filter((step) => step.origin === 'source');
 const authoredSteps = allSteps.filter((step) => step.origin === 'authored');
+const teachingSteps = authoredSteps.filter((step) => !isNotebookStep(step));
+const notebookSteps = allSteps.filter((step) => isNotebookStep(step));
 
 describe('Unit 2 registration and Lesson 10 metadata', () => {
   it('registers Lesson 10 in the third position of Unit 2 right after Lesson 9 (Lesson 11 and the exercise set follow)', () => {
@@ -100,7 +103,7 @@ describe('Unit 2 registration and Lesson 10 metadata', () => {
     });
   });
 
-  it('separates 6 verbatim source steps (pages 36–38) from 5 platform-authored teaching steps', () => {
+  it('separates 6 verbatim source steps (pages 36–38) from 5 authored teaching steps and one structurally marked final notebook', () => {
     expect(sourceSteps.map((step) => step.id)).toEqual([
       'l10-step-01-activity',
       'l10-step-02-learn',
@@ -109,13 +112,23 @@ describe('Unit 2 registration and Lesson 10 metadata', () => {
       'l10-step-05-check',
       'l10-step-06-practice',
     ]);
-    expect(authoredSteps.map((step) => step.id)).toEqual([
+    expect(teachingSteps.map((step) => step.id)).toEqual([
       'l10-step-a01-orientation',
       'l10-step-a02-lab-and-discovery',
       'l10-step-a03-theorem-guide',
       'l10-step-a04-computation-strategy',
       'l10-step-a05-recap',
     ]);
+    expect(notebookSteps).toHaveLength(1);
+    expect(authoredSteps).toHaveLength(6);
+    expect(notebookSteps[0]).toMatchObject({
+      id: 'lesson-10-student-notebook',
+      origin: 'authored',
+      role: 'notebook',
+      kicker: 'شرح المنصّة',
+    });
+    expect(allSteps.at(-2)?.id).toBe('l10-step-a05-recap');
+    expect(allSteps.at(-1)?.id).toBe('lesson-10-student-notebook');
 
     for (const step of sourceSteps) {
       expect(step.source).toBeDefined();

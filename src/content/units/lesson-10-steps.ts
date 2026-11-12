@@ -1,4 +1,4 @@
-import type { LessonStep } from '@/content/schema';
+import type { LessonStepInput } from '@/content/schema';
 import {
   fig10ActivityPanels,
   fig10BundleOne,
@@ -9,6 +9,7 @@ import {
   fig10PracticeStarter,
   fig10Transversal,
 } from './lesson-10-figures';
+import { lesson10Notebook } from './lesson-10-notebook';
 import {
   L10_ACTIVITY_BULB,
   L10_ACTIVITY_BULB_QUOTE,
@@ -54,7 +55,7 @@ import {
 /*  Source steps — Page 36                                                     */
 /* -------------------------------------------------------------------------- */
 
-const step01Activity: LessonStep = {
+const step01Activity: LessonStepInput = {
   id: 'l10-step-01-activity',
   kicker: 'نشاط',
   title: 'اكتشاف التناسب بين أطوال أضلاع مثلثين',
@@ -87,7 +88,7 @@ const step01Activity: LessonStep = {
   ],
 };
 
-const step02Learn: LessonStep = {
+const step02Learn: LessonStepInput = {
   id: 'l10-step-02-learn',
   kicker: 'تعلّم',
   title: L10_LEARN_HEADING,
@@ -114,7 +115,7 @@ const step02Learn: LessonStep = {
 /*  Source steps — Page 37                                                     */
 /* -------------------------------------------------------------------------- */
 
-const step03Khassa: LessonStep = {
+const step03Khassa: LessonStepInput = {
   id: 'l10-step-03-khassa',
   kicker: 'خاصة',
   title: 'خاصة التناسب بين أطوال أضلاع المثلثين',
@@ -150,7 +151,7 @@ const step03Khassa: LessonStep = {
   ],
 };
 
-const step04Knowledge: LessonStep = {
+const step04Knowledge: LessonStepInput = {
   id: 'l10-step-04-knowledge',
   kicker: 'اكتساب معارف',
   title: L10_KNOWLEDGE_QUESTION,
@@ -209,7 +210,7 @@ const step04Knowledge: LessonStep = {
 /*  Source steps — Page 38                                                     */
 /* -------------------------------------------------------------------------- */
 
-const step05Check: LessonStep = {
+const step05Check: LessonStepInput = {
   id: 'l10-step-05-check',
   kicker: 'تحقّق من فهمك',
   title: 'حساب طول ضلع واستنتاج جزءه',
@@ -242,7 +243,7 @@ const step05Check: LessonStep = {
   ],
 };
 
-const step06Practice: LessonStep = {
+const step06Practice: LessonStepInput = {
   id: 'l10-step-06-practice',
   kicker: 'تدرّب',
   title: 'حزم المستقيمات المتوازية وتطبيق التناسب',
@@ -289,7 +290,7 @@ const step06Practice: LessonStep = {
   ],
 };
 
-export const lesson10Steps: LessonStep[] = [
+export const lesson10Steps: LessonStepInput[] = [
   step10Orientation,
   step01Activity,
   step10LabAndDiscovery,
@@ -301,4 +302,7 @@ export const lesson10Steps: LessonStep[] = [
   step05Check,
   step06Practice,
   step10Recap,
+
+  /* ───────────────────── 📒 دفتر الطالب — محطة التدوين ──────────────────── */
+  lesson10Notebook,
 ];
