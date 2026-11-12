@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import '@/components/diagram/renderers';
 import { registeredRendererKeys } from '@/components/diagram/registry';
+import { isNotebookStep } from '../schema';
 import type { ContentBlock, DiagramSpec, LessonStep } from '@/content/schema';
 import { unit02 } from './unit-02-triangles-midpoints-parallels';
 import { lesson12 } from './lesson-12-unit-two-exercises';
@@ -137,6 +138,13 @@ describe('the printed exercises of the set', () => {
     expect(steps.filter((step) => step.origin === 'authored')).toHaveLength(0);
   });
 
+  it('excludes any Student Notebook step from Unit 2 Exercises', () => {
+    expect(steps.filter((step) => isNotebookStep(step))).toHaveLength(0);
+    expect(steps.some((step) => step.role === 'notebook')).toBe(false);
+    expect(steps.some((step) => step.title === '📒 دفتر الطالب')).toBe(false);
+    expect(steps.some((step) => step.id.includes('student-notebook'))).toBe(false);
+  });
+
   it('shows every printed prompt exactly once, in printed order', () => {
     const printed = L12_PRINTED_PROMPTS;
     expect(printed.length).toBeGreaterThan(0);
@@ -193,7 +201,10 @@ describe('the student view carries no answer', () => {
     expect(q20).toBeDefined();
     const figIdx = q20!.blocks.findIndex((block) => block.type === 'figure');
     expect(figIdx).toBeGreaterThan(0);
-    const afterFigure = q20!.blocks.slice(figIdx + 1).flatMap(collectStrings).join(' ');
+    const afterFigure = q20!.blocks
+      .slice(figIdx + 1)
+      .flatMap(collectStrings)
+      .join(' ');
     for (const line of L12_Q20_FLOWCHART_SUBITEMS) {
       expect(afterFigure, line).toContain(line);
     }

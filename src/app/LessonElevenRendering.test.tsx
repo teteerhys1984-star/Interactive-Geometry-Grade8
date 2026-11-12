@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { App } from './App';
+import { isNotebookStep } from '@/components/navigation';
 import { getLesson } from '@/content/registry';
 
 /**
@@ -16,8 +17,9 @@ import { getLesson } from '@/content/registry';
  *  What is pinned here:
  *    1. The lesson is reachable from the unit it belongs to, with its printed
  *       title and its page range shown as source.
- *    2. All fourteen steps render — eight printed, six platform-authored — with
- *       no unregistered-renderer notice and no leaked `$…$` delimiter.
+ *    2. All fifteen steps render — eight printed, six platform teaching steps,
+ *       and the final Student Notebook — with no unregistered-renderer notice
+ *       and no leaked `$…$` delimiter.
  *    3. Every maths run sits inside a `dir="ltr"` island, and Latin point
  *       labels inside the SVG figures are isolated the same way.
  *    4. The interactive lab (`three-ratios-lab`) is mounted on its own step and
@@ -58,10 +60,14 @@ describe('Lesson 11 — routed into Unit 2 as the final lesson', () => {
 });
 
 describe('Lesson 11 — every step renders', () => {
-  it('has fourteen steps: eight from the book, six from the platform', () => {
-    expect(lesson.steps).toHaveLength(14);
+  it('has fifteen steps: eight from the book, six teaching steps from the platform, and the final authored notebook', () => {
+    expect(lesson.steps).toHaveLength(15);
     expect(lesson.steps.filter((step) => step.origin === 'source')).toHaveLength(8);
-    expect(lesson.steps.filter((step) => step.origin === 'authored')).toHaveLength(6);
+    expect(lesson.steps.filter((step) => step.origin === 'authored')).toHaveLength(7);
+    expect(
+      lesson.steps.filter((step) => step.origin === 'authored' && !isNotebookStep(step)),
+    ).toHaveLength(6);
+    expect(lesson.steps.at(-1)?.id).toBe('lesson-11-student-notebook');
   });
 
   it('renders each step without a missing-renderer notice and without raw $ markers', () => {

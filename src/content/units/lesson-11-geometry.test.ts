@@ -448,9 +448,9 @@ describe('non-leakage: starter figures never print a proven result', () => {
       expect(labels).toContain(name);
     }
     expect(labels).not.toContain('2/3');
-    // The printed ratio is carried by the three-tick marks on [AB], not by text.
+    // The printed ratio is carried by the three-tick marks on [AI], [IM] and [MB], not by text.
     const ticked = (panels.segments ?? []).filter((seg) => seg.ticks !== undefined);
-    expect(ticked).toHaveLength(2);
+    expect(ticked).toHaveLength(3);
     expect(panels.texts ?? []).toHaveLength(0);
   });
 

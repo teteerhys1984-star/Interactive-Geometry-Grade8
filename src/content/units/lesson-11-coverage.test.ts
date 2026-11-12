@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import '@/components/diagram/renderers';
 import { registeredRendererKeys } from '@/components/diagram/registry';
+import { isNotebookStep } from '../schema';
 import type { ContentBlock, DiagramSpec } from '@/content/schema';
 import { unit02 } from './unit-02-triangles-midpoints-parallels';
 import { lesson11 } from './lesson-11-three-ratios';
@@ -107,6 +108,8 @@ const diagramsIn = (blocks: readonly ContentBlock[]): DiagramSpec[] =>
 const allSteps = lesson11.steps ?? [];
 const sourceSteps = allSteps.filter((step) => step.origin === 'source');
 const authoredSteps = allSteps.filter((step) => step.origin === 'authored');
+const teachingSteps = authoredSteps.filter((step) => !isNotebookStep(step));
+const notebookSteps = allSteps.filter((step) => isNotebookStep(step));
 
 describe('Unit 2 registration and Lesson 11 metadata', () => {
   it('registers Lesson 11 in the fourth position of Unit 2 right after Lesson 10 (the exercise set follows)', () => {
@@ -133,7 +136,7 @@ describe('Unit 2 registration and Lesson 11 metadata', () => {
     expect(lesson11.vocabulary ?? []).toEqual([]);
   });
 
-  it('separates 8 verbatim source steps (pages 39–41) from 6 platform-authored teaching steps', () => {
+  it('separates 8 verbatim source steps (pages 39–41) from 6 authored teaching steps and one structurally marked final notebook', () => {
     expect(sourceSteps.map((step) => step.id)).toEqual([
       'l11-step-01-activity',
       'l11-step-02-activity-part-two',
@@ -144,7 +147,7 @@ describe('Unit 2 registration and Lesson 11 metadata', () => {
       'l11-step-07-check',
       'l11-step-08-practice',
     ]);
-    expect(authoredSteps.map((step) => step.id)).toEqual([
+    expect(teachingSteps.map((step) => step.id)).toEqual([
       'l11-step-a01-orientation',
       'l11-step-a02-lab',
       'l11-step-a03-proof-map',
@@ -152,6 +155,14 @@ describe('Unit 2 registration and Lesson 11 metadata', () => {
       'l11-step-a05-computation-strategy',
       'l11-step-a06-recap',
     ]);
+    expect(notebookSteps).toHaveLength(1);
+    expect(authoredSteps).toHaveLength(7);
+    expect(notebookSteps[0]).toMatchObject({
+      id: 'lesson-11-student-notebook',
+      origin: 'authored',
+      role: 'notebook',
+      kicker: 'شرح المنصّة',
+    });
 
     for (const step of sourceSteps) {
       expect(step.source).toBeDefined();
@@ -167,10 +178,11 @@ describe('Unit 2 registration and Lesson 11 metadata', () => {
     expect(sourceSteps.map((step) => step.source?.page)).toEqual([39, 39, 39, 40, 40, 41, 41, 41]);
   });
 
-  it('interleaves the authored steps without ever preceding the printed opening', () => {
+  it('interleaves the authored steps without ever preceding the printed opening and ends with the recap then notebook', () => {
     expect(allSteps[0]!.id).toBe('l11-step-a01-orientation');
     expect(allSteps[1]!.id).toBe('l11-step-01-activity');
-    expect(allSteps.at(-1)!.id).toBe('l11-step-a06-recap');
+    expect(allSteps.at(-2)!.id).toBe('l11-step-a06-recap');
+    expect(allSteps.at(-1)!.id).toBe('lesson-11-student-notebook');
     expect(new Set(allSteps.map((step) => step.id)).size).toBe(allSteps.length);
   });
 });
