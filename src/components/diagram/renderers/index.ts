@@ -28,6 +28,7 @@ import { MidlineExplorer, MidlineFigure } from './lesson8';
 import { ParallelMidpointLab } from './lesson9';
 import { ThalesRatioLab } from './lesson10';
 import { ThreeRatiosLab } from './lesson11';
+import { SideBisectorLab } from './lesson13';
 import { UnitTwoExercisesFigure } from './UnitTwoExercisesFigure';
 
 /**
@@ -100,6 +101,10 @@ registerInteractiveRenderer('thales-ratio-lab', ThalesRatioLab);
 /* Unit 2, Lesson 4 — «تساوي ثلاث نسب»: the page-39 activity rebuilt at any
  * ratio k, so the student sees which printed conclusions belong to 2/3 alone. */
 registerInteractiveRenderer('three-ratios-lab', ThreeRatiosLab);
+
+/* Unit 3, Lesson 1 — «محور ضلع في المثلث»: the page-54 activity made dynamic,
+ * and the three printed panels of page 55 as presets. */
+registerInteractiveRenderer('side-bisector-lab', SideBisectorLab);
 
 /* Unit 2 — «تمارين الوحدة الثانية»: the reconstructed figures of the exercise
  * set (Questions 28–34). They are drawn from coordinates measured in the

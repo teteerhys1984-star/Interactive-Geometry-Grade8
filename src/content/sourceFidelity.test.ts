@@ -118,12 +118,13 @@ describe('course shell', () => {
   });
 });
 
-describe('implementation boundary — Lessons 1–11 across Units 1–2 (Lessons 6 and 7 are the independent Q3–15 and Q16–28 continuations)', () => {
-  it('registers exactly two units, in curriculum order', () => {
-    expect(subject.units).toHaveLength(2);
+describe('implementation boundary — Lessons 1–13 across Units 1–3 (Lessons 6 and 7 are the independent Q3–15 and Q16–28 continuations)', () => {
+  it('registers exactly three units, in curriculum order', () => {
+    expect(subject.units).toHaveLength(3);
     expect(subject.units.map((unit) => unit.id)).toEqual([
       'unit-01-parallelograms-and-translation',
       'unit-02-triangles-midpoints-parallels',
+      'unit-03-remarkable-lines',
     ]);
     // Page 30's «انطلاقة نشطة» opens Unit 2 but is not a lesson: the unit holds
     // its four lessons in curriculum order, and the source prints no unit
@@ -136,10 +137,17 @@ describe('implementation boundary — Lessons 1–11 across Units 1–2 (Lessons
       'lesson-11-three-ratios',
       'lesson-12-unit-two-exercises',
     ]);
+    // Unit 3 opens on page 53 with «انطلاقة نشطة» and carries five questions of
+    // its own, so that opener is taught as the entry of its first lesson rather
+    // than dropped as Unit 2's opener was.
+    expect(subject.units[2]?.lessons.map((lesson) => lesson.id)).toEqual([
+      'lesson-13-side-bisector',
+    ]);
+    expect(subject.units[2]?.assessment).toBeUndefined();
   });
 
-  it('registers exactly twelve lessons in curriculum order', () => {
-    expect(allLessons).toHaveLength(12);
+  it('registers exactly thirteen lessons in curriculum order', () => {
+    expect(allLessons).toHaveLength(13);
     expect(allLessons[0]?.lesson.id).toBe('lesson-01-translation-and-properties');
     expect(allLessons[1]?.lesson.id).toBe('lesson-02-image-of-a-point');
     expect(allLessons[2]?.lesson.id).toBe('lesson-03-image-of-a-shape');
@@ -157,6 +165,8 @@ describe('implementation boundary — Lessons 1–11 across Units 1–2 (Lessons
     expect(allLessons[10]?.unit.id).toBe('unit-02-triangles-midpoints-parallels');
     expect(allLessons[11]?.lesson.id).toBe('lesson-12-unit-two-exercises');
     expect(allLessons[11]?.unit.id).toBe('unit-02-triangles-midpoints-parallels');
+    expect(allLessons[12]?.lesson.id).toBe('lesson-13-side-bisector');
+    expect(allLessons[12]?.unit.id).toBe('unit-03-remarkable-lines');
     expect(subject.units[1]?.lessons[0]?.id).toBe('lesson-08-triangle-midpoints');
     expect(subject.units[1]?.lessons[1]?.id).toBe('lesson-09-parallel-from-midpoint');
     expect(subject.units[1]?.lessons[2]?.id).toBe('lesson-10-parallel-lines-transversals');
@@ -210,6 +220,11 @@ describe('implementation boundary — Lessons 1–11 across Units 1–2 (Lessons
           '40',
           '41',
           '39–41',
+          // Unit 3 — Lesson 1 «محور ضلع في المثلث»: page 53 is the unit opener,
+          // pages 54–55 the lesson proper.
+          '53',
+          '54',
+          '55',
           'صورة المصدر 1',
           'صورة المصدر 2',
           'صورة المصدر 3',
@@ -223,7 +238,10 @@ describe('implementation boundary — Lessons 1–11 across Units 1–2 (Lessons
           // Unit 2 — «تمارين الوحدة الثانية». The supplied pages carry no
           // printed page numbers, so every exercise is cited by its scan.
           'صور المصدر (الوحدة الثانية)',
-          ...Array.from({ length: 34 }, (_, index) => `صورة المصدر (الوحدة الثانية) — السؤال ${index + 1}`),
+          ...Array.from(
+            { length: 34 },
+            (_, index) => `صورة المصدر (الوحدة الثانية) — السؤال ${index + 1}`,
+          ),
         ],
         `unexpected source page: ${page}`,
       ).toContain(page);
@@ -403,7 +421,9 @@ describe('diagram contracts', () => {
       expect(diagram.origin).toBe('textbook');
       expect(diagram.source).toBeDefined();
     }
-    const lesson03 = images.filter((diagram) => diagram.src.startsWith('diagrams/unit-01/lesson-03/'));
+    const lesson03 = images.filter((diagram) =>
+      diagram.src.startsWith('diagrams/unit-01/lesson-03/'),
+    );
     expect(lesson03).toHaveLength(22);
     for (const diagram of lesson03) {
       expect(diagram.src).toMatch(/^diagrams\/unit-01\/lesson-03\/[^/]+\.png$/);
@@ -411,7 +431,9 @@ describe('diagram contracts', () => {
     }
     // The Unit 2 exercise set contributes exactly one image: the photograph
     // Question 31 prints. It is a scan, so it is cited by its scan.
-    const unit02 = images.filter((diagram) => diagram.src.startsWith('diagrams/unit-02/exercises/'));
+    const unit02 = images.filter((diagram) =>
+      diagram.src.startsWith('diagrams/unit-02/exercises/'),
+    );
     expect(unit02.map((diagram) => diagram.id)).toEqual(['fig-u2-q31-tower-photo']);
     for (const diagram of unit02) {
       expect(diagram.source?.page).toBe('صورة المصدر (الوحدة الثانية) — السؤال 31');

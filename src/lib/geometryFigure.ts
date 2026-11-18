@@ -59,6 +59,46 @@ export interface FigurePolygon {
   dashed?: boolean;
 }
 
+/**
+ * A FULL CIRCLE.
+ *
+ * Unit 3 is the first lesson whose mathematics IS a circle: the three
+ * perpendicular bisectors of a triangle meet at the centre of «الدائرة المارة
+ * برؤوس المثلث», and the compass constructions of the unit draw arcs. A circle
+ * can only be approximated by a polygon, and an approximate circle is a wrong
+ * figure, so the primitive is added rather than faked.
+ */
+export interface FigureCircle {
+  /** Centre. */
+  at: XY;
+  /** Radius, in the figure's own drawing units. */
+  r: number;
+  tone?: FigureTone;
+  dashed?: boolean;
+}
+
+/**
+ * A COMPASS ARC: part of the circle of centre `at` and radius `r`, swept
+ * counter-clockwise from `from` to `to` (degrees, measured from +x).
+ *
+ * Angles rather than end points: a compass arc is set by its centre and its
+ * opening, and every construction mark of this lesson (the bisector of
+ * `[BC]`, the bisector of an angle) is stated that way.
+ */
+export interface FigureArc {
+  /** Centre of the circle the arc belongs to. */
+  at: XY;
+  r: number;
+  /** Start angle in degrees, counter-clockwise from +x. */
+  from: number;
+  /** End angle; the sweep always runs from `from` to `to` counter-clockwise. */
+  to: number;
+  tone?: FigureTone;
+  dashed?: boolean;
+  /** Arrow head at the `to` end (a ray). */
+  arrow?: boolean;
+}
+
 export interface FigureAngle {
   /** Vertex. */
   at: XY;
@@ -114,9 +154,37 @@ export interface FigureSpec {
   frames?: FigureFrame[];
   polygons?: FigurePolygon[];
   segments?: FigureSegment[];
+  circles?: FigureCircle[];
+  arcs?: FigureArc[];
   angles?: FigureAngle[];
   points?: FigurePoint[];
   texts?: FigureText[];
+}
+
+/**
+ * The points an arc is drawn through, counter-clockwise from `from` to `to`.
+ *
+ * Both the renderer and the label-layout obstacle collector use THIS function,
+ * so a label always clears the arc that is actually on the paper.
+ */
+export function arcPolyline(arc: FigureArc, steps = 48): XY[] {
+  const sweep = (((arc.to - arc.from) % 360) + 360) % 360 || 360;
+  const count = Math.max(2, Math.ceil((Math.abs(sweep) / 360) * steps));
+  return Array.from({ length: count + 1 }, (_, index) => {
+    const angle = ((arc.from + (sweep * index) / count) * Math.PI) / 180;
+    return [arc.at[0] + arc.r * Math.cos(angle), arc.at[1] + arc.r * Math.sin(angle)] as XY;
+  });
+}
+
+/** The points a full circle is laid out through (the renderer draws a circle). */
+export function circlePolyline(circle: FigureCircle, steps = 48): XY[] {
+  return Array.from({ length: steps + 1 }, (_, index) => {
+    const angle = ((index / steps) * 360 * Math.PI) / 180;
+    return [
+      circle.at[0] + circle.r * Math.cos(angle),
+      circle.at[1] + circle.r * Math.sin(angle),
+    ] as XY;
+  });
 }
 
 const isNumber = (value: unknown): value is number =>
@@ -156,6 +224,36 @@ function readSegment(value: unknown): FigureSegment | null {
     tone: tone(record.tone),
     dashed: record.dashed === true,
     ticks: ticks === 1 || ticks === 2 || ticks === 3 ? ticks : undefined,
+    arrow: record.arrow === true,
+  };
+}
+
+function readCircle(value: unknown): FigureCircle | null {
+  if (!value || typeof value !== 'object') return null;
+  const record = value as Record<string, unknown>;
+  if (!isPoint(record.at) || !isNumber(record.r) || record.r <= 0) return null;
+  return {
+    at: record.at,
+    r: record.r,
+    tone: tone(record.tone),
+    dashed: record.dashed === true,
+  };
+}
+
+function readArc(value: unknown): FigureArc | null {
+  if (!value || typeof value !== 'object') return null;
+  const record = value as Record<string, unknown>;
+  if (!isPoint(record.at) || !isNumber(record.r) || record.r <= 0) return null;
+  if (!isNumber(record.from) || !isNumber(record.to)) return null;
+  // A zero sweep would paint nothing while looking like a drawn arc; reject it.
+  if (Math.abs(record.to - record.from) < 1e-9) return null;
+  return {
+    at: record.at,
+    r: record.r,
+    from: record.from,
+    to: record.to,
+    tone: tone(record.tone),
+    dashed: record.dashed === true,
     arrow: record.arrow === true,
   };
 }
@@ -252,12 +350,23 @@ export function readFigureSpec(value: unknown): FigureSpec | null {
     frames: readArray(record.frames, readFrame),
     polygons: readArray(record.polygons, readPolygon),
     segments: readArray(record.segments, readSegment),
+    circles: readArray(record.circles, readCircle),
+    arcs: readArray(record.arcs, readArc),
     angles: readArray(record.angles, readAngle),
     points: readArray(record.points, readPoint),
     texts: readArray(record.texts, readText),
   };
 
-  for (const key of ['frames', 'polygons', 'segments', 'angles', 'points', 'texts'] as const) {
+  for (const key of [
+    'frames',
+    'polygons',
+    'segments',
+    'circles',
+    'arcs',
+    'angles',
+    'points',
+    'texts',
+  ] as const) {
     if (record[key] !== undefined && spec[key] === undefined) return null;
   }
   return spec;
@@ -274,6 +383,8 @@ export function translateFigure(spec: FigureSpec, dx: number, dy: number): Figur
       from: move(segment.from),
       to: move(segment.to),
     })),
+    circles: spec.circles?.map((circle) => ({ ...circle, at: move(circle.at) })),
+    arcs: spec.arcs?.map((arc) => ({ ...arc, at: move(arc.at) })),
     angles: spec.angles?.map((angle) => ({
       ...angle,
       at: move(angle.at),
