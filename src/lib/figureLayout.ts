@@ -28,6 +28,7 @@
  */
 
 import type { FigureAngle, FigureFrame, FigureSpec, LabelPlace, XY } from './geometryFigure';
+import { arcPolyline, circlePolyline } from './geometryFigure';
 import { LABEL_BOX_HEIGHT, textWidth } from './figureTypography';
 
 export interface Rect {
@@ -268,6 +269,20 @@ export function collectObstacles(spec: FigureSpec, tick: number, arcRadius = 16)
       }
     }
   }
+
+  /*
+   * A circle of compass ink is as solid for a label as a straight side: a value
+   * written across the circumscribed circle of a triangle is exactly the case
+   * this lesson produces. Both are turned into their drawn polyline and every
+   * consecutive pair becomes an obstacle.
+   */
+  const addPath = (points: readonly XY[]): void => {
+    for (let index = 0; index + 1 < points.length; index += 1) {
+      obstacles.push({ a: points[index]!, b: points[index + 1]! });
+    }
+  };
+  for (const circle of spec.circles ?? []) addPath(circlePolyline(circle));
+  for (const arc of spec.arcs ?? []) addPath(arcPolyline(arc, 32));
 
   (spec.angles ?? []).forEach((angle, index) => {
     // The drawn arc keeps its own radius when the figure asks for one; the

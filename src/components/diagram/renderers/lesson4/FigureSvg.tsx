@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import type { FigureSpec, FigureTone } from '@/lib/geometryFigure';
+import { arcPolyline } from '@/lib/geometryFigure';
 import {
   angleLabelCandidates,
   angleMarkSegments,
@@ -271,6 +272,38 @@ export function FigureSvg({ spec, ariaLabel, className }: FigureSvgProps) {
           fill={polygon.fill === false ? 'none' : undefined}
         />
       ))}
+
+      {spec.circles?.map((circle, index) => {
+        const tone = circle.tone ?? 'aux';
+        return (
+          <circle
+            key={`circle-${index}`}
+            cx={circle.at[0]}
+            cy={sy(circle.at[1])}
+            r={circle.r}
+            className={TONE_CLASS[tone] ?? styles.inkLine ?? ''}
+            fill="none"
+            strokeWidth={stroke}
+            strokeDasharray={circle.dashed ? `${stroke * 5.5} ${stroke * 4.5}` : undefined}
+          />
+        );
+      })}
+
+      {spec.arcs?.map((arc, index) => {
+        const tone = arc.tone ?? 'mark';
+        return (
+          <polyline
+            key={`arc-${index}`}
+            points={arcPolyline(arc).map(P).join(' ')}
+            className={TONE_CLASS[tone] ?? styles.markLine ?? ''}
+            fill="none"
+            strokeWidth={Math.max(stroke * 0.85, typography.unitsPerPixel * 1.3)}
+            strokeLinecap="round"
+            strokeDasharray={arc.dashed ? `${stroke * 5.5} ${stroke * 4.5}` : undefined}
+            markerEnd={arc.arrow ? `url(#${arrowId})` : undefined}
+          />
+        );
+      })}
 
       {spec.segments?.map((segment, index) => {
         const tone = segment.tone ?? 'ink';

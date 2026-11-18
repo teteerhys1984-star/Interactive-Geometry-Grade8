@@ -2,6 +2,7 @@ import { unitSchema } from '../schema';
 import type { Unit } from '../schema';
 import { unit01 } from './unit-01-parallelograms-and-translation';
 import { unit02 } from './unit-02-triangles-midpoints-parallels';
+import { unit03 } from './unit-03-remarkable-lines';
 
 /**
  * ============================================================================
@@ -21,9 +22,11 @@ import { unit02 } from './unit-02-triangles-midpoints-parallels';
  *    • Unit 2 «مثلثات ومنصفات أضلاع ومستقيمات متوازية» — Lesson 1, pages 31–33.
  *    • Unit 2 «مثلثات ومنصفات أضلاع ومستقيمات متوازية» — Lesson 2, pages 34–35.
  *    • Unit 2 «مثلثات ومنصفات أضلاع ومستقيمات متوازية» — Lesson 3, pages 36–38.
+ *    • Unit 3 «مستقيمات مميزة في المثلث» — Lesson 1, pages 54–55 (with the unit
+ *      opener of page 53 as its entry).
  *
  *  NOT yet authored (deliberately):
- *    • The rest of Unit 2, and Units 3–5             page 39 onwards
+ *    • The rest of Unit 3, and Units 4–5             page 56 onwards
  *
  *  TO ADD THE NEXT LESSON: append it to its unit's `lessons` in curriculum order,
  *  built strictly from the real pages, with a `source` on the lesson and on
@@ -31,7 +34,7 @@ import { unit02 } from './unit-02-triangles-midpoints-parallels';
  *  automatically.
  * ============================================================================
  */
-const rawUnits: unknown[] = [unit01, unit02];
+const rawUnits: unknown[] = [unit01, unit02, unit03];
 
 /** Units validated against the schema at module load. Fails fast on bad data. */
 export const units: Unit[] = rawUnits.map((unit) => unitSchema.parse(unit));
