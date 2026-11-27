@@ -29,6 +29,9 @@ import { ParallelMidpointLab } from './lesson9';
 import { ThalesRatioLab } from './lesson10';
 import { ThreeRatiosLab } from './lesson11';
 import { SideBisectorLab } from './lesson13';
+import { AltitudeLab } from './lesson14';
+import { MedianLab } from './lesson15';
+import { AngleBisectorLab } from './lesson16';
 import { UnitTwoExercisesFigure } from './UnitTwoExercisesFigure';
 
 /**
@@ -105,6 +108,18 @@ registerInteractiveRenderer('three-ratios-lab', ThreeRatiosLab);
 /* Unit 3, Lesson 1 — «محور ضلع في المثلث»: the page-54 activity made dynamic,
  * and the three printed panels of page 55 as presets. */
 registerInteractiveRenderer('side-bisector-lab', SideBisectorLab);
+
+/* Unit 3, Lesson 2 — «ارتفاع مثلث»: the page-56/57 concurrency made dynamic,
+ * with the three printed panels of page 57 as presets. */
+registerInteractiveRenderer('altitude-lab', AltitudeLab);
+
+/* Unit 3, Lesson 3 — «المتوسط في المثلث»: the page-59/60 centroid made dynamic
+ * (the three medians meet at G with AG = (2/3)AA'). */
+registerInteractiveRenderer('median-lab', MedianLab);
+
+/* Unit 3, Lesson 4 — «منصّف زاوية مثلث»: the page-62/63 incenter made dynamic
+ * (the three bisectors meet at I, center of the inscribed circle). */
+registerInteractiveRenderer('angle-bisector-lab', AngleBisectorLab);
 
 /* Unit 2 — «تمارين الوحدة الثانية»: the reconstructed figures of the exercise
  * set (Questions 28–34). They are drawn from coordinates measured in the

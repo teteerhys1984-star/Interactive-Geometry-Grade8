@@ -1,0 +1,235 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1.38fr) minmax(18.5rem, 1fr);
+    gap: var(--space-5);
+  }
+}
+
+.stage {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: #fffdf9;
+  padding: var(--space-2);
+}
+
+@media (prefers-color-scheme: dark) {
+  .stage {
+    background: var(--color-surface-alt);
+  }
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.groupLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-1);
+}
+
+.buttonRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.presetBtn {
+  padding: 0.42rem 0.78rem;
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.presetBtn:hover {
+  border-color: var(--color-primary);
+}
+
+.presetBtn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.presetBtnActive {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.sliderBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+}
+
+.sliderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.sliderInput {
+  width: 100%;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.sliderInput:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.toggleLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+}
+
+.toggleLabel input {
+  margin-top: 0.28rem;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.factList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.factRow {
+  display: grid;
+  grid-template-columns: 1.25rem minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: 0.35rem var(--space-2);
+  border-radius: var(--radius-sm);
+  border-inline-start: 3px solid var(--color-border);
+  background: var(--color-surface-alt);
+  font-size: var(--font-size-sm);
+}
+
+.factOk {
+  border-inline-start-color: var(--color-primary);
+}
+
+.factBad {
+  border-inline-start-color: var(--color-text-muted);
+}
+
+.factMark {
+  font-weight: 700;
+  text-align: center;
+}
+
+.factOk .factMark {
+  color: var(--color-primary);
+}
+
+.factBad .factMark {
+  color: var(--color-text-muted);
+}
+
+.factLabel {
+  color: var(--color-text);
+}
+
+.factVerdict {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.verdict {
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  border-inline-start: 4px solid var(--color-accent);
+  background: var(--color-accent-bg);
+  font-size: var(--font-size-sm);
+  line-height: 1.65;
+}
+
+.verdictPrinted {
+  border-inline-start-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.metricCard {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.metricOk {
+  border-inline-start: 3px solid var(--color-primary);
+}
+
+.metricBad {
+  border-inline-start: 3px solid var(--color-text-muted);
+}
+
+.metricLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.metricValue {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text);
+}

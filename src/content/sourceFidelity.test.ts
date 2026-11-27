@@ -118,7 +118,7 @@ describe('course shell', () => {
   });
 });
 
-describe('implementation boundary — Lessons 1–13 across Units 1–3 (Lessons 6 and 7 are the independent Q3–15 and Q16–28 continuations)', () => {
+describe('implementation boundary — Lessons 1–16 across Units 1–3 (Lessons 6 and 7 are the independent Q3–15 and Q16–28 continuations)', () => {
   it('registers exactly three units, in curriculum order', () => {
     expect(subject.units).toHaveLength(3);
     expect(subject.units.map((unit) => unit.id)).toEqual([
@@ -142,12 +142,15 @@ describe('implementation boundary — Lessons 1–13 across Units 1–3 (Lessons
     // than dropped as Unit 2's opener was.
     expect(subject.units[2]?.lessons.map((lesson) => lesson.id)).toEqual([
       'lesson-13-side-bisector',
+      'lesson-14-triangle-altitude',
+      'lesson-15-triangle-median',
+      'lesson-16-angle-bisector',
     ]);
     expect(subject.units[2]?.assessment).toBeUndefined();
   });
 
-  it('registers exactly thirteen lessons in curriculum order', () => {
-    expect(allLessons).toHaveLength(13);
+  it('registers exactly sixteen lessons in curriculum order', () => {
+    expect(allLessons).toHaveLength(16);
     expect(allLessons[0]?.lesson.id).toBe('lesson-01-translation-and-properties');
     expect(allLessons[1]?.lesson.id).toBe('lesson-02-image-of-a-point');
     expect(allLessons[2]?.lesson.id).toBe('lesson-03-image-of-a-shape');
@@ -167,6 +170,12 @@ describe('implementation boundary — Lessons 1–13 across Units 1–3 (Lessons
     expect(allLessons[11]?.unit.id).toBe('unit-02-triangles-midpoints-parallels');
     expect(allLessons[12]?.lesson.id).toBe('lesson-13-side-bisector');
     expect(allLessons[12]?.unit.id).toBe('unit-03-remarkable-lines');
+    expect(allLessons[13]?.lesson.id).toBe('lesson-14-triangle-altitude');
+    expect(allLessons[13]?.unit.id).toBe('unit-03-remarkable-lines');
+    expect(allLessons[14]?.lesson.id).toBe('lesson-15-triangle-median');
+    expect(allLessons[14]?.unit.id).toBe('unit-03-remarkable-lines');
+    expect(allLessons[15]?.lesson.id).toBe('lesson-16-angle-bisector');
+    expect(allLessons[15]?.unit.id).toBe('unit-03-remarkable-lines');
     expect(subject.units[1]?.lessons[0]?.id).toBe('lesson-08-triangle-midpoints');
     expect(subject.units[1]?.lessons[1]?.id).toBe('lesson-09-parallel-from-midpoint');
     expect(subject.units[1]?.lessons[2]?.id).toBe('lesson-10-parallel-lines-transversals');
@@ -225,6 +234,19 @@ describe('implementation boundary — Lessons 1–13 across Units 1–3 (Lessons
           '53',
           '54',
           '55',
+          // Unit 3 — Lesson 2 «ارتفاع مثلث» (56–58), Lesson 3 «المتوسط في
+          // المثلث» (59–61), Lesson 4 «منصّف زاوية مثلث» (62–63).
+          '56',
+          '57',
+          '58',
+          '59',
+          '60',
+          '61',
+          '62',
+          '63',
+          '56–58',
+          '59–61',
+          '62–63',
           'صورة المصدر 1',
           'صورة المصدر 2',
           'صورة المصدر 3',
