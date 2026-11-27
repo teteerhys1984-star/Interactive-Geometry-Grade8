@@ -24,9 +24,12 @@ import { unit03 } from './unit-03-remarkable-lines';
  *    • Unit 2 «مثلثات ومنصفات أضلاع ومستقيمات متوازية» — Lesson 3, pages 36–38.
  *    • Unit 3 «مستقيمات مميزة في المثلث» — Lesson 1, pages 54–55 (with the unit
  *      opener of page 53 as its entry).
+ *    • Unit 3 «مستقيمات مميزة في المثلث» — Lesson 2 «ارتفاع مثلث», pages 56–58.
+ *    • Unit 3 «مستقيمات مميزة في المثلث» — Lesson 3 «المتوسط في المثلث», pages 59–61.
+ *    • Unit 3 «مستقيمات مميزة في المثلث» — Lesson 4 «منصّف زاوية مثلث», pages 62–63.
  *
  *  NOT yet authored (deliberately):
- *    • The rest of Unit 3, and Units 4–5             page 56 onwards
+ *    • The Unit 3 exercises section, and Units 4–5      page 64 onwards
  *
  *  TO ADD THE NEXT LESSON: append it to its unit's `lessons` in curriculum order,
  *  built strictly from the real pages, with a `source` on the lesson and on

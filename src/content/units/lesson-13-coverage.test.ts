@@ -107,9 +107,14 @@ const teachingSteps = authoredSteps.filter((step) => !isNotebookStep(step));
 const notebookSteps = allSteps.filter((step) => isNotebookStep(step));
 
 describe('Unit 3 registration and Lesson 13 metadata', () => {
-  it('registers Lesson 13 as the first (and so far only) lesson of Unit 3', () => {
+  it('registers Lesson 13 as the first lesson of Unit 3 (followed by Lessons 14–16)', () => {
     const unitLessons = unit03.lessons ?? [];
-    expect(unitLessons.map((lesson) => lesson.id)).toEqual(['lesson-13-side-bisector']);
+    expect(unitLessons.map((lesson) => lesson.id)).toEqual([
+      'lesson-13-side-bisector',
+      'lesson-14-triangle-altitude',
+      'lesson-15-triangle-median',
+      'lesson-16-angle-bisector',
+    ]);
     expect(unitLessons[0]).toBe(lesson13);
     expect(unit03.title).toBe('مستقيمات مميزة في المثلث');
     expect(unit03.source).toEqual({ page: 53, locator: 'الوحدة الثالثة' });
